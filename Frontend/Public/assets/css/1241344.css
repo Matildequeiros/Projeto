@@ -170,3 +170,15 @@
     box-shadow: 0 0 15px rgba(255,255,255,0.8);
 }
 
+.logo-link {
+    text-decoration: none;   /* tira o sublinhado */
+    color: inherit;          /* mantém as cores originais */
+    display: flex;           /* mantém o alinhamento horizontal */
+    align-items: center;     /* alinha verticalmente */
+    gap: 10px;               /* espaço entre logo e texto */
+}
+
+.logo-link img {
+    height: 50px;   /* ajusta o tamanho do logo */
+    width: auto;
+}
