@@ -156,9 +156,17 @@
     color: #dffaf6;
 }
 
-.footer-copy {
-    text-align: center;
-    margin-top: 50px;
-    font-size: 1.1rem;
-    color: #f0f0f0;
+.nav-cliente a {
+    color: #FFFFFF;
+    padding: 10px 20px;
+    font-size: 1.5em;
+    border-radius: 8px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.4);
+    transition: 0.3s;
 }
+
+.nav-cliente a:hover {
+    box-shadow: 0 0 15px rgba(255,255,255,0.8);
+}
+
