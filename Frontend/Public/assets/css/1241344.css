@@ -90,7 +90,7 @@
 .sobre-nos-texto p {
     font-size: 1.3em;
     font-weight: 300;
-    color: #5f5f5f;
+    color: #4a4a4a;   
     margin-bottom: 30px;
 }
 
@@ -171,11 +171,11 @@
 }
 
 .logo-link {
-    text-decoration: none;   /* tira o sublinhado */
-    color: inherit;          /* mantém as cores originais */
-    display: flex;           /* mantém o alinhamento horizontal */
-    align-items: center;     /* alinha verticalmente */
-    gap: 10px;               /* espaço entre logo e texto */
+    text-decoration: none;  
+    color: inherit;          
+    display: flex;           
+    align-items: center;     
+    gap: 10px;               
 }
 
 .logo-link img {
@@ -191,7 +191,6 @@
     
 }
 
-
 .secao-sobre-nos h2 {
     font-size: 2.4rem;
     margin-bottom: 25px;
@@ -202,6 +201,7 @@
     font-size: 1.1rem;
     margin-bottom: 30px;
     line-height: 1.6;
+    color: #4a4a4a;
 }
 
 .sobre-nos-esquema {
@@ -212,7 +212,7 @@
 }
 
 .sobre-nos-esquema .box {
-    background: #e8f6f8;
+    background: #E6F7F5;
     padding: 20px;
     border-radius: 10px;
     text-align: left;
@@ -230,12 +230,71 @@
 
 .sobre-nos-esquema .box ul li {
     margin-bottom: 6px;
+    color: #4a4a4a;
 }
 
 #sobre-nos::before {
     content: "";
     display: block;
-    height: 160px; /* altura da navbar */
+    height: 160px; 
     margin-top: -120px;
     visibility: hidden;
 }
+
+.secao-servicos {
+    background-color: #f5f5f5;
+    padding: 110px 20px 70px;
+    width: 100%;
+    text-align: center;
+}
+
+.secao-servicos h2 {
+    font-size: 2.7em;          
+    color: #1a826d;          
+    font-weight: 700;     
+    margin-bottom: 10px;     
+}
+
+
+.servicos-intro {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #4a4a4a;
+    max-width: 1000px;
+    margin: 0 auto 50px;
+}
+
+
+.servicos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.servico-box {
+    background: #E6F7F5; 
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.servico-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+}
+
+.servico-box h3 {
+    color: #49a395; 
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.servico-box p {
+    font-size: 1.05rem;
+    color: #4a4a4a;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
