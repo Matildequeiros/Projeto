@@ -380,3 +380,88 @@
     margin-top: 10px;
 }
 
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.escondido {
+    display: none;
+}
+
+.popup-content {
+    background: white;
+    padding: 30px;
+    width: 90%;
+    max-width: 600px; 
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    position: relative;
+    max-height: 90vh; 
+    overflow-y: auto; 
+}
+
+.popup-content h2 {
+    text-align: center;      
+    color: #1a826d;         
+    font-size: 2rem;         
+    margin-bottom: 25px;     
+    font-weight: 700;        
+}
+
+.popup-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: #1a826d;
+    font-weight: bold;
+}
+
+.form-box label {
+    font-size: 1.2rem;
+    color: #1a826d;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.form-box input,
+.form-box textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cce7e4;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.form-box textarea {
+    height: 140px;
+    resize: none;
+}
+
+.btn-enviar {
+    background-color: #1a826d;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-enviar:hover {
+    background-color: #146957;
+}
