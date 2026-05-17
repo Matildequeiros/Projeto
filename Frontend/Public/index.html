@@ -38,11 +38,9 @@
         <!-- Links centrais -->
         <div class="container-navegacao">
             <a href="#sobre-nos">Sobre Nós</a>
-            <a href="#equipa">Equipa</a>
             <a href="#servicos">Serviços</a>
             <a href="#contacto">Contacto</a>
         </div>
-
 
         <!-- Área Cliente -->
         <div class="nav-cliente">
@@ -157,7 +155,9 @@
                 soluções HospitalGest.</p>
             <p>Envie-nos a sua questão e entraremos em contacto consigo o mais breve possível.</p>
 
-            <a href="#formulario" class="contacto-botao">Fale Connosco</a>
+            <a class="contacto-botao" onclick="abrirFormulario()">Fale Connosco</a>
+
+
         </div>
 
         <!-- 3 CAIXAS EM BAIXO -->
@@ -186,9 +186,36 @@
         </div>
     </section>
 
+    <!-- POPUP DO FORMULÁRIO -->
+    <div id="popup-form" class="popup escondido">
+
+        <div class="popup-content">
+
+            <button class="popup-close" onclick="fecharFormulario()">✖</button>
+
+            <h2>Como Podemos Ajudar?</h2>
+
+            <form class="form-box">
+
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+
+                <label for="assunto">Assunto:</label>
+                <input type="text" id="assunto" required>
+
+                <label for="mensagem">Mensagem:</label>
+                <textarea id="mensagem" required></textarea>
+
+                <button type="submit" class="btn-enviar">Enviar</button>
+
+            </form>
+        </div>
 
     </div>
-    </section>
+
 
     <footer class="footer-container">
 
@@ -218,14 +245,25 @@
                 <p><i class="fa-solid fa-envelope"></i> geral@hospitalgest.pt</p>
                 <p><i class="fa-solid fa-clock"></i> 07:00h - 22:00h</p>
 
-               
+
             </div>
 
-            
+
 
         </div>
 
     </footer>
+
+    <script>
+        function abrirFormulario() {
+            document.getElementById("popup-form").classList.remove("escondido");
+        }
+
+        function fecharFormulario() {
+            document.getElementById("popup-form").classList.add("escondido");
+        }
+    </script>
+
 
 
 
