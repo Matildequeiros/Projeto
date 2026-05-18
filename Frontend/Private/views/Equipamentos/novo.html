@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HospitalGest - Equipamentos</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../../assets/css/1241344.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../../assets/fontawesome/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../../assets/img/Logo.png" type="image/png">
+
+    <style>
+        .card-form {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .card-form label {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .card-form input,
+        .card-form select,
+        .card-form textarea {
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .card-form h2 {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <header class="container-fluid" style="background-color: #acd6d0;">
+        <div class="row align-items-center">
+
+            <!-- LOGO + TÍTULO -->
+            <div class="col-6 d-flex align-items-center p-3">
+                <a href="../../index.html">
+                    <img src="../../../assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
+                </a>
+                <h3 class="mb-0 logo-text">
+                    <span class="verde">Hospital</span><span class="azul">Gest</span>
+                </h3>
+            </div>
+
+            <!-- UTILIZADOR -->
+            <div class="col-6 text-end p-3">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        style="background-color: #86B0AA; color: white; border: none;">
+                        <i class="fa-regular fa-user me-2"></i> Utilizador
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="../../../Login/login.html">
+                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <aside class="col-md-3 col-lg-2 p-3 min-vh-100 shadow-sm"
+                style="background-color: #86b0aa; color: white; border-radius: 0 10px 10px 0;">
+
+                <h4 class="fw-bold mb-4">Menu</h4>
+
+                <nav>
+                    <a href="../equipamentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
+                        <i class="fas fa-stethoscope me-2"></i> Equipamentos
+                    </a>
+
+                    <a href="../fornecedores/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
+                        <i class="fas fa-truck-medical me-2"></i> Fornecedores
+                    </a>
+
+                    <a href="../localizacoes/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
+                        <i class="fas fa-location-dot me-2"></i> Localizações
+                    </a>
+
+                    <a href="../documentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
+                        <i class="fas fa-file-medical me-2"></i> Documentação
+                    </a>
+
+                    <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                        <i class="fas fa-chart-line me-2"></i> Dashboard
+                    </a>
+                </nav>
+            </aside>
+
+            <main class="col-md-9 col-lg-10 p-4">
+
+                <div class="card-form">
+
+                    <h2 class="mb-4" style="color: #1a826d;">
+                        <i class="fa-solid fa-plus me-2"></i> Novo Equipamento
+                    </h2>
+
+                    <form>
+
+                        <!-- Código interno de inventário -->
+                        <div class="mb-3">
+                            <label class="form-label">Código Interno De Inventário *</label>
+                            <input type="text" class="form-control" placeholder="Ex: EQ-2025-001">
+                        </div>
+
+                        <!-- Designação do equipamento-->
+                        <div class="mb-3">
+                            <label class="form-label">Designação Do Equipamento *</label>
+                            <input type="text" class="form-control" placeholder="Ex: Monitor multiparamétrico">
+                        </div>
+
+                        <!-- Categoria -->
+                        <div class="mb-3">
+                            <label class="form-label">Categoria *</label>
+                            <select class="form-select">
+                                <option>Monitorização</option>
+                                <option>Suporte de vida</option>
+                                <option>Terapia</option>
+                                <option>Diagnóstico</option>
+                                <option>Laboratório</option>
+                                <option>Esterilização</option>
+                                <option>Reabilitação</option>
+                            </select>
+                        </div>
+
+                        <!-- Marca e Modelo -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Marca *</label>
+                                <input type="text" class="form-control" placeholder="Ex: Philips">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Modelo *</label>
+                                <input type="text" class="form-control" placeholder="Ex: IntelliVue MP5">
+                            </div>
+                        </div>
+
+                        <!-- Número de série -->
+                        <div class="mb-3">
+                            <label class="form-label">Número de Série *</label>
+                            <input type="text" class="form-control" placeholder="Ex: MP5-2022-45873">
+                        </div>
+
+                        <!-- Fabricante -->
+                        <div class="mb-3">
+                            <label class="form-label">Fabricante *</label>
+                            <input type="text" class="form-control" placeholder="Ex: Philips Healthcare">
+                        </div>
+
+                        <!-- Data de aquisição -->
+                        <div class="mb-3">
+                            <label class="form-label">Data de Aquisição *</label>
+                            <input type="date" class="form-control">
+                        </div>
+
+                        <!-- Ano de fabrico -->
+                        <div class="mb-3">
+                            <label class="form-label">Ano de Fabrico *</label>
+                            <input type="number" class="form-control" placeholder="Ex: 2022" min="1900" max="2100">
+                        </div>
+
+                        <!-- Custo de aquisição -->
+                        <div class="mb-3">
+                            <label class="form-label">Custo de Aquisição (€) *</label>
+                            <input type="number" class="form-control" placeholder="Ex: 3500" min="0" step="0.01">
+                        </div>
+
+                        <!-- Tipo de entrada -->
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Entrada *</label>
+                            <select class="form-select">
+                                <option>Compra</option>
+                                <option>Doação</option>
+                                <option>Aluguer</option>
+                                <option>Empréstimo</option>
+                            </select>
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="mb-3">
+                            <label class="form-label">Estado *</label>
+                            <select class="form-select">
+                                <option>Ativo</option>
+                                <option>Em manutenção</option>
+                                <option>Inativo</option>
+                                <option>Em calibração</option>
+                                <option>Em quarentena</option>
+                                <option>Abatido</option>
+                            </select>
+                        </div>
+
+                        <!-- Criticidade -->
+                        <div class="mb-3">
+                            <label class="form-label">Criticidade *</label>
+                            <select class="form-select">
+                                <option>Baixa</option>
+                                <option>Média</option>
+                                <option>Alta</option>
+                                <option>Suporte de vida</option>
+                            </select>
+                        </div>
+
+                        <!-- Observações -->
+                        <div class="mb-3">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <!-- Botões -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="lista.html" class="btn btn-secondary">Cancelar</a>
+                            <button type="submit" class="btn" style="background-color: #1a826d; color: white;">
+                                Guardar Equipamento
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </main>
+
+</body>
+
+</html>
