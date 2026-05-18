@@ -224,12 +224,13 @@
     color: #4a4a4a;
 }
 
-#sobre-nos::before {
-    content: "";
-    display: block;
-    height: 160px; 
-    margin-top: -120px;
-    visibility: hidden;
+.inicio-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    padding: 120px 40px;
+    background-color: #f5f5f5;
 }
 
 .secao-servicos {
@@ -417,6 +418,7 @@
     font-weight: 700;        
 }
 
+
 .popup-close {
     position: absolute;
     top: 12px;
@@ -465,3 +467,8 @@
 .btn-enviar:hover {
     background-color: #146957;
 }
+
+#sobre-nos {
+    scroll-margin-top: 50px;
+}
+
