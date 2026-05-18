@@ -472,3 +472,48 @@
     scroll-margin-top: 50px;
 }
 
+/* LOGO + TÍTULO */
+.card .d-flex img {
+    height: 70px;
+    width: auto;
+    margin-right: 15px;
+}
+
+.card .d-flex h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+/* cores título */
+.hospital {
+    color: #49a395;
+}
+
+.gest {
+    color: #1a826d;
+}
+
+/* Caixa */
+.card {
+    background-color: #E3F6F4;
+    border-radius: 12px;
+}
+
+/* Botão entrar */
+.btn.btn-secondary {
+    background-color: #6EC1B6;
+    border-color: #6EC1B6;
+    color: #E3F6F4;
+    font-weight: 600;
+}
+
+.btn.btn-secondary:hover {
+    background-color: #5AB3A8;
+    border-color: #5AB3A8;
+    color: white;
+}
+
+body {
+    background-color: #f5f5f5;
+}
