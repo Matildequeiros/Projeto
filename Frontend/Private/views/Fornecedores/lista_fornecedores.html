@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HospitalGest - Equipamentos</title>
+    <title>HospitalGest - Fornecedores</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
@@ -27,9 +27,7 @@
             align-items: center;
             gap: 6px;
             background-color: #d7f0ec;
-            /* verde água clarinho */
             color: #1a826d;
-            /* verde mais escuro para contraste */
             padding: 6px 12px;
             border-radius: 8px;
             font-size: 14px;
@@ -38,21 +36,14 @@
             margin-right: 8px;
             transition: 0.2s ease-in-out;
             border: 1px solid #c3e7e2;
-            /* borda suave */
-        }
-
-        .acao-box i {
-            font-size: 15px;
         }
 
         .acao-box:hover {
             background-color: #c9e9e4;
-            /* hover suave */
             color: #166c59;
             border-color: #b7e0da;
         }
     </style>
-
 
 </head>
 
@@ -87,8 +78,7 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item" href="../../../Login/login.html">
-                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a>
-                        </li>
+                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
                     </ul>
                 </div>
             </div>
@@ -111,7 +101,7 @@
                         <i class="fas fa-stethoscope me-2"></i> Equipamentos
                     </a>
 
-                    <a href="../Fornecedores/lista_fornecedores.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                    <a href="lista_fornecedores.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
                         style="color: white;">
                         <i class="fas fa-truck-medical me-2"></i> Fornecedores
                     </a>
@@ -130,6 +120,7 @@
                         <i class="fas fa-chart-line me-2"></i> Dashboard
                     </a>
                 </nav>
+
             </aside>
 
             <!-- CONTEÚDO PRINCIPAL -->
@@ -137,49 +128,44 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h2 class="mb-0" style="color: #1a826d;">
-                        <i class="fa-solid fa-stethoscope me-2"></i>
-                        <strong>Listagem de Equipamentos</strong>
+                        <i class="fa-solid fa-truck-medical me-2"></i>
+                        <strong>Listagem de Fornecedores</strong>
                     </h2>
 
                     <a href="novo.html" class="btn" style="background-color: #1a826d; color: white;">
-                        <i class="fa-solid fa-plus me-2"></i> Novo Equipamento
+                        <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
                     </a>
                 </div>
 
                 <hr>
 
-                <p class="text-muted">Não existem equipamentos registados.</p>
+                <p class="text-muted">Não existem fornecedores registados.</p>
 
-                <div class="table-responsive rounded-4 shadow-sm border p-0" style="overflow-x: auto;">
+                <div class="table-responsive rounded-4 shadow-sm border p-0">
 
-                    <table class="table table-bordered table-striped align-middle" style="min-width: 1300px;">
+                    <table class="table table-bordered table-striped align-middle" style="min-width: 1100px;">
                         <thead>
                             <tr style="background-color: #1a826d; color: white;">
                                 <th>Código</th>
-                                <th>Designação</th>
-                                <th>Categoria</th>
-                                <th>Marca</th>
-                                <th>Modelo</th>
-                                <th>Nº Série</th>
-                                <th>Estado</th>
-                                <th>Criticidade</th>
-                                <th>Localização</th>
+                                <th>Nome</th>
+                                <th>NIF</th>
+                                <th>Contacto</th>
+                                <th>Email</th>
+                                <th>Tipo</th>
                                 <th class="text-center">Ações</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             <tr>
-                                <td>[Código]</td>
-                                <td>[Designação]</td>
-                                <td>[Categoria]</td>
-                                <td>[Marca]</td>
-                                <td>[Modelo]</td>
-                                <td>[Número de Série]</td>
-                                <td>[Estado]</td>
-                                <td>[Criticidade]</td>
-                                <td>[Localização]</td>
-                                <td style="text-align: center;">
+                                <td>[codigo]</td>
+                                <td>[nome]</td>
+                                <td>[nif]</td>
+                                <td>[contacto]</td>
+                                <td>[email]</td>
+                                <td>[tipo]</td>
+
+                                <td class="text-center">
                                     <a href="detalhes.html" class="acao-box">
                                         <i class="fa-solid fa-eye"></i> Consultar
                                     </a>
@@ -192,20 +178,17 @@
                                         <i class="fa-solid fa-trash"></i> Eliminar
                                     </a>
                                 </td>
-
                             </tr>
+
                         </tbody>
                     </table>
                 </div>
-
-
 
             </main>
 
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
 
 </body>
