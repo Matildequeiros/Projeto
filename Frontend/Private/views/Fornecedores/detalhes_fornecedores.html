@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HospitalGest - Equipamentos</title>
+    <title>HospitalGest - Consultar Fornecedor</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
@@ -35,7 +35,7 @@
             font-weight: 600;
             color: #333;
         }
-        
+
         .info-value {
             color: #555;
         }
@@ -43,17 +43,16 @@
         .info-row {
             margin-bottom: 15px;
         }
-           
     </style>
 
 </head>
 
 <body>
+
     <!-- NAVBAR -->
     <header class="container-fluid" style="background-color: #acd6d0;">
         <div class="row align-items-center">
 
-            <!-- LOGO + TÍTULO -->
             <div class="col-6 d-flex align-items-center p-3">
                 <a href="../../index.html">
                     <img src="../../../assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
@@ -63,7 +62,6 @@
                 </h3>
             </div>
 
-            <!-- UTILIZADOR -->
             <div class="col-6 text-end p-3">
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -72,14 +70,10 @@
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="../../../Login/login.html">
-                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a>
-                        </li>
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
                     </ul>
                 </div>
             </div>
@@ -102,7 +96,7 @@
                         <i class="fas fa-stethoscope me-2"></i> Equipamentos
                     </a>
 
-                    <a href="../Fornecedores/lista_fornecedores.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                    <a href="lista_fornecedores.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
                         style="color: white;">
                         <i class="fas fa-truck-medical me-2"></i> Fornecedores
                     </a>
@@ -123,51 +117,33 @@
                 </nav>
             </aside>
 
-
             <!-- MAIN CONTENT -->
             <main class="col-md-9 col-lg-10 p-4">
 
                 <div class="info-box">
 
                     <h2 class="mb-4" style="color: #1a826d;">
-                        <i class="fa-solid fa-eye me-2"></i> Consultar Equipamento
+                        <i class="fa-solid fa-eye me-2"></i> Consultar Fornecedor
                     </h2>
 
                     <!-- CAMPOS COMPLETOS -->
-                    <div class="info-row"><span class="info-label">Código Interno:</span> <span
-                            class="info-value">EQ-001</span></div>
-                    <div class="info-row"><span class="info-label">Designação:</span> <span class="info-value">Monitor
-                            multiparamétrico</span></div>
-                    <div class="info-row"><span class="info-label">Categoria:</span> <span
-                            class="info-value">Monitorização</span></div>
-                    <div class="info-row"><span class="info-label">Marca:</span> <span class="info-value">Philips</span>
-                    </div>
-                    <div class="info-row"><span class="info-label">Modelo:</span> <span class="info-value">IntelliVue
-                            MP5</span></div>
-                    <div class="info-row"><span class="info-label">Número de Série:</span> <span
-                            class="info-value">MP5-2022-45873</span></div>
-                    <div class="info-row"><span class="info-label">Fabricante:</span> <span class="info-value">Philips
-                            Healthcare</span></div>
-                    <div class="info-row"><span class="info-label">Data de Aquisição:</span> <span
-                            class="info-value">2022-05-10</span></div>
-                    <div class="info-row"><span class="info-label">Ano de Fabrico:</span> <span
-                            class="info-value">2022</span></div>
-                    <div class="info-row"><span class="info-label">Custo de Aquisição:</span> <span
-                            class="info-value">3500 €</span></div>
-                    <div class="info-row"><span class="info-label">Tipo de Entrada:</span> <span
-                            class="info-value">Compra</span></div>
-                    <div class="info-row"><span class="info-label">Estado:</span> <span class="info-value">Ativo</span>
-                    </div>
-                    <div class="info-row"><span class="info-label">Criticidade:</span> <span class="info-value">Suporte
-                            de vida</span></div>
-                    <div class="info-row"><span class="info-label">Observações:</span> <span class="info-value">Sem
-                            observações registadas.</span></div>
+                    <div class="info-row"><span class="info-label">Código Interno:</span> <span class="info-value">F001</span></div>
+                    <div class="info-row"><span class="info-label">Nome da Empresa:</span> <span class="info-value">MedTech Solutions</span></div>
+                    <div class="info-row"><span class="info-label">NIF:</span> <span class="info-value">509123456</span></div>
+                    <div class="info-row"><span class="info-label">Contacto Telefónico:</span> <span class="info-value">912345678</span></div>
+                    <div class="info-row"><span class="info-label">Email:</span> <span class="info-value">contacto@medtech.com</span></div>
+                    <div class="info-row"><span class="info-label">Morada:</span> <span class="info-value">Rua da Saúde, nº 25, Porto</span></div>
+                    <div class="info-row"><span class="info-label">Website:</span> <span class="info-value">www.medtech.com</span></div>
+                    <div class="info-row"><span class="info-label">Pessoa de Contacto:</span> <span class="info-value">Marta Costa</span></div>
+                    <div class="info-row"><span class="info-label">Telefone da Pessoa de Contacto:</span> <span class="info-value">934567890</span></div>
+                    <div class="info-row"><span class="info-label">Tipo de Fornecedor:</span> <span class="info-value">Distribuidor / Comercial</span></div>
+                    <div class="info-row"><span class="info-label">Observações:</span> <span class="info-value">Fornecedor habitual de monitores e sensores.</span></div>
 
                     <!-- BOTÕES -->
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="lista.html" class="btn btn-secondary">Voltar</a>
-                        <a href="editar.html" class="btn" style="background-color: #1a826d; color: white;">
-                            Editar Equipamento
+                        <a href="lista_fornecedores.html" class="btn btn-secondary">Voltar</a>
+                        <a href="editar_fornecedores.html" class="btn" style="background-color: #1a826d; color: white;">
+                            Editar Fornecedor
                         </a>
                     </div>
 
