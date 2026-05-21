@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HospitalGest - Consultar Documento</title>
+    <title>HospitalGest - Garantias e Contratos</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
@@ -22,26 +22,26 @@
     <link rel="shortcut icon" href="../../../assets/img/Logo.png" type="image/png">
 
     <style>
-        .info-box {
-            background: #ffffff;
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            max-width: 850px;
-            margin: 0 auto;
-        }
-
-        .info-label {
+        .acao-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #d7f0ec;
+            color: #1a826d;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 14px;
             font-weight: 600;
-            color: #333;
+            text-decoration: none;
+            margin-right: 8px;
+            transition: 0.2s ease-in-out;
+            border: 1px solid #c3e7e2;
         }
 
-        .info-value {
-            color: #555;
-        }
-
-        .info-row {
-            margin-bottom: 15px;
+        .acao-box:hover {
+            background-color: #c9e9e4;
+            color: #166c59;
+            border-color: #b7e0da;
         }
     </style>
 
@@ -70,10 +70,13 @@
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item" href="../../../Login/login.html">
-                            <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
+                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
                     </ul>
                 </div>
             </div>
@@ -94,7 +97,7 @@
                     <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
                         <i class="fas fa-chart-line me-2"></i> Dashboard
                     </a>
-                    
+
                     <a href="../equipamentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
                         style="color: white;">
                         <i class="fas fa-stethoscope me-2"></i> Equipamentos
@@ -115,40 +118,67 @@
                         <i class="fas fa-file-medical me-2"></i> Documentação
                     </a>
 
-                    <a href="../Garantias e contratos/lista_garantias_contratos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                            style="color: white; transition: 0.2s;">
-                            <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
+                    <a href="../Garantias/lista_garantias.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
+                        <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
                     </a>
                 </nav>
             </aside>
 
-            <!-- MAIN CONTENT -->
+            <!-- CONTEÚDO PRINCIPAL -->
             <main class="col-md-9 col-lg-10 p-4">
 
-                <div class="info-box">
-
-                    <h2 class="mb-4" style="color: #1a826d;">
-                        <i class="fa-solid fa-eye me-2"></i> Consultar Documento
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="mb-0" style="color: #1a826d;">
+                        <i class="fa-solid fa-file-contract me-2"></i>
+                        <strong>Listagem de Garantias e Contratos</strong>
                     </h2>
 
-                    <!-- CAMPOS DO DOCUMENTO -->
-                    <div class="info-row"><span class="info-label">Tipo de Documento:</span> <span class="info-value">Manual de Utilizador</span></div>
-                    <div class="info-row"><span class="info-label">Nome do Documento:</span> <span class="info-value">Manual de Utilizador MP5</span></div>
-                    <div class="info-row"><span class="info-label">Data do Documento:</span> <span class="info-value">10/05/2024</span></div>
-                    <div class="info-row"><span class="info-label">Data de Validade:</span> <span class="info-value">10/05/2026</span></div>
-                    <div class="info-row"><span class="info-label">Equipamento Associado:</span> <span class="info-value">Monitor MP5</span></div>
-                    <div class="info-row"><span class="info-label">Fornecedor Associado:</span> <span class="info-value">MedSupply Portugal</span></div>
-                    <div class="info-row"><span class="info-label">Ficheiro:</span> <span class="info-value">manual_mp5.pdf</span></div>
-                    <div class="info-row"><span class="info-label">Observações:</span> <span class="info-value">Documento atualizado após revisão técnica.</span></div>
+                    <a href="novo_garantias_contratos.html" class="btn" style="background-color: #1a826d; color: white;">
+                        <i class="fa-solid fa-plus me-2"></i> Nova Garantia / Contrato
+                    </a>
+                </div>
 
-                    <!-- BOTÕES -->
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="lista_documentos.html" class="btn btn-secondary">Voltar</a>
-                        <a href="editar_documento.html" class="btn" style="background-color: #1a826d; color: white;">
-                            Editar Documento
-                        </a>
-                    </div>
+                <hr>
 
+                <p class="text-muted">Não existem garantias ou contratos registados.</p>
+
+                <div class="table-responsive rounded-4 shadow-sm border p-0">
+
+                    <table class="table table-bordered table-striped align-middle" style="min-width: 1100px;">
+                        <thead>
+                            <tr style="background-color: #1a826d; color: white;">
+                                <th>Código</th>
+                                <th>Equipamento</th>
+                                <th>Tipo de Contrato</th>
+                                <th>Entidade Responsável</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>[Código]</td>
+                                <td>[Equipamento]]</td>
+                                <td>[Tipo de Contrato]</td>
+                                <td>[Entidade Responsável]</td>
+
+                                <td class="text-center">
+                                    <a href="detalhes_garantia.html" class="acao-box">
+                                        <i class="fa-solid fa-eye"></i> Consultar
+                                    </a>
+
+                                    <a href="editar_garantia.html" class="acao-box">
+                                        <i class="fa-solid fa-pen"></i> Editar
+                                    </a>
+
+                                    <a href="apagar_garantia.html" class="acao-box">
+                                        <i class="fa-solid fa-trash"></i> Eliminar
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
             </main>
@@ -156,7 +186,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
 
 </body>

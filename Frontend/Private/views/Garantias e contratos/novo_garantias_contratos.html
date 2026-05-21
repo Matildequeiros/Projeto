@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HospitalGest - Novo Fornecedor</title>
+    <title>HospitalGest - Nova Garantia / Contrato</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
@@ -95,7 +95,7 @@
                 <h4 class="fw-bold mb-4">Menu</h4>
 
                 <nav>
-                     <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                    <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
                         <i class="fas fa-chart-line me-2"></i> Dashboard
                     </a>
 
@@ -120,10 +120,9 @@
                     </a>
 
                     <a href="../Garantias e contratos/lista_garantias_contratos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                            style="color: white; transition: 0.2s;">
-                            <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
+                        style="color: white;">
+                        <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
                     </a>
-
                 </nav>
             </aside>
 
@@ -133,76 +132,67 @@
                 <div class="card-form">
 
                     <h2 class="mb-4" style="color: #1a826d;">
-                        <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
+                        <i class="fa-solid fa-plus me-2"></i> Nova Garantia / Contrato
                     </h2>
 
                     <form>
 
-                        <!-- Código interno -->
+                        <!-- Código -->
                         <div class="mb-3">
-                            <label class="form-label">Código Interno *</label>
-                            <input type="text" class="form-control" placeholder="Ex: F001">
+                            <label class="form-label">Código *</label>
+                            <input type="text" class="form-control" placeholder="Ex: GAR001">
                         </div>
 
-                        <!-- Nome + NIF -->
-                        <div class="row">
-                            <div class="col-md-8 mb-3">
-                                <label class="form-label">Nome da Empresa *</label>
-                                <input type="text" class="form-control" placeholder="Ex: MedTech Solutions">
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label class="form-label">NIF *</label>
-                                <input type="number" class="form-control" placeholder="123456789">
-                            </div>
-                        </div>
-
-                        <!-- Contacto + Email -->
+                        <!-- Tipo + Equipamento -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Contacto Telefónico *</label>
-                                <input type="number" class="form-control" placeholder="912345678">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Email *</label>
-                                <input type="email" class="form-control" placeholder="email@empresa.com">
-                            </div>
-                        </div>
-
-                        <!-- Morada -->
-                        <div class="mb-3">
-                            <label class="form-label">Morada *</label>
-                            <input type="text" class="form-control" placeholder="Rua, nº, cidade">
-                        </div>
-
-                        <!-- Website + Pessoa de contacto -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Website</label>
-                                <input type="text" class="form-control" placeholder="www.empresa.com">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Pessoa de Contacto</label>
-                                <input type="text" class="form-control" placeholder="Nome da pessoa">
-                            </div>
-                        </div>
-
-                        <!-- Telefone pessoa contacto + Tipo -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Telefone da Pessoa de Contacto</label>
-                                <input type="number" class="form-control" placeholder="912345678">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Tipo de Fornecedor *</label>
+                                <label class="form-label">Tipo de Contrato *</label>
                                 <select class="form-select">
-                                    <option>Fabricante</option>
-                                    <option>Distribuidor / Comercial</option>
-                                    <option>Assistência Técnica</option>
-                                    <option>Consumíveis / Acessórios</option>
+                                    <option>Garantia</option>
+                                    <option>Contrato de Manutenção</option>
+                                    <option>Contrato de Assistência Técnica</option>
+                                    <option>Outro</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Equipamento Associado *</label>
+                                <select class="form-select">
+                                    <option>Selecionar...</option>
+                                    <option>Monitor MP5</option>
+                                    <option>Ventilador V500</option>
+                                    <option>Bomba Infusomat</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Datas -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Data de Início da Garantia *</label>
+                                <input type="date" class="form-control">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Data de Fim da Garantia *</label>
+                                <input type="date" class="form-control">
+                            </div>
+                        </div>
+
+                        <!-- Entidade + Periodicidade -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Entidade Responsável *</label>
+                                <input type="text" class="form-control" placeholder="Ex: MedSupply Portugal">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Periodicidade</label>
+                                <select class="form-select">
+                                    <option>Não aplicável</option>
+                                    <option>Anual</option>
+                                    <option>Semestral</option>
+                                    <option>Trimestral</option>
                                 </select>
                             </div>
                         </div>
@@ -215,9 +205,9 @@
 
                         <!-- Botões -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="lista_fornecedores.html" class="btn btn-secondary">Cancelar</a>
+                            <a href="lista_garantias_contratos.html" class="btn btn-secondary">Cancelar</a>
                             <button type="submit" class="btn" style="background-color: #1a826d; color: white;">
-                                Guardar Fornecedor
+                                Guardar Registo
                             </button>
                         </div>
 
