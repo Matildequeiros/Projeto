@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HospitalGest - Fornecedores</title>
+    <title>HospitalGest - Localizações</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
@@ -22,26 +22,26 @@
     <link rel="shortcut icon" href="../../../assets/img/Logo.png" type="image/png">
 
     <style>
-        .acao-box {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background-color: #d7f0ec;
-            color: #1a826d;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            margin-right: 8px;
-            transition: 0.2s ease-in-out;
-            border: 1px solid #c3e7e2;
+        .info-box {
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 850px;
+            margin: 0 auto;
         }
 
-        .acao-box:hover {
-            background-color: #c9e9e4;
-            color: #166c59;
-            border-color: #b7e0da;
+        .info-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-value {
+            color: #555;
+        }
+
+        .info-row {
+            margin-bottom: 15px;
         }
     </style>
 
@@ -72,13 +72,11 @@
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="../../../Login/login.html">
-                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -106,7 +104,7 @@
                         <i class="fas fa-truck-medical me-2"></i> Fornecedores
                     </a>
 
-                    <a href="../Localizações/lista_localizacoes.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                    <a href="../localizacoes/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
                         style="color: white;">
                         <i class="fas fa-location-dot me-2"></i> Localizações
                     </a>
@@ -120,68 +118,48 @@
                         <i class="fas fa-chart-line me-2"></i> Dashboard
                     </a>
                 </nav>
-
             </aside>
 
-            <!-- CONTEÚDO PRINCIPAL -->
+
+            <!-- MAIN CONTENT -->
             <main class="col-md-9 col-lg-10 p-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="mb-0" style="color: #1a826d;">
-                        <i class="fa-solid fa-truck-medical me-2"></i>
-                        <strong>Listagem de Fornecedores</strong>
+                <div class="info-box">
+
+                    <h2 class="mb-4" style="color: #1a826d;">
+                        <i class="fa-solid fa-eye me-2"></i> Consultar Localização
                     </h2>
 
-                    <a href="novo_fornecedores.html" class="btn" style="background-color: #1a826d; color: white;">
-                        <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
-                    </a>
-                </div>
+                    <!-- CAMPOS DA LOCALIZAÇÃO -->
+                    <div class="info-row">
+                        <span class="info-label">Edifício:</span>
+                        <span class="info-value">Edifício A</span>
+                    </div>
 
-                <hr>
+                    <div class="info-row">
+                        <span class="info-label">Piso:</span>
+                        <span class="info-value">Piso 2</span>
+                    </div>
 
-                <p class="text-muted">Não existem fornecedores registados.</p>
+                    <div class="info-row">
+                        <span class="info-label">Serviço / Departamento:</span>
+                        <span class="info-value">Urgência</span>
+                    </div>
 
-                <div class="table-responsive rounded-4 shadow-sm border p-0">
+                    <div class="info-row">
+                        <span class="info-label">Sala / Gabinete:</span>
+                        <span class="info-value">Sala 12</span>
+                    </div>
 
-                    <table class="table table-bordered table-striped align-middle" style="min-width: 1100px;">
-                        <thead>
-                            <tr style="background-color: #1a826d; color: white;">
-                                <th>Código</th>
-                                <th>Nome</th>
-                                <th>NIF</th>
-                                <th>Contacto</th>
-                                <th>Email</th>
-                                <th>Tipo</th>
-                                <th class="text-center">Ações</th>
-                            </tr>
-                        </thead>
+                    <!-- BOTÕES -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="lista_localizacoes.html" class="btn btn-secondary">Voltar</a>
 
-                        <tbody>
-                            <tr>
-                                <td>[codigo]</td>
-                                <td>[nome]</td>
-                                <td>[nif]</td>
-                                <td>[contacto]</td>
-                                <td>[email]</td>
-                                <td>[tipo]</td>
+                        <a href="editar_localizacao.html" class="btn" style="background-color: #1a826d; color: white;">
+                            Editar Localização
+                        </a>
+                    </div>
 
-                                <td class="text-center">
-                                    <a href="detalhes_fornecedores.html" class="acao-box">
-                                        <i class="fa-solid fa-eye"></i> Consultar
-                                    </a>
-
-                                    <a href="editar_fornecedores.html" class="acao-box">
-                                        <i class="fa-solid fa-pen"></i> Editar
-                                    </a>
-
-                                    <a href="apagar_fornecedores.html" class="acao-box">
-                                        <i class="fa-solid fa-trash"></i> Eliminar
-                                    </a>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
                 </div>
 
             </main>
@@ -189,6 +167,7 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS -->
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
 
 </body>
