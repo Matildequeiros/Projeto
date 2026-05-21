@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HospitalGest - Garantias e Contratos</title>
+    <title>HospitalGest - Consultar Garantia / Contrato</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
@@ -22,26 +22,26 @@
     <link rel="shortcut icon" href="../../../assets/img/Logo.png" type="image/png">
 
     <style>
-        .acao-box {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background-color: #d7f0ec;
-            color: #1a826d;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            margin-right: 8px;
-            transition: 0.2s ease-in-out;
-            border: 1px solid #c3e7e2;
+        .info-box {
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 850px;
+            margin: 0 auto;
         }
 
-        .acao-box:hover {
-            background-color: #c9e9e4;
-            color: #166c59;
-            border-color: #b7e0da;
+        .info-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-value {
+            color: #555;
+        }
+
+        .info-row {
+            margin-bottom: 15px;
         }
     </style>
 
@@ -70,13 +70,10 @@
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="../../../Login/login.html">
-                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
                     </ul>
                 </div>
             </div>
@@ -125,60 +122,35 @@
                 </nav>
             </aside>
 
-            <!-- CONTEÚDO PRINCIPAL -->
+            <!-- MAIN CONTENT -->
             <main class="col-md-9 col-lg-10 p-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="mb-0" style="color: #1a826d;">
-                        <i class="fa-solid fa-file-contract me-2"></i>
-                        <strong>Listagem de Garantias e Contratos</strong>
+                <div class="info-box">
+
+                    <h2 class="mb-4" style="color: #1a826d;">
+                        <i class="fa-solid fa-eye me-2"></i> Consultar Garantia / Contrato
                     </h2>
 
-                    <a href="novo_garantias_contratos.html" class="btn" style="background-color: #1a826d; color: white;">
-                        <i class="fa-solid fa-plus me-2"></i> Nova Garantia / Contrato
-                    </a>
-                </div>
+                    <!-- CAMPOS COMPLETOS -->
+                    <div class="info-row"><span class="info-label">Código:</span> <span class="info-value">GAR001</span></div>
+                    <div class="info-row"><span class="info-label">Tipo de Contrato:</span> <span class="info-value">Garantia</span></div>
+                    <div class="info-row"><span class="info-label">Equipamento Associado:</span> <span class="info-value">Monitor MP5</span></div>
+                    <div class="info-row"><span class="info-label">Data de Início da Garantia:</span> <span class="info-value">10/05/2024</span></div>
+                    <div class="info-row"><span class="info-label">Data de Fim da Garantia:</span> <span class="info-value">10/05/2026</span></div>
+                    <div class="info-row"><span class="info-label">Entidade Responsável:</span> <span class="info-value">MedSupply Portugal</span></div>
+                    <div class="info-row"><span class="info-label">Periodicidade:</span> <span class="info-value">Anual</span></div>
+                    <div class="info-row"><span class="info-label">Observações:</span> 
+                        <span class="info-value">Garantia válida até 2026. Inclui assistência técnica.</span>
+                    </div>
 
-                <hr>
+                    <!-- BOTÕES -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="lista_garantias_contratos.html" class="btn btn-secondary">Voltar</a>
+                        <a href="editar_garantias_contratos.html" class="btn" style="background-color: #1a826d; color: white;">
+                            Editar Garantia / Contrato
+                        </a>
+                    </div>
 
-                <p class="text-muted">Não existem garantias ou contratos registados.</p>
-
-                <div class="table-responsive rounded-4 shadow-sm border p-0">
-
-                    <table class="table table-bordered table-striped align-middle" style="min-width: 1100px;">
-                        <thead>
-                            <tr style="background-color: #1a826d; color: white;">
-                                <th>Código</th>
-                                <th>Equipamento</th>
-                                <th>Tipo de Contrato</th>
-                                <th>Entidade Responsável</th>
-                                <th class="text-center">Ações</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>[Código]</td>
-                                <td>[Equipamento]</td>
-                                <td>[Tipo de Contrato]</td>
-                                <td>[Entidade Responsável]</td>
-
-                                <td class="text-center">
-                                    <a href="detalhes_garantias_contratos.html" class="acao-box">
-                                        <i class="fa-solid fa-eye"></i> Consultar
-                                    </a>
-
-                                    <a href="editar_garantias_contratos.html" class="acao-box">
-                                        <i class="fa-solid fa-pen"></i> Editar
-                                    </a>
-
-                                    <a href="apagar_garantias_contratos.html" class="acao-box">
-                                        <i class="fa-solid fa-trash"></i> Eliminar
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
 
             </main>
@@ -186,6 +158,7 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS -->
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
 
 </body>
