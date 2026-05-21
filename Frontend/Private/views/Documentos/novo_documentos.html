@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HospitalGest - Editar Localização</title>
+    <title>HospitalGest - Novo Documento</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
@@ -36,7 +36,9 @@
             font-size: 16px;
         }
 
-        .card-form input {
+        .card-form input,
+        .card-form select,
+        .card-form textarea {
             border-radius: 8px;
             font-size: 16px;
         }
@@ -50,11 +52,11 @@
 </head>
 
 <body>
-
     <!-- NAVBAR -->
     <header class="container-fluid" style="background-color: #acd6d0;">
         <div class="row align-items-center">
 
+            <!-- LOGO + TÍTULO -->
             <div class="col-6 d-flex align-items-center p-3">
                 <a href="../../index.html">
                     <img src="../../../assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
@@ -64,6 +66,7 @@
                 </h3>
             </div>
 
+            <!-- UTILIZADOR -->
             <div class="col-6 text-end p-3">
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -75,7 +78,8 @@
                         <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="../../../Login/login.html">
-                            <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
+                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -93,10 +97,6 @@
                 <h4 class="fw-bold mb-4">Menu</h4>
 
                 <nav>
-                    <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
-                        <i class="fas fa-chart-line me-2"></i> Dashboard
-                    </a>
-                    
                     <a href="../equipamentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
                         style="color: white;">
                         <i class="fas fa-stethoscope me-2"></i> Equipamentos
@@ -117,6 +117,9 @@
                         <i class="fas fa-file-medical me-2"></i> Documentação
                     </a>
 
+                    <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                        <i class="fas fa-chart-line me-2"></i> Dashboard
+                    </a>
                 </nav>
             </aside>
 
@@ -126,41 +129,84 @@
                 <div class="card-form">
 
                     <h2 class="mb-4" style="color: #1a826d;">
-                        <i class="fa-solid fa-pen-to-square me-2"></i> Editar Localização
+                        <i class="fa-solid fa-plus me-2"></i> Novo Documento
                     </h2>
 
                     <form>
 
-                        <!-- Edifício -->
+                        <!-- Tipo de documento -->
                         <div class="mb-3">
-                            <label class="form-label">Edifício *</label>
-                            <input type="text" class="form-control" value="Edifício A">
+                            <label class="form-label">Tipo de Documento *</label>
+                            <select class="form-select">
+                                <option>Manual de Utilizador</option>
+                                <option>Manual de Serviço</option>
+                                <option>Certificado de Calibração</option>
+                                <option>Contrato de Manutenção</option>
+                                <option>Fatura / Aquisição</option>
+                                <option>Declaração de Conformidade</option>
+                                <option>Relatório Técnico</option>
+                                <option>Outro</option>
+                            </select>
                         </div>
 
-                        <!-- Piso + Serviço -->
+                        <!-- Nome do documento -->
+                        <div class="mb-3">
+                            <label class="form-label">Nome do Documento *</label>
+                            <input type="text" class="form-control" placeholder="Ex: Manual de Utilizador MP5">
+                        </div>
+
+                        <!-- Datas -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Piso *</label>
-                                <input type="text" class="form-control" value="Piso 2">
+                                <label class="form-label">Data do Documento *</label>
+                                <input type="date" class="form-control">
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Serviço / Departamento *</label>
-                                <input type="text" class="form-control" value="Urgência">
+                                <label class="form-label">Data de Validade</label>
+                                <input type="date" class="form-control">
                             </div>
                         </div>
 
-                        <!-- Sala -->
+                        <!-- Equipamento associado -->
                         <div class="mb-3">
-                            <label class="form-label">Sala / Gabinete *</label>
-                            <input type="text" class="form-control" value="Sala 12">
+                            <label class="form-label">Equipamento Associado *</label>
+                            <select class="form-select">
+                                <option>Selecionar equipamento...</option>
+                                <option>Monitor MP5</option>
+                                <option>Ventilador V500</option>
+                                <option>Bomba Infusomat</option>
+                            </select>
+                        </div>
+
+                        <!-- Fornecedor associado -->
+                        <div class="mb-3">
+                            <label class="form-label">Fornecedor Associado (Opcional)</label>
+                            <select class="form-select">
+                                <option>Nenhum</option>
+                                <option>MedSupply Portugal</option>
+                                <option>Dräger</option>
+                                <option>B. Braun</option>
+                            </select>
+                        </div>
+
+                        <!-- Ficheiro -->
+                        <div class="mb-3">
+                            <label class="form-label">Ficheiro</label>
+                            <input type="file" class="form-control">
+                        </div>
+
+                        <!-- Observações -->
+                        <div class="mb-3">
+                            <label class="form-label">Observações</label>
+                            <textarea class="form-control" rows="3"></textarea>
                         </div>
 
                         <!-- Botões -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="lista_localizacoes.html" class="btn btn-secondary">Cancelar</a>
+                            <a href="lista_documentos.html" class="btn btn-secondary">Cancelar</a>
                             <button type="submit" class="btn" style="background-color: #1a826d; color: white;">
-                                Guardar Alterações
+                                Guardar Documento
                             </button>
                         </div>
 
