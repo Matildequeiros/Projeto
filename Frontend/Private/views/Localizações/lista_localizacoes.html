@@ -43,6 +43,28 @@
             color: #166c59;
             border-color: #b7e0da;
         }
+
+        .filtros-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .search-input {
+            border-radius: 8px;
+        }
+
+        .btn-filtrar {
+            background-color: #1a826d;
+            color: white;
+        }
+
+        .btn-filtrar:hover {
+            background-color: #166c59;
+            color: white;
+        }
     </style>
 
 </head>
@@ -72,10 +94,13 @@
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item" href="../../../Login/login.html">
-                            <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
+                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
                     </ul>
                 </div>
             </div>
@@ -98,25 +123,29 @@
                         <i class="fas fa-chart-line me-2"></i> Dashboard
                     </a>
 
-                    <a href="../equipamentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                    <a href="../equipamentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
                         <i class="fas fa-stethoscope me-2"></i> Equipamentos
                     </a>
 
-                    <a href="../Fornecedores/lista_fornecedores.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                    <a href="../Fornecedores/lista_fornecedores.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
                         <i class="fas fa-truck-medical me-2"></i> Fornecedores
                     </a>
 
-                    <a href="../Localizações/lista_localizacoes.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                    <a href="../Localizações/lista_localizacoes.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
                         <i class="fas fa-location-dot me-2"></i> Localizações
                     </a>
 
-                    <a href="../Documentos/lista_documentos.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                    <a href="../Documentos/lista_documentos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
                         <i class="fas fa-file-medical me-2"></i> Documentação
                     </a>
 
-                    <a href="../Garantias e contratos/lista_garantias_contratos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                            style="color: white; transition: 0.2s;">
-                            <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
+                    <a href="../Garantias e contratos/lista_garantias_contratos.html"
+                        class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white; transition: 0.2s;">
+                        <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
                     </a>
                 </nav>
 
@@ -137,6 +166,53 @@
                 </div>
 
                 <hr>
+
+                <!-- FILTROS LOCALIZAÇÕES -->
+                <div class="filtros-box">
+
+                    <!-- Pesquisa geral -->
+                    <div class="mb-3">
+                        <input type="text" id="pesquisaLocalizacao" class="form-control search-input"
+                            placeholder="Pesquisar por qualquer campo…">
+                    </div>
+
+                    <div class="row g-3">
+
+                        <!-- Edifício -->
+                        <div class="col-md-3">
+                            <label class="form-label">Edifício</label>
+                            <input type="text" id="filtroEdificio" class="form-control" placeholder="Ex: Edifício A">
+                        </div>
+
+                        <!-- Piso -->
+                        <div class="col-md-3">
+                            <label class="form-label">Piso</label>
+                            <input type="text" id="filtroPiso" class="form-control" placeholder="Ex: 1, 2, 3…">
+                        </div>
+
+                        <!-- Serviço -->
+                        <div class="col-md-3">
+                            <label class="form-label">Serviço</label>
+                            <input type="text" id="filtroServicoLocal" class="form-control" placeholder="Ex: Urgência">
+                        </div>
+
+                        <!-- Sala -->
+                        <div class="col-md-3">
+                            <label class="form-label">Sala</label>
+                            <input type="text" id="filtroSala" class="form-control" placeholder="Ex: Sala 12">
+                        </div>
+
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="mt-3 d-flex justify-content-end gap-2">
+                        <button class="btn btn-secondary" onclick="limparFiltrosLocalizacao()">Limpar</button>
+                        <button class="btn btn-filtrar" onclick="aplicarFiltrosLocalizacao()">Aplicar filtros</button>
+                    </div>
+
+                </div>
+
+
 
                 <p class="text-muted">Não existem localizações registadas.</p>
 
