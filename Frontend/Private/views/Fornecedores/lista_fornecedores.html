@@ -43,6 +43,28 @@
             color: #166c59;
             border-color: #b7e0da;
         }
+
+        .filtros-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .search-input {
+            border-radius: 8px;
+        }
+
+        .btn-filtrar {
+            background-color: #1a826d;
+            color: white;
+        }
+
+        .btn-filtrar:hover {
+            background-color: #166c59;
+            color: white;
+        }
     </style>
 
 </head>
@@ -97,7 +119,7 @@
 
                 <nav>
 
-                      <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                    <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
                         <i class="fas fa-chart-line me-2"></i> Dashboard
                     </a>
 
@@ -121,9 +143,9 @@
                         <i class="fas fa-file-medical me-2"></i> Documentação
                     </a>
 
-                    <a href="../Garantias e contratos/lista_garantias_contratos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                            style="color: white; transition: 0.2s;">
-                            <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
+                    <a href="../Garantias e contratos/lista_garantias_contratos.html"
+                        class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white; transition: 0.2s;">
+                        <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
                     </a>
 
                 </nav>
@@ -145,6 +167,40 @@
                 </div>
 
                 <hr>
+
+                <!-- FILTROS FORNECEDORES -->
+                <div class="filtros-box">
+
+                    <!-- Pesquisa geral -->
+                    <div class="mb-3">
+                        <input type="text" id="pesquisaFornecedor" class="form-control search-input"
+                            placeholder="Código, nome, NIF, email, contacto …">
+                    </div>
+
+                    <div class="row g-3">
+
+                        <!-- Tipo de fornecedor -->
+                        <div class="col-md-3">
+                            <label class="form-label">Tipo de Fornecedor</label>
+                            <select id="filtroTipoFornecedor" class="form-select">
+                                <option value="">Todos</option>
+                                <option>Fabricante</option>
+                                <option>Distribuidor</option>
+                                <option>Assistência técnica</option>
+                                <option>Consumíveis</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- Botões -->
+                    <div class="mt-3 d-flex justify-content-end gap-2">
+                        <button class="btn btn-secondary" onclick="limparFiltrosFornecedor()">Limpar</button>
+                        <button class="btn btn-filtrar" onclick="aplicarFiltrosFornecedor()">Aplicar filtros</button>
+                    </div>
+
+                </div>
+
 
                 <p class="text-muted">Não existem fornecedores registados.</p>
 
