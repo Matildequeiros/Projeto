@@ -158,12 +158,12 @@
                         <i class="fas fa-truck-medical me-2"></i> Fornecedores
                     </a>
 
-                    <a href="../localizacoes/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                    <a href="../Localizações/lista_localizacoes.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
                         style="color: white;">
                         <i class="fas fa-location-dot me-2"></i> Localizações
                     </a>
 
-                    <a href="../documentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                    <a href="../Documentos/lista_documentos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
                         style="color: white;">
                         <i class="fas fa-file-medical me-2"></i> Documentação
                     </a>
@@ -219,13 +219,13 @@
 
 
                     <!-- CONTEÚDO DOS SEPARADORES -->
-                    <div class="tab-content" id="equipTabsContent">
+                    <form id="formEquipamentoCompleto">
+
+                        <div class="tab-content" id="equipTabsContent">
 
 
-                        <!-- SEPARADOR 1 — EQUIPAMENTO -->
-                        <div class="tab-pane fade show active" id="dados" role="tabpanel">
-
-                            <form>
+                            <!-- SEPARADOR 1 — EQUIPAMENTO -->
+                            <div class="tab-pane fade show active" id="dados" role="tabpanel">
 
                                 <!-- Código interno de inventário -->
                                 <div class="mb-3">
@@ -340,23 +340,20 @@
                                 </div>
 
                                 <!-- Botões -->
-                                <div class="d-flex justify-content-between mt-4">
-                                    <a href="lista.html" class="btn btn-secondary">Cancelar</a>
-                                    <button type="submit" class="btn" style="background-color: #1a826d; color: white;">
-                                        Guardar Equipamento
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                        onclick="mostrarSeparador('fornecedor')">
+                                        Seguinte →
                                     </button>
                                 </div>
 
-                            </form>
 
-                        </div>
+                            </div>
 
-                        <!-- SEPARADOR 2 — FORNECEDOR ASSOCIADO -->
-                        <div class="tab-pane fade" id="fornecedor" role="tabpanel">
+                            <!-- SEPARADOR 2 — FORNECEDOR ASSOCIADO -->
+                            <div class="tab-pane fade" id="fornecedor" role="tabpanel">
 
-                            <h4 class="mb-3" style="color:#1a826d;">Fornecedor Associado</h4>
-
-                            <form>
+                                <h4 class="mb-3" style="color:#1a826d;">Fornecedor Associado</h4>
 
                                 <!-- Código interno -->
                                 <div class="mb-3">
@@ -433,14 +430,218 @@
                                     <textarea class="form-control" rows="3"></textarea>
                                 </div>
 
-                            </form>
+                                <!-- Botões -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('dados')">
+                                        ← Anterior
+                                    </button>
 
+                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                        onclick="mostrarSeparador('localizacao')">
+                                        Seguinte →
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            <!-- SEPARADOR 3 — LOCALIZAÇÃO ASSOCIADA -->
+                            <div class="tab-pane fade" id="localizacao" role="tabpanel">
+
+                                <h4 class="mb-3" style="color:#1a826d;">Localização Associada</h4>
+
+                                <form>
+
+                                    <!-- Edifício -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Edifício *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: Edifício A">
+                                    </div>
+
+                                    <!-- Piso + Serviço -->
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Piso *</label>
+                                            <input type="text" class="form-control" placeholder="Ex: Piso 2">
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Serviço / Departamento *</label>
+                                            <input type="text" class="form-control" placeholder="Ex: Urgência">
+                                        </div>
+                                    </div>
+
+                                    <!-- Sala -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Sala / Gabinete *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: Sala 12">
+                                    </div>
+
+                                    <!-- Botões -->
+                                    <div class="d-flex justify-content-between mt-4">
+                                        <button type="button" class="btn btn-secondary"
+                                            onclick="mostrarSeparador('fornecedor')">
+                                            ← Anterior
+                                        </button>
+
+                                        <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                            onclick="mostrarSeparador('documentos')">
+                                            Seguinte →
+                                        </button>
+                                    </div>
+
+
+                            </div>
+
+                            <!-- SEPARADOR 4 — DOCUMENTAÇÃO ASSOCIADA -->
+                            <div class="tab-pane fade" id="documentos" role="tabpanel">
+
+                                <h4 class="mb-3" style="color:#1a826d;">Documentação Associada</h4>
+
+
+                                <!-- Tipo de documento -->
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo de Documento *</label>
+                                    <select class="form-select">
+                                        <option>Manual de Utilizador</option>
+                                        <option>Manual de Serviço</option>
+                                        <option>Certificado de Calibração</option>
+                                        <option>Contrato de Manutenção</option>
+                                        <option>Fatura / Aquisição</option>
+                                        <option>Declaração de Conformidade</option>
+                                        <option>Relatório Técnico</option>
+                                        <option>Outro</option>
+                                    </select>
+                                </div>
+
+                                <!-- Nome do documento -->
+                                <div class="mb-3">
+                                    <label class="form-label">Nome do Documento *</label>
+                                    <input type="text" class="form-control" placeholder="Ex: Manual de Utilizador MP5">
+                                </div>
+
+                                <!-- Datas -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Data do Documento *</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Data de Validade</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                </div>
+
+                                <!-- Ficheiro -->
+                                <div class="mb-3">
+                                    <label class="form-label">Ficheiro</label>
+                                    <input type="file" class="form-control">
+                                </div>
+
+                                <!-- Observações -->
+                                <div class="mb-3">
+                                    <label class="form-label">Observações</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+
+                                <!-- Botões -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="mostrarSeparador('localizacao')">
+                                        ← Anterior
+                                    </button>
+
+                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                        onclick="mostrarSeparador('garantias')">
+                                        Seguinte →
+                                    </button>
+                                </div>
+
+
+
+                            </div>
+
+                            <!-- SEPARADOR 5 — GARANTIAS E CONTRATOS ASSOCIADOS -->
+                            <div class="tab-pane fade" id="garantias" role="tabpanel">
+
+                                <h4 class="mb-3" style="color:#1a826d;">Garantias e Contratos Associados</h4>
+
+                                <!-- Código + Tipo -->
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Código *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: GAR001">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tipo de Contrato *</label>
+                                        <select class="form-select">
+                                            <option>Garantia</option>
+                                            <option>Contrato de Manutenção</option>
+                                            <option>Contrato de Assistência Técnica</option>
+                                            <option>Outro</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Datas -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Data de Início da Garantia *</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Data de Fim da Garantia *</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                </div>
+
+                                <!-- Entidade + Periodicidade -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Entidade Responsável *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: MedSupply Portugal">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Periodicidade</label>
+                                        <select class="form-select">
+                                            <option>Não aplicável</option>
+                                            <option>Anual</option>
+                                            <option>Semestral</option>
+                                            <option>Trimestral</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Observações -->
+                                <div class="mb-3">
+                                    <label class="form-label">Observações</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+
+                                <!-- Botões -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="mostrarSeparador('documentos')">
+                                        ← Anterior
+                                    </button>
+
+                                    <button type="submit" class="btn" style="background-color:#1a826d; color:white;">
+                                        Guardar Equipamento
+                                    </button>
+                                </div>
+
+
+                            </div>
 
                         </div>
+                    </form>
 
-                    </div>
-
-                </div>
 
             </main>
 
@@ -448,6 +649,14 @@
     </div>
 
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script>
+        function mostrarSeparador(id) {
+            const trigger = document.querySelector(`[data-bs-target="#${id}"]`);
+            const tab = new bootstrap.Tab(trigger);
+            tab.show();
+        }
+    </script>
+
 
 </body>
 
