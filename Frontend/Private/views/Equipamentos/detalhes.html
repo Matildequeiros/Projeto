@@ -35,25 +35,61 @@
             font-weight: 600;
             color: #333;
         }
-        
+
         .info-value {
             color: #555;
         }
 
         .info-row {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
-           
+
+        .nav-tabs {
+            border-bottom: 2px solid #1a826d;
+            justify-content: space-between;
+        }
+
+        .tab-content {
+            margin-top: 15px;
+        }
+
+        .nav-tabs .nav-link {
+            color: #1a826d;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            padding: 10px 18px;
+            text-align: center;
+            min-width: 120px;
+            line-height: 1.2;
+            transition: 0.2s;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background-color: #e6f4f2;
+            color: #146b57;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #1a826d;
+            color: white;
+            border: none;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs .nav-item:not(:first-child) .nav-link {
+            margin-top: -8px;
+        }
     </style>
 
 </head>
 
 <body>
+
     <!-- NAVBAR -->
     <header class="container-fluid" style="background-color: #acd6d0;">
         <div class="row align-items-center">
 
-            <!-- LOGO + TÍTULO -->
             <div class="col-6 d-flex align-items-center p-3">
                 <a href="../../index.html">
                     <img src="../../../assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
@@ -63,7 +99,6 @@
                 </h3>
             </div>
 
-            <!-- UTILIZADOR -->
             <div class="col-6 text-end p-3">
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -72,14 +107,10 @@
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="../../../Login/login.html">
-                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a>
-                        </li>
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
                     </ul>
                 </div>
             </div>
@@ -111,26 +142,24 @@
                         <i class="fas fa-truck-medical me-2"></i> Fornecedores
                     </a>
 
-                    <a href="../localizacoes/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                    <a href="../Localizações/lista_localizacoes.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
                         style="color: white;">
                         <i class="fas fa-location-dot me-2"></i> Localizações
                     </a>
 
-                    <a href="../documentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                    <a href="../Documentos/lista_documentos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
                         style="color: white;">
                         <i class="fas fa-file-medical me-2"></i> Documentação
                     </a>
 
-                    <a href="../Garantias e contratos/lista_garantias_contratos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                            style="color: white; transition: 0.2s;">
-                            <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
+                    <a href="../Garantias e contratos/lista_garantias_contratos.html"
+                        class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                        <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
                     </a>
-
                 </nav>
             </aside>
 
-
-            <!-- MAIN CONTENT -->
+    
             <main class="col-md-9 col-lg-10 p-4">
 
                 <div class="info-box">
@@ -139,35 +168,78 @@
                         <i class="fa-solid fa-eye me-2"></i> Consultar Equipamento
                     </h2>
 
-                    <!-- CAMPOS COMPLETOS -->
-                    <div class="info-row"><span class="info-label">Código Interno:</span> <span
-                            class="info-value">EQ-001</span></div>
-                    <div class="info-row"><span class="info-label">Designação:</span> <span class="info-value">Monitor
-                            multiparamétrico</span></div>
-                    <div class="info-row"><span class="info-label">Categoria:</span> <span
-                            class="info-value">Monitorização</span></div>
-                    <div class="info-row"><span class="info-label">Marca:</span> <span class="info-value">Philips</span>
+                    <!-- SEPARADORES -->
+                    <ul class="nav nav-tabs mb-4" id="equipTabs" role="tablist">
+                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dados">Equipamento</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#fornecedor">Fornecedor<br>Associado</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#localizacao">Localização<br>Associada</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#documentos">Documentação<br>Associada</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#garantias">Garantias<br>e Contratos</button></li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <!-- SEPARADOR 1 -->
+                        <div class="tab-pane fade show active" id="dados">
+                            <div class="info-row"><span class="info-label">Código Interno:</span> <span class="info-value">EQ-001</span></div>
+                            <div class="info-row"><span class="info-label">Designação:</span> <span class="info-value">Monitor multiparamétrico</span></div>
+                            <div class="info-row"><span class="info-label">Categoria:</span> <span class="info-value">Monitorização</span></div>
+                            <div class="info-row"><span class="info-label">Marca:</span> <span class="info-value">Philips</span></div>
+                            <div class="info-row"><span class="info-label">Modelo:</span> <span class="info-value">IntelliVue MP5</span></div>
+                            <div class="info-row"><span class="info-label">Número de Série:</span> <span class="info-value">MP5-2022-45873</span></div>
+                            <div class="info-row"><span class="info-label">Fabricante:</span> <span class="info-value">Philips Healthcare</span></div>
+                            <div class="info-row"><span class="info-label">Data de Aquisição:</span> <span class="info-value">2022-05-10</span></div>
+                            <div class="info-row"><span class="info-label">Ano de Fabrico:</span> <span class="info-value">2022</span></div>
+                            <div class="info-row"><span class="info-label">Custo de Aquisição:</span> <span class="info-value">3500 €</span></div>
+                            <div class="info-row"><span class="info-label">Tipo de Entrada:</span> <span class="info-value">Compra</span></div>
+                            <div class="info-row"><span class="info-label">Estado:</span> <span class="info-value">Ativo</span></div>
+                            <div class="info-row"><span class="info-label">Criticidade:</span> <span class="info-value">Suporte de vida</span></div>
+                            <div class="info-row"><span class="info-label">Observações:</span> <span class="info-value">Sem observações registadas.</span></div>
+                        </div>
+
+                        <!-- SEPARADOR 2 -->
+                        <div class="tab-pane fade" id="fornecedor">
+                            <div class="info-row"><span class="info-label">Código Interno:</span> <span class="info-value">F001</span></div>
+                            <div class="info-row"><span class="info-label">Empresa:</span> <span class="info-value">MedTech Solutions</span></div>
+                            <div class="info-row"><span class="info-label">NIF:</span> <span class="info-value">123456789</span></div>
+                            <div class="info-row"><span class="info-label">Telefone:</span> <span class="info-value">912345678</span></div>
+                            <div class="info-row"><span class="info-label">Email:</span> <span class="info-value">email@empresa.com</span></div>
+                            <div class="info-row"><span class="info-label">Morada:</span> <span class="info-value">Rua Exemplo, Porto</span></div>
+                            <div class="info-row"><span class="info-label">Website:</span> <span class="info-value">www.empresa.com</span></div>
+                            <div class="info-row"><span class="info-label">Pessoa de Contacto:</span> <span class="info-value">João Silva</span></div>
+                            <div class="info-row"><span class="info-label">Telefone Contacto:</span> <span class="info-value">912345678</span></div>
+                            <div class="info-row"><span class="info-label">Tipo:</span> <span class="info-value">Fabricante</span></div>
+                        </div>
+
+                        <!-- SEPARADOR 3 -->
+                        <div class="tab-pane fade" id="localizacao">
+                            <div class="info-row"><span class="info-label">Edifício:</span> <span class="info-value">Edifício A</span></div>
+                            <div class="info-row"><span class="info-label">Piso:</span> <span class="info-value">2</span></div>
+                            <div class="info-row"><span class="info-label">Serviço:</span> <span class="info-value">Urgência</span></div>
+                            <div class="info-row"><span class="info-label">Sala:</span> <span class="info-value">Sala 12</span></div>
+                        </div>
+
+                        <!-- SEPARADOR 4 -->
+                        <div class="tab-pane fade" id="documentos">
+                            <div class="info-row"><span class="info-label">Tipo de Documento:</span> <span class="info-value">Manual de Utilizador</span></div>
+                            <div class="info-row"><span class="info-label">Nome:</span> <span class="info-value">Manual MP5</span></div>
+                            <div class="info-row"><span class="info-label">Data:</span> <span class="info-value">2022-05-10</span></div>
+                            <div class="info-row"><span class="info-label">Validade:</span> <span class="info-value">2025-05-10</span></div>
+                            <div class="info-row"><span class="info-label">Ficheiro:</span> <span class="info-value">manual_mp5.pdf</span></div>
+                        </div>
+
+                        <!-- SEPARADOR 5 -->
+                        <div class="tab-pane fade" id="garantias">
+                            <div class="info-row"><span class="info-label">Código:</span> <span class="info-value">GAR001</span></div>
+                            <div class="info-row"><span class="info-label">Tipo:</span> <span class="info-value">Garantia</span></div>
+                            <div class="info-row"><span class="info-label">Início:</span> <span class="info-value">2022-05-10</span></div>
+                            <div class="info-row"><span class="info-label">Fim:</span> <span class="info-value">2024-05-10</span></div>
+                            <div class="info-row"><span class="info-label">Entidade:</span> <span class="info-value">MedSupply Portugal</span></div>
+                            <div class="info-row"><span class="info-label">Periodicidade:</span> <span class="info-value">Anual</span></div>
+                            <div class="info-row"><span class="info-label">Observações:</span> <span class="info-value">Sem observações.</span></div>
+                        </div>
+
                     </div>
-                    <div class="info-row"><span class="info-label">Modelo:</span> <span class="info-value">IntelliVue
-                            MP5</span></div>
-                    <div class="info-row"><span class="info-label">Número de Série:</span> <span
-                            class="info-value">MP5-2022-45873</span></div>
-                    <div class="info-row"><span class="info-label">Fabricante:</span> <span class="info-value">Philips
-                            Healthcare</span></div>
-                    <div class="info-row"><span class="info-label">Data de Aquisição:</span> <span
-                            class="info-value">2022-05-10</span></div>
-                    <div class="info-row"><span class="info-label">Ano de Fabrico:</span> <span
-                            class="info-value">2022</span></div>
-                    <div class="info-row"><span class="info-label">Custo de Aquisição:</span> <span
-                            class="info-value">3500 €</span></div>
-                    <div class="info-row"><span class="info-label">Tipo de Entrada:</span> <span
-                            class="info-value">Compra</span></div>
-                    <div class="info-row"><span class="info-label">Estado:</span> <span class="info-value">Ativo</span>
-                    </div>
-                    <div class="info-row"><span class="info-label">Criticidade:</span> <span class="info-value">Suporte
-                            de vida</span></div>
-                    <div class="info-row"><span class="info-label">Observações:</span> <span class="info-value">Sem
-                            observações registadas.</span></div>
 
                     <!-- BOTÕES -->
                     <div class="d-flex justify-content-between mt-4">
@@ -186,6 +258,15 @@
 
     <!-- Bootstrap JS -->
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para mudar separadores -->
+    <script>
+        function mostrarSeparador(id) {
+            const tabTrigger = document.querySelector(`[data-bs-target="#${id}"]`);
+            const tab = new bootstrap.Tab(tabTrigger);
+            tab.show();
+        }
+    </script>
 
 </body>
 

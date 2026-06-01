@@ -47,7 +47,49 @@
             font-weight: 700;
             letter-spacing: 0.5px;
         }
+
+        .nav-tabs {
+            border-bottom: 2px solid #1a826d;
+            justify-content: space-between;
+        }
+
+        .tab-content {
+            margin-top: 15px;
+        }
+
+        .nav-tabs .nav-link {
+            color: #1a826d;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            padding: 10px 18px;
+            text-align: center;
+            min-width: 120px;
+            line-height: 1.2;
+            transition: 0.2s;
+        }
+
+        .nav-tabs .nav-link:hover {
+            background-color: #e6f4f2;
+            color: #146b57;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #1a826d;
+            color: white;
+            border: none;
+            box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs .nav-link br {
+            display: block;
+        }
+
+        .nav-tabs .nav-item:not(:first-child) .nav-link {
+            margin-top: -8px;
+        }
     </style>
+
 
 </head>
 
@@ -101,7 +143,7 @@
 
                 <nav>
 
-                     <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                    <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
                         <i class="fas fa-chart-line me-2"></i> Dashboard
                     </a>
 
@@ -125,9 +167,9 @@
                         <i class="fas fa-file-medical me-2"></i> Documentação
                     </a>
 
-                    <a href="../Garantias e contratos/lista_garantias_contratos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                            style="color: white; transition: 0.2s;">
-                            <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
+                    <a href="../Garantias e contratos/lista_garantias_contratos.html"
+                        class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white; transition: 0.2s;">
+                        <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
                     </a>
                 </nav>
             </aside>
@@ -140,132 +182,484 @@
                         <i class="fa-solid fa-plus me-2"></i> Editar Equipamento
                     </h2>
 
-                    <form>
-
-                        <!-- Código interno de inventário -->
-                        <div class="mb-3">
-                            <label class="form-label">Código Interno De Inventário *</label>
-                            <input type="text" class="form-control" placeholder="Ex: EQ-2025-001">
-                        </div>
-
-                        <!-- Designação do equipamento-->
-                        <div class="mb-3">
-                            <label class="form-label">Designação Do Equipamento *</label>
-                            <input type="text" class="form-control" placeholder="Ex: Monitor multiparamétrico">
-                        </div>
-
-                        <!-- Categoria -->
-                        <div class="mb-3">
-                            <label class="form-label">Categoria *</label>
-                            <select class="form-select">
-                                <option>Monitorização</option>
-                                <option>Suporte de vida</option>
-                                <option>Terapia</option>
-                                <option>Diagnóstico</option>
-                                <option>Laboratório</option>
-                                <option>Esterilização</option>
-                                <option>Reabilitação</option>
-                            </select>
-                        </div>
-
-                        <!-- Marca e Modelo -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Marca *</label>
-                                <input type="text" class="form-control" placeholder="Ex: Philips">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Modelo *</label>
-                                <input type="text" class="form-control" placeholder="Ex: IntelliVue MP5">
-                            </div>
-                        </div>
-
-                        <!-- Número de série -->
-                        <div class="mb-3">
-                            <label class="form-label">Número de Série *</label>
-                            <input type="text" class="form-control" placeholder="Ex: MP5-2022-45873">
-                        </div>
-
-                        <!-- Fabricante -->
-                        <div class="mb-3">
-                            <label class="form-label">Fabricante *</label>
-                            <input type="text" class="form-control" placeholder="Ex: Philips Healthcare">
-                        </div>
-
-                        <!-- Data de aquisição -->
-                        <div class="mb-3">
-                            <label class="form-label">Data de Aquisição *</label>
-                            <input type="date" class="form-control">
-                        </div>
-
-                        <!-- Ano de fabrico -->
-                        <div class="mb-3">
-                            <label class="form-label">Ano de Fabrico *</label>
-                            <input type="number" class="form-control" placeholder="Ex: 2022" min="1900" max="2100">
-                        </div>
-
-                        <!-- Custo de aquisição -->
-                        <div class="mb-3">
-                            <label class="form-label">Custo de Aquisição (€) *</label>
-                            <input type="number" class="form-control" placeholder="Ex: 3500" min="0" step="0.01">
-                        </div>
-
-                        <!-- Tipo de entrada -->
-                        <div class="mb-3">
-                            <label class="form-label">Tipo de Entrada *</label>
-                            <select class="form-select">
-                                <option>Compra</option>
-                                <option>Doação</option>
-                                <option>Aluguer</option>
-                                <option>Empréstimo</option>
-                            </select>
-                        </div>
-
-                        <!-- Estado -->
-                        <div class="mb-3">
-                            <label class="form-label">Estado *</label>
-                            <select class="form-select">
-                                <option>Ativo</option>
-                                <option>Em manutenção</option>
-                                <option>Inativo</option>
-                                <option>Em calibração</option>
-                                <option>Em quarentena</option>
-                                <option>Abatido</option>
-                            </select>
-                        </div>
-
-                        <!-- Criticidade -->
-                        <div class="mb-3">
-                            <label class="form-label">Criticidade *</label>
-                            <select class="form-select">
-                                <option>Baixa</option>
-                                <option>Média</option>
-                                <option>Alta</option>
-                                <option>Suporte de vida</option>
-                            </select>
-                        </div>
-
-                        <!-- Observações -->
-                        <div class="mb-3">
-                            <label class="form-label">Observações</label>
-                            <textarea class="form-control" rows="3"></textarea>
-                        </div>
-
-                        <!-- Botões -->
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="lista.html" class="btn btn-secondary">Cancelar</a>
-                            <button type="submit" class="btn" style="background-color: #1a826d; color: white;">
-                                Guardar Alterações
+                    <!-- SEPARADORES -->
+                    <ul class="nav nav-tabs mb-4" id="equipTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dados" type="button">
+                                Equipamento
                             </button>
-                        </div>
+                        </li>
 
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#fornecedor" type="button">
+                                Fornecedor<br>Associado
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#localizacao" type="button">
+                                Localização<br>Associada
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#documentos" type="button">
+                                Documentação<br>Associada
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#garantias" type="button">
+                                Garantias<br>e Contratos Associados
+                            </button>
+                        </li>
+                    </ul>
+
+
+                    <!-- CONTEÚDO DOS SEPARADORES -->
+                    <form id="formEquipamentoCompleto">
+
+                        <div class="tab-content" id="equipTabsContent">
+
+
+                            <!-- SEPARADOR 1 — EQUIPAMENTO -->
+                            <div class="tab-pane fade show active" id="dados" role="tabpanel">
+
+                                <!-- Código interno de inventário -->
+                                <div class="mb-3">
+                                    <label class="form-label">Código Interno De Inventário *</label>
+                                    <input type="text" class="form-control" placeholder="Ex: EQ-2025-001">
+                                </div>
+
+                                <!-- Designação do equipamento-->
+                                <div class="mb-3">
+                                    <label class="form-label">Designação Do Equipamento *</label>
+                                    <input type="text" class="form-control" placeholder="Ex: Monitor multiparamétrico">
+                                </div>
+
+                                <!-- Categoria -->
+                                <div class="mb-3">
+                                    <label class="form-label">Categoria *</label>
+                                    <select class="form-select">
+                                        <option>Monitorização</option>
+                                        <option>Suporte de vida</option>
+                                        <option>Terapia</option>
+                                        <option>Diagnóstico</option>
+                                        <option>Laboratório</option>
+                                        <option>Esterilização</option>
+                                        <option>Reabilitação</option>
+                                    </select>
+                                </div>
+
+                                <!-- Marca e Modelo -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Marca *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: Philips">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Modelo *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: IntelliVue MP5">
+                                    </div>
+                                </div>
+
+                                <!-- Número de série -->
+                                <div class="mb-3">
+                                    <label class="form-label">Número de Série *</label>
+                                    <input type="text" class="form-control" placeholder="Ex: MP5-2022-45873">
+                                </div>
+
+                                <!-- Fabricante -->
+                                <div class="mb-3">
+                                    <label class="form-label">Fabricante *</label>
+                                    <input type="text" class="form-control" placeholder="Ex: Philips Healthcare">
+                                </div>
+
+                                <!-- Data de aquisição -->
+                                <div class="mb-3">
+                                    <label class="form-label">Data de Aquisição *</label>
+                                    <input type="date" class="form-control">
+                                </div>
+
+                                <!-- Ano de fabrico -->
+                                <div class="mb-3">
+                                    <label class="form-label">Ano de Fabrico *</label>
+                                    <input type="number" class="form-control" placeholder="Ex: 2022" min="1900"
+                                        max="2100">
+                                </div>
+
+                                <!-- Custo de aquisição -->
+                                <div class="mb-3">
+                                    <label class="form-label">Custo de Aquisição (€) *</label>
+                                    <input type="number" class="form-control" placeholder="Ex: 3500" min="0"
+                                        step="0.01">
+                                </div>
+
+                                <!-- Tipo de entrada -->
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo de Entrada *</label>
+                                    <select class="form-select">
+                                        <option>Compra</option>
+                                        <option>Doação</option>
+                                        <option>Aluguer</option>
+                                        <option>Empréstimo</option>
+                                    </select>
+                                </div>
+
+                                <!-- Estado -->
+                                <div class="mb-3">
+                                    <label class="form-label">Estado *</label>
+                                    <select class="form-select">
+                                        <option>Ativo</option>
+                                        <option>Em manutenção</option>
+                                        <option>Inativo</option>
+                                        <option>Em calibração</option>
+                                        <option>Em quarentena</option>
+                                        <option>Abatido</option>
+                                    </select>
+                                </div>
+
+                                <!-- Criticidade -->
+                                <div class="mb-3">
+                                    <label class="form-label">Criticidade *</label>
+                                    <select class="form-select">
+                                        <option>Baixa</option>
+                                        <option>Média</option>
+                                        <option>Alta</option>
+                                        <option>Suporte de vida</option>
+                                    </select>
+                                </div>
+
+                                <!-- Observações -->
+                                <div class="mb-3">
+                                    <label class="form-label">Observações</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+
+                                <!-- Botões -->
+                                <div class="d-flex justify-content-between mt-4">
+
+                                    <a href="lista.html" class="btn btn-secondary">
+                                        ← Voltar
+                                    </a>
+
+                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                        onclick="mostrarSeparador('fornecedor')">
+                                        Seguinte →
+                                    </button>
+                                </div>
+
+
+                            </div>
+
+                            <!-- SEPARADOR 2 — FORNECEDOR ASSOCIADO -->
+                            <div class="tab-pane fade" id="fornecedor" role="tabpanel">
+
+                                <h4 class="mb-3" style="color:#1a826d;">Fornecedor Associado</h4>
+
+                                <!-- Código interno -->
+                                <div class="mb-3">
+                                    <label class="form-label">Código Interno *</label>
+                                    <input type="text" class="form-control" placeholder="Ex: F001">
+                                </div>
+
+                                <!-- Nome + NIF -->
+                                <div class="row">
+                                    <div class="col-md-8 mb-3">
+                                        <label class="form-label">Nome da Empresa *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: MedTech Solutions">
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">NIF *</label>
+                                        <input type="number" class="form-control" placeholder="123456789">
+                                    </div>
+                                </div>
+
+                                <!-- Contacto + Email -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Contacto Telefónico *</label>
+                                        <input type="number" class="form-control" placeholder="912345678">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" class="form-control" placeholder="email@empresa.com">
+                                    </div>
+                                </div>
+
+                                <!-- Morada -->
+                                <div class="mb-3">
+                                    <label class="form-label">Morada *</label>
+                                    <input type="text" class="form-control" placeholder="Rua, nº, cidade">
+                                </div>
+
+                                <!-- Website + Pessoa de contacto -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Website</label>
+                                        <input type="text" class="form-control" placeholder="www.empresa.com">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Pessoa de Contacto</label>
+                                        <input type="text" class="form-control" placeholder="Nome da pessoa">
+                                    </div>
+                                </div>
+
+                                <!-- Telefone pessoa contacto + Tipo -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Telefone da Pessoa de Contacto</label>
+                                        <input type="number" class="form-control" placeholder="912345678">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tipo de Fornecedor *</label>
+                                        <select class="form-select">
+                                            <option>Fabricante</option>
+                                            <option>Distribuidor / Comercial</option>
+                                            <option>Assistência Técnica</option>
+                                            <option>Consumíveis / Acessórios</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Observações -->
+                                <div class="mb-3">
+                                    <label class="form-label">Observações</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+
+                                <!-- Botões -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('dados')">
+                                        ← Anterior
+                                    </button>
+
+                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                        onclick="mostrarSeparador('localizacao')">
+                                        Seguinte →
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            <!-- SEPARADOR 3 — LOCALIZAÇÃO ASSOCIADA -->
+                            <div class="tab-pane fade" id="localizacao" role="tabpanel">
+
+                                <h4 class="mb-3" style="color:#1a826d;">Localização Associada</h4>
+
+
+                                <!-- Edifício -->
+                                <div class="mb-3">
+                                    <label class="form-label">Edifício *</label>
+                                    <input type="text" class="form-control" placeholder="Ex: Edifício A">
+                                </div>
+
+                                <!-- Piso + Serviço -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Piso *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: Piso 2">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Serviço / Departamento *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: Urgência">
+                                    </div>
+                                </div>
+
+                                <!-- Sala -->
+                                <div class="mb-3">
+                                    <label class="form-label">Sala / Gabinete *</label>
+                                    <input type="text" class="form-control" placeholder="Ex: Sala 12">
+                                </div>
+
+                                <!-- Botões -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="mostrarSeparador('fornecedor')">
+                                        ← Anterior
+                                    </button>
+
+                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                        onclick="mostrarSeparador('documentos')">
+                                        Seguinte →
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            <!-- SEPARADOR 4 — DOCUMENTAÇÃO ASSOCIADA -->
+                            <div class="tab-pane fade" id="documentos" role="tabpanel">
+
+                                <h4 class="mb-3" style="color:#1a826d;">Documentação Associada</h4>
+
+
+                                <!-- Tipo de documento -->
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo de Documento *</label>
+                                    <select class="form-select">
+                                        <option>Manual de Utilizador</option>
+                                        <option>Manual de Serviço</option>
+                                        <option>Certificado de Calibração</option>
+                                        <option>Contrato de Manutenção</option>
+                                        <option>Fatura / Aquisição</option>
+                                        <option>Declaração de Conformidade</option>
+                                        <option>Relatório Técnico</option>
+                                        <option>Outro</option>
+                                    </select>
+                                </div>
+
+                                <!-- Nome do documento -->
+                                <div class="mb-3">
+                                    <label class="form-label">Nome do Documento *</label>
+                                    <input type="text" class="form-control" placeholder="Ex: Manual de Utilizador MP5">
+                                </div>
+
+                                <!-- Datas -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Data do Documento *</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Data de Validade</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                </div>
+
+                                <!-- Ficheiro -->
+                                <div class="mb-3">
+                                    <label class="form-label">Ficheiro</label>
+                                    <input type="file" class="form-control">
+                                </div>
+
+                                <!-- Observações -->
+                                <div class="mb-3">
+                                    <label class="form-label">Observações</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+
+                                <!-- Botões -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="mostrarSeparador('localizacao')">
+                                        ← Anterior
+                                    </button>
+
+                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                        onclick="mostrarSeparador('garantias')">
+                                        Seguinte →
+                                    </button>
+                                </div>
+
+
+
+                            </div>
+
+                            <!-- SEPARADOR 5 — GARANTIAS E CONTRATOS ASSOCIADOS -->
+                            <div class="tab-pane fade" id="garantias" role="tabpanel">
+
+                                <h4 class="mb-3" style="color:#1a826d;">Garantias e Contratos Associados</h4>
+
+                                <!-- Código + Tipo -->
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Código *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: GAR001">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Tipo de Contrato *</label>
+                                        <select class="form-select">
+                                            <option>Garantia</option>
+                                            <option>Contrato de Manutenção</option>
+                                            <option>Contrato de Assistência Técnica</option>
+                                            <option>Outro</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Datas -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Data de Início da Garantia *</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Data de Fim da Garantia *</label>
+                                        <input type="date" class="form-control">
+                                    </div>
+                                </div>
+
+                                <!-- Entidade + Periodicidade -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Entidade Responsável *</label>
+                                        <input type="text" class="form-control" placeholder="Ex: MedSupply Portugal">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Periodicidade</label>
+                                        <select class="form-select">
+                                            <option>Não aplicável</option>
+                                            <option>Anual</option>
+                                            <option>Semestral</option>
+                                            <option>Trimestral</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Observações -->
+                                <div class="mb-3">
+                                    <label class="form-label">Observações</label>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+
+                                <!-- Botões -->
+                                <div class="d-flex justify-content-between mt-4">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="mostrarSeparador('documentos')">
+                                        ← Anterior
+                                    </button>
+
+                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                        onclick="window.location.href='lista.html'">
+                                        Guardar Alterações
+                                    </button>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
                     </form>
 
-                </div>
 
             </main>
+        </div>
+    </div>
 
+
+
+    <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script>
+        function mostrarSeparador(id) {
+            const trigger = document.querySelector(`[data-bs-target="#${id}"]`);
+            const tab = new bootstrap.Tab(trigger);
+            tab.show();
+        }
+    </script>
 </body>
 
 </html>
