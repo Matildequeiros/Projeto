@@ -237,9 +237,15 @@
                                         <i class="fa-solid fa-pen"></i> Editar
                                     </a>
 
-                                    <a href="apagar_fornecedores.html" class="acao-box">
+                                    <a class="acao-box" style="cursor: pointer;" onclick="abrirModalApagarFornecedor(
+       '#', 
+       'MedSupply Portugal', 
+       '509 332 118', 
+       'geral@medsupply.pt'
+   )">
                                         <i class="fa-solid fa-trash"></i> Eliminar
                                     </a>
+
                                 </td>
                             </tr>
 
@@ -253,6 +259,58 @@
     </div>
 
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <!-- MODAL REMOVER FORNECEDOR (ESTILO IGUAL AO APAGAR.HTML) -->
+    <div class="modal fade" id="modalApagarFornecedor" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+            <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+
+                <h2 class="mb-4" style="color: #1a826d; font-weight: 700;">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> Remover Fornecedor
+                </h2>
+
+                <p class="mb-3" style="font-size: 17px;">
+                    Tem a certeza que pretende remover o seguinte fornecedor?
+                    <br>
+                    <strong>Esta ação é irreversível.</strong>
+                </p>
+
+                <hr>
+
+                <!-- DADOS DO FORNECEDOR -->
+                <div id="dadosFornecedor" style="font-size: 16px;">
+                    <!-- Preenchido dinamicamente pelo JS -->
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                    <a id="btnConfirmarApagarFornecedor" class="btn" style="background-color: #1a826d; color: white;">
+                        <i class="fa-solid fa-trash me-2"></i> Remover Fornecedor
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModalApagarFornecedor(link, nome, nif, email) {
+
+            document.getElementById("dadosFornecedor").innerHTML = `
+        <p><strong>Nome:</strong> ${nome}</p>
+        <p><strong>NIF:</strong> ${nif}</p>
+        <p><strong>Email:</strong> ${email}</p>
+    `;
+
+            document.getElementById("btnConfirmarApagarFornecedor").href = link;
+
+            const modal = new bootstrap.Modal(document.getElementById("modalApagarFornecedor"));
+            modal.show();
+        }
+    </script>
 
 </body>
 

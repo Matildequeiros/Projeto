@@ -245,9 +245,16 @@
                                         <i class="fa-solid fa-pen"></i> Editar
                                     </a>
 
-                                    <a href="apagar_localizacoes.html" class="acao-box">
+                                    <a class="acao-box" style="cursor: pointer;" onclick="abrirModalApagarLocalizacao(
+       '#',
+       'Edifício A',
+       'Piso 2',
+       'Urgência',
+       'Sala 12'
+   )">
                                         <i class="fa-solid fa-trash"></i> Eliminar
                                     </a>
+
                                 </td>
                             </tr>
 
@@ -261,6 +268,59 @@
     </div>
 
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <!-- MODAL REMOVER LOCALIZAÇÃO (ESTILO IGUAL AO APAGAR.HTML) -->
+    <div class="modal fade" id="modalApagarLocalizacao" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+            <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+
+                <h2 class="mb-4" style="color: #1a826d; font-weight: 700;">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> Remover Localização
+                </h2>
+
+                <p class="mb-3" style="font-size: 17px;">
+                    Tem a certeza que pretende remover a seguinte localização?
+                    <br>
+                    <strong>Esta ação é irreversível.</strong>
+                </p>
+
+                <hr>
+
+                <!-- DADOS DA LOCALIZAÇÃO -->
+                <div id="dadosLocalizacao" style="font-size: 16px;">
+                    <!-- Preenchido dinamicamente pelo JS -->
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                    <a id="btnConfirmarApagarLocalizacao" class="btn" style="background-color: #1a826d; color: white;">
+                        <i class="fa-solid fa-trash me-2"></i> Remover Localização
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModalApagarLocalizacao(link, edificio, piso, servico, sala) {
+
+            document.getElementById("dadosLocalizacao").innerHTML = `
+        <p><strong>Edifício:</strong> ${edificio}</p>
+        <p><strong>Piso:</strong> ${piso}</p>
+        <p><strong>Serviço / Departamento:</strong> ${servico}</p>
+        <p><strong>Sala / Gabinete:</strong> ${sala}</p>
+    `;
+
+            document.getElementById("btnConfirmarApagarLocalizacao").href = link;
+
+            const modal = new bootstrap.Modal(document.getElementById("modalApagarLocalizacao"));
+            modal.show();
+        }
+    </script>
 
 </body>
 

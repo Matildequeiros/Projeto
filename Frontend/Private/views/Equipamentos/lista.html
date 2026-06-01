@@ -298,9 +298,12 @@
                                         <i class="fa-solid fa-pen"></i> Editar
                                     </a>
 
-                                    <a href="apagar.html" class="acao-box">
+                                    <a class="acao-box" style="cursor: pointer;"
+                                        onclick="abrirModalApagar('#', 'EQ-001', 'Monitor multiparamétrico')">
                                         <i class="fa-solid fa-trash"></i> Eliminar
                                     </a>
+
+
                                 </td>
 
                             </tr>
@@ -317,7 +320,64 @@
 
     <!-- Bootstrap JS -->
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
-    
+
+    <!-- MODAL REMOVER EQUIPAMENTO (ESTILO IGUAL AO APAGAR.HTML) -->
+    <div class="modal fade" id="modalApagar" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+            <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+
+                <h2 class="mb-3" style="color: #1a826d; font-weight: 700;">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> Remover Equipamento
+                </h2>
+
+                <p class="mb-3" style="font-size: 17px;">
+                    Tem a certeza que pretende remover o seguinte equipamento?
+                    <br>
+                    <strong>Esta ação é irreversível.</strong>
+                </p>
+
+                <hr>
+
+                <!-- DADOS DO EQUIPAMENTO -->
+                <div id="dadosApagar" style="font-size: 16px;">
+                    <!-- Estes dados são preenchidos pelo JS -->
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                    <a id="btnConfirmarApagar" class="btn" style="background-color: #1a826d; color: white;">
+                        <i class="fa-solid fa-trash me-2"></i> Remover Equipamento
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function abrirModalApagar(link, codigo, designacao) {
+
+            // Preenche os dados dentro do modal
+            document.getElementById("dadosApagar").innerHTML = `
+        <p><strong>Código Interno:</strong> ${codigo}</p>
+        <p><strong>Designação:</strong> ${designacao}</p>
+    `;
+
+            // Define o link do botão "Remover"
+            document.getElementById("btnConfirmarApagar").href = link;
+
+            // Abre o modal
+            const modal = new bootstrap.Modal(document.getElementById("modalApagar"));
+            modal.show();
+        }
+    </script>
+
+
+
 </body>
 
 </html>

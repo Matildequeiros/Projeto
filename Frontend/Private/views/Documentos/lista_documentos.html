@@ -246,9 +246,16 @@
                                         <i class="fa-solid fa-pen"></i> Editar
                                     </a>
 
-                                    <a href="apagar_documento.html" class="acao-box">
+                                    <a class="acao-box" style="cursor: pointer;" onclick="abrirModalApagarDocumento(
+       '#',
+       'Manual de Utilizador',
+       'Manual de Utilizador MP5',
+       'Monitor MP5',
+       'manual_mp5.pdf'
+   )">
                                         <i class="fa-solid fa-trash"></i> Eliminar
                                     </a>
+
                                 </td>
                             </tr>
 
@@ -262,6 +269,59 @@
     </div>
 
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <!-- MODAL REMOVER DOCUMENTO (ESTILO IGUAL AO APAGAR.HTML) -->
+    <div class="modal fade" id="modalApagarDocumento" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+            <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+
+                <h2 class="mb-4" style="color: #1a826d; font-weight: 700;">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> Remover Documento
+                </h2>
+
+                <p class="mb-3" style="font-size: 17px;">
+                    Tem a certeza que pretende remover o seguinte documento?
+                    <br>
+                    <strong>Esta ação é irreversível.</strong>
+                </p>
+
+                <hr>
+
+                <!-- DADOS DO DOCUMENTO -->
+                <div id="dadosDocumento" style="font-size: 16px;">
+                    <!-- Preenchido dinamicamente pelo JS -->
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                    <a id="btnConfirmarApagarDocumento" class="btn" style="background-color: #1a826d; color: white;">
+                        <i class="fa-solid fa-trash me-2"></i> Remover Documento
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirModalApagarDocumento(link, tipo, nome, equipamento, ficheiro) {
+
+            document.getElementById("dadosDocumento").innerHTML = `
+        <p><strong>Tipo:</strong> ${tipo}</p>
+        <p><strong>Nome:</strong> ${nome}</p>
+        <p><strong>Equipamento:</strong> ${equipamento}</p>
+        <p><strong>Ficheiro:</strong> ${ficheiro}</p>
+    `;
+
+            document.getElementById("btnConfirmarApagarDocumento").href = link;
+
+            const modal = new bootstrap.Modal(document.getElementById("modalApagarDocumento"));
+            modal.show();
+        }
+    </script>
 
 </body>
 
