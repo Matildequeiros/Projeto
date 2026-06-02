@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HospitalGest - Consultar Fornecedor</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../../assets/css/1241344.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../../../assets/fontawesome/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300;700&display=swap" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="../../../assets/img/Logo.png" type="image/png">
+
+
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="container-fluid" style="background-color: #acd6d0;">
+        <div class="row align-items-center">
+
+            <div class="col-6 d-flex align-items-center p-3">
+                <a href="../../index.html">
+                    <img src="../../../assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
+                </a>
+                <h3 class="mb-0 logo-text">
+                    <span class="verde">Hospital</span><span class="azul">Gest</span>
+                </h3>
+            </div>
+
+            <div class="col-6 text-end p-3">
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        style="background-color: #86B0AA; color: white; border: none;">
+                        <i class="fa-regular fa-user me-2"></i> Utilizador
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="../../../Login/login.html">
+                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <aside class="col-md-3 col-lg-2 p-3 min-vh-100 shadow-sm"
+                style="background-color: #86b0aa; color: white; border-radius: 0 10px 10px 0;">
+
+                <h4 class="fw-bold mb-4">Menu</h4>
+
+                <nav>
+                    <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                        <i class="fas fa-chart-line me-2"></i> Dashboard
+                    </a>
+
+                    <a href="../equipamentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
+                        <i class="fas fa-stethoscope me-2"></i> Equipamentos
+                    </a>
+
+                    <a href="lista_fornecedores.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
+                        <i class="fas fa-truck-medical me-2"></i> Fornecedores
+                    </a>
+
+                    <a href="../Localizações/lista_localizacoes.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
+                        <i class="fas fa-location-dot me-2"></i> Localizações
+                    </a>
+
+                    <a href="../Documentos/lista_documentos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
+                        style="color: white;">
+                        <i class="fas fa-file-medical me-2"></i> Documentação
+                    </a>
+
+                    <a href="../Garantias e contratos/lista_garantias_contratos.html"
+                        class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white; transition: 0.2s;">
+                        <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
+                    </a>
+
+                    <a href="../Gestão da Área Pública/editar_public.html"
+                        class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white; transition: 0.2s;">
+                        <i class="fas fa-globe me-2"></i> Gestão da Área Pública
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- CONTEÚDO PRINCIPAL -->
+            <main class="col-md-9 col-lg-10 p-4">
+
+                <div class="card shadow p-4" style="border-radius: 12px; max-width: 1000px; margin: 0 auto;">
+
+                    <h2 class="mb-4" style="color: #1a826d;">
+                        <i class="fa-solid fa-globe me-2"></i> Gestão da Área Pública
+                    </h2>
+
+                    <form>
+
+                        <!-- SECÇÃO HERO -->
+                        <h4 class="mb-3">Secção Hero</h4>
+
+                        <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input type="text" class="form-control" value="Soluções Digitais para Gestão Hospitalar">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Subtítulo</label>
+                            <textarea class="form-control"
+                                rows="2">Desenvolvemos software para inventário hospitalar...</textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Texto do Botão</label>
+                            <input type="text" class="form-control" value="Fale Connosco">
+                        </div>
+
+                        <hr>
+
+                        <!-- SOBRE NÓS -->
+                        <h4 class="mb-3">Sobre Nós</h4>
+
+                        <div class="mb-3">
+                            <label class="form-label">Texto Principal</label>
+                            <textarea class="form-control"
+                                rows="3">A HospitalGest desenvolve soluções digitais...</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">O Problema</label>
+                                <textarea class="form-control" rows="2">Hospitais usam Excel...</textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">A Nossa Solução</label>
+                                <textarea class="form-control" rows="2">Aplicação web para organizar...</textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">O Que Oferecemos</label>
+                                <textarea class="form-control" rows="3">Inventário estruturado...</textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Objetivo</label>
+                                <textarea class="form-control" rows="2">Criar uma plataforma que ajude...</textarea>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- SERVIÇOS -->
+                        <h4 class="mb-3">Serviços</h4>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Gestão de Equipamentos</label>
+                                <textarea class="form-control" rows="2">Registo, edição e consulta...</textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Localizações</label>
+                                <textarea class="form-control" rows="2">Organização dos equipamentos...</textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fornecedores</label>
+                                <textarea class="form-control" rows="2">Associação de fabricantes...</textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Documentação</label>
+                                <textarea class="form-control" rows="2">Gestão de manuais...</textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Garantias e Contratos</label>
+                                <textarea class="form-control" rows="2">Consulta rápida de datas...</textarea>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Dashboard</label>
+                                <textarea class="form-control" rows="2">Pesquisa avançada e indicadores...</textarea>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- SECÇÃO CONTACTO (BARRA SUPERIOR) -->
+                        <h4 class="mb-3">Secção Contacto</h4>
+
+                        <div class="mb-3">
+                            <label class="form-label">Título da Barra</label>
+                            <input type="text" class="form-control" value="Como Podemos Ajudar?">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Subtítulo da Barra</label>
+                            <textarea class="form-control"
+                                rows="2">A nossa equipa está disponível para esclarecer dúvidas e fornecer toda a informação necessária.</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Texto do Botão "Fale Connosco"</label>
+                            <input type="text" class="form-control" value="Fale Connosco">
+                        </div>
+
+                        <hr>
+
+                        <!-- POPUP "FALE CONNOSCO" -->
+                        <h4 class="mb-3">Popup "Fale Connosco"</h4>
+
+                        <div class="mb-3">
+                            <label class="form-label">Título do Popup</label>
+                            <input type="text" class="form-control" value="Como Podemos Ajudar?">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Label - Nome</label>
+                                <input type="text" class="form-control" value="Nome:">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Label - Email</label>
+                                <input type="text" class="form-control" value="Email:">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Label - Assunto</label>
+                                <input type="text" class="form-control" value="Assunto:">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Label - Mensagem</label>
+                                <input type="text" class="form-control" value="Mensagem:">
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Texto do Botão "Enviar"</label>
+                            <input type="text" class="form-control" value="Enviar">
+                        </div>
+
+                        <hr>
+
+                        <!-- CONTACTOS -->
+                        <h4 class="mb-3">Contactos</h4>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Telefone Fixo</label>
+                                <input type="text" class="form-control" value="254 344 253">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Telemóvel</label>
+                                <input type="text" class="form-control" value="912 745 234">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" value="geral@hospitalgest.pt">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Morada</label>
+                                <input type="text" class="form-control" value="Rua da Boa Saúde nº10">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Localidade</label>
+                                <input type="text" class="form-control" value="4523-089 Viana do Castelo">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Texto do Horário</label>
+                                <input type="text" class="form-control" value="Todos os dias">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Horário</label>
+                                <input type="text" class="form-control" value="07:00h - 22:00h">
+                            </div>
+                        </div>
+
+
+                        <!-- BOTÕES -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="../../index.html" class="btn btn-secondary">
+                                <i class="fa-solid fa-arrow-left me-2"></i> Voltar
+                            </a>
+
+                            <button type="submit" class="btn" style="background-color: #1a826d; color: white;">
+                                <i class="fa-solid fa-floppy-disk me-2"></i> Guardar Alterações
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </main>
+
+
+
+
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
