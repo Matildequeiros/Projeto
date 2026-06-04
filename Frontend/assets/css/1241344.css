@@ -538,6 +538,22 @@ body {
     line-height: 1.5;
 }
 
+/* 4 CARDS INICIAIS — SEMPRE EM 1 LINHA */
+.inicio-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas fixas */
+    gap: 20px;
+    width: 100%;
+}
+
+/* Cada card */
+.inicio-cards > div {
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 /* DASHBOARD (INDEX DO PRIVATE) */
 .dashboard-grid {
     display: grid;
