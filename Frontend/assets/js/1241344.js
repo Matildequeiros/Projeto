@@ -1,3 +1,4 @@
+
 // Navegação entre separadores
 function mostrarSeparador(id) {
     const trigger = document.querySelector(`[data-bs-target="#${id}"]`);
@@ -18,48 +19,6 @@ function toggleContrato(valor) {
         valor === 'sim' ? 'block' : 'none';
 }
 
-// Documentos
-function adicionarDocumento() {
-    let tipo = document.getElementById('docTipo').value;
-    let nome = document.getElementById('docNome').value;
-    let data = document.getElementById('docData').value;
-    let validade = document.getElementById('docValidade').value;
-    let ficheiro = document.getElementById('docFicheiro').files[0];
-
-    if (!nome || !data || !ficheiro) {
-        alert("Preencha todos os campos obrigatórios.");
-        return;
-    }
-
-    let tabela = document.getElementById('tabelaDocumentos');
-
-    let linha = `
-        <tr>
-            <td>${tipo}</td>
-            <td>${nome}</td>
-            <td>${data}</td>
-            <td>Manual</td>
-            <td>
-                <button type="button" class="btn btn-sm btn-primary" onclick="verDocumento()">Ver</button>
-                <button type="button" class="btn btn-sm btn-danger" onclick="this.closest('tr').remove()">Remover</button>
-            </td>
-        </tr>
-    `;
-
-    tabela.innerHTML += linha;
-
-    var modal = bootstrap.Modal.getInstance(document.getElementById('modalDocumento'));
-    modal.hide();
-
-    document.getElementById('docNome').value = "";
-    document.getElementById('docData').value = "";
-    document.getElementById('docValidade').value = "";
-    document.getElementById('docFicheiro').value = "";
-}
-
-function verDocumento() {
-    alert("Aqui vais abrir o PDF");
-}
 
 function validarSeparador(id) {
 
@@ -89,4 +48,58 @@ function validarEAvancar(separadorAtual, separadorSeguinte) {
     } else {
         alert("Preencha todos os campos antes de avançar.");
     }
+}
+
+
+// DOCUMENTO ASSOCIADO
+function adicionarBlocoDocumento() {
+
+    const container = document.getElementById("documentosContainer");
+
+    const bloco = document.createElement("div");
+    bloco.classList.add("p-3", "border", "rounded", "mb-3");
+    bloco.style.borderColor = "#86b0aa";
+
+    bloco.innerHTML = `
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Tipo de Documento *</label>
+                <select class="form-select">
+                    <option>Manual</option>
+                    <option>Ficha Técnica</option>
+                    <option>Certificado</option>
+                    <option>Relatório</option>
+                    <option>Outro</option>
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Nome do Documento *</label>
+                <input type="text" class="form-control" placeholder="Ex: Manual do Utilizador">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Data do Documento *</label>
+                <input type="date" class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Data de Validade</label>
+                <input type="date" class="form-control">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Ficheiro (PDF) *</label>
+            <input type="file" class="form-control" accept="application/pdf">
+        </div>
+
+        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
+            Remover Documento
+        </button>
+    `;
+
+    container.appendChild(bloco);
 }

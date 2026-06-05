@@ -580,9 +580,26 @@ body {
 }
 
 .card-indicador {
+    background: white;
+    border-left: 5px solid #1a826d !important;
+    border-radius: 8px;
+    padding: 18px;
     width: 100%;
-    min-height: 110px;
+    transition: 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
+
+.card-indicador:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.card-indicador .icon {
+    font-size: 26px;
+    color: #1a826d;
+    opacity: 0.8;
+}
+
 
 
 /* EDITAR_PUBLIC (ACCORDION) */

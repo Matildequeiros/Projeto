@@ -239,6 +239,13 @@
 
                     </ul>
 
+                    <div class="alert alert-danger">
+                        <strong>Foram encontrados erros:</strong>
+                        <ul class="mt-2 mb-0">
+                            <li>Código interno é obrigatório</li>
+                            <li>Categoria é obrigatória</li>
+                        </ul>
+                    </div>
 
                     <!-- CONTEÚDO DOS SEPARADORES -->
                     <form id="formEquipamentoCompleto">
@@ -690,35 +697,20 @@
 
                             </div>
 
+
                             <!-- SEPARADOR 7 — DOCUMENTAÇÃO ASSOCIADA -->
                             <div class="tab-pane fade" id="documentos" role="tabpanel">
 
                                 <h4 class="mb-3" style="color:#1a826d;">Documentação Associada</h4>
 
-                                <!-- Botão adicionar -->
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    data-bs-toggle="modal" data-bs-target="#modalDocumento">
+                                <!-- CONTÊINER DOS DOCUMENTOS -->
+                                <div id="documentosContainer"></div>
+
+                                <!-- BOTÃO ADICIONAR NOVO DOCUMENTO -->
+                                <button type="button" class="btn mt-3" style="background-color:#1a826d; color:white;"
+                                    onclick="adicionarBlocoDocumento()">
                                     + Adicionar Documento
                                 </button>
-
-
-                                <!-- Tabela -->
-                                <table class="table mt-4">
-                                    <thead>
-                                        <tr>
-                                            <th>Tipo</th>
-                                            <th>Nome</th>
-                                            <th>Data</th>
-                                            <th>Origem</th>
-                                            <th>Ações</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody id="tabelaDocumentos">
-                                        <!-- PDFs automáticos dos separadores anteriores entram aqui -->
-                                        <!-- PDFs adicionados manualmente também entram aqui -->
-                                    </tbody>
-                                </table>
 
                                 <!-- Botões -->
                                 <div class="d-flex justify-content-between mt-4">
@@ -735,73 +727,7 @@
 
                             </div>
 
-                            <!-- MODAL ADICIONAR DOCUMENTO -->
-                            <div class="modal fade" id="modalDocumento" tabindex="-1">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
 
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" style="color:#1a826d;">Adicionar Documento</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                        </div>
-
-
-                                        <div class="modal-body">
-
-                                            <!-- Tipo + Nome -->
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Tipo de Documento *</label>
-                                                    <select class="form-select" id="docTipo">
-                                                        <option>Manual</option>
-                                                        <option>Ficha Técnica</option>
-                                                        <option>Certificado</option>
-                                                        <option>Relatório</option>
-                                                        <option>Outro</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Nome do Documento *</label>
-                                                    <input type="text" class="form-control" id="docNome"
-                                                        placeholder="Ex: Manual do Utilizador">
-                                                </div>
-                                            </div>
-
-                                            <!-- Datas -->
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Data do Documento *</label>
-                                                    <input type="date" class="form-control" id="docData">
-                                                </div>
-
-                                                <div class="col-md-6 mb-3">
-                                                    <label class="form-label">Data de Validade</label>
-                                                    <input type="date" class="form-control" id="docValidade">
-                                                </div>
-                                            </div>
-
-                                            <!-- Upload -->
-                                            <div class="mb-3">
-                                                <label class="form-label">Ficheiro (PDF) *</label>
-                                                <input type="file" class="form-control" id="docFicheiro"
-                                                    accept="application/pdf">
-                                            </div>
-
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            <button type="button" class="btn"
-                                                style="background-color:#1a826d; color:white;"
-                                                onclick="adicionarDocumento()">
-                                                Guardar Documento
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
                     </form>
@@ -815,7 +741,7 @@
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="../../../assets/js/1241344.js"></script>
 
-    
+
 
 
 
