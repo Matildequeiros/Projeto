@@ -136,3 +136,9 @@ document.querySelectorAll(".remover-fornecedor").forEach(btn => {
         removerBlocoFornecedor(btn.closest(".fornecedor-bloco"));
     });
 });
+
+// Popover do novo equipamento
+document.addEventListener("DOMContentLoaded", function () {
+    const popovers = document.querySelectorAll('[data-bs-toggle="popover"]');
+    popovers.forEach(p => new bootstrap.Popover(p));
+});
