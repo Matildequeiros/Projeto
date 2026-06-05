@@ -71,10 +71,13 @@
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a></li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li><a class="dropdown-item" href="../../../Login/login.html">
-                            <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
+                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
                     </ul>
                 </div>
             </div>
@@ -92,7 +95,7 @@
                 <h4 class="fw-bold mb-4">Menu</h4>
 
                 <nav>
-                     <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
+                    <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
                         <i class="fas fa-chart-line me-2"></i> Dashboard
                     </a>
 
@@ -116,9 +119,9 @@
                         <i class="fas fa-file-medical me-2"></i> Documentação
                     </a>
 
-                    <a href="../Garantias e contratos/lista_garantias_contratos.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                            style="color: white; transition: 0.2s;">
-                            <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
+                    <a href="../Garantias e contratos/lista_garantias_contratos.html"
+                        class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white; transition: 0.2s;">
+                        <i class="fas fa-file-contract me-2"></i> Garantias e Contratos
                     </a>
 
                     <a href="../Gestão da Área Pública/editar_public.html"
@@ -140,68 +143,67 @@
 
                     <form>
 
-                        <!-- Código interno -->
+                        <!-- Código Interno -->
                         <div class="mb-3">
                             <label class="form-label">Código Interno *</label>
-                            <input type="text" class="form-control" value="[codigo]">
+                            <input type="text" class="form-control" placeholder="Ex: F001">
                         </div>
 
                         <!-- Nome + NIF -->
                         <div class="row">
                             <div class="col-md-8 mb-3">
                                 <label class="form-label">Nome da Empresa *</label>
-                                <input type="text" class="form-control" value="[nome]">
+                                <input type="text" class="form-control" placeholder="Ex: MedTech Solutions">
                             </div>
 
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">NIF *</label>
-                                <input type="number" class="form-control" value="[nif]">
+                                <input type="number" class="form-control" placeholder="123456789">
                             </div>
                         </div>
 
                         <!-- Contacto + Email -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Contacto Geral *</label>
-                                <input type="number" class="form-control" value="[contacto]">
+                                <label class="form-label">Telefone Geral *</label>
+                                <input type="number" class="form-control" placeholder="253 000 000">
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Email *</label>
-                                <input type="email" class="form-control" value="[email]">
+                                <label class="form-label">Email Geral *</label>
+                                <input type="email" class="form-control" placeholder="email@empresa.com">
                             </div>
                         </div>
 
                         <!-- Morada -->
                         <div class="mb-3">
                             <label class="form-label">Morada *</label>
-                            <input type="text" class="form-control" value="[morada]">
+                            <input type="text" class="form-control" placeholder="Rua, nº, cidade">
                         </div>
 
                         <!-- Website + Pessoa de contacto -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Website</label>
-                                <input type="text" class="form-control" value="[website]">
+                                <input type="text" class="form-control" placeholder="www.empresa.com">
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Pessoa de Contacto</label>
-                                <input type="text" class="form-control" value="[pessoa_contacto]">
+                                <input type="text" class="form-control" placeholder="Nome da pessoa">
                             </div>
                         </div>
 
                         <!-- Telefone pessoa contacto + Tipo -->
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Telefone do Responsável</label>
-                                <input type="number" class="form-control" value="[telefone_pessoa]">
+                                <label class="form-label">Telefone da Pessoa de Contacto</label>
+                                <input type="number" class="form-control" placeholder="912345678">
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Tipo de Fornecedor *</label>
+                                <label class="form-label">Tipo *</label>
                                 <select class="form-select">
-                                    <option selected>[tipo]</option>
                                     <option>Fabricante</option>
                                     <option>Distribuidor / Comercial</option>
                                     <option>Assistência Técnica</option>
@@ -213,15 +215,17 @@
                         <!-- Observações -->
                         <div class="mb-3">
                             <label class="form-label">Observações</label>
-                            <textarea class="form-control" rows="3">[observacoes]</textarea>
+                            <textarea class="form-control" rows="3"></textarea>
                         </div>
 
                         <!-- Botões -->
                         <div class="d-flex justify-content-between mt-4">
                             <a href="lista_fornecedores.html" class="btn btn-secondary">Cancelar</a>
-                            <button type="submit" class="btn" style="background-color: #1a826d; color: white;">
+
+                            <a href="lista_fornecedores.html" class="btn"
+                                style="background-color: #1a826d; color: white;">
                                 Guardar Alterações
-                            </button>
+                            </a>
                         </div>
 
                     </form>
@@ -229,6 +233,7 @@
                 </div>
 
             </main>
+
 
         </div>
     </div>

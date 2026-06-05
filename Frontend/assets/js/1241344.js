@@ -43,11 +43,8 @@ function validarSeparador(id) {
 
 function validarEAvancar(separadorAtual, separadorSeguinte) {
 
-    if (validarSeparador(separadorAtual)) {
-        desbloquearSeparador(separadorSeguinte);
-    } else {
-        alert("Preencha todos os campos antes de avançar.");
-    }
+    desbloquearSeparador(separadorSeguinte);
+
 }
 
 
@@ -103,3 +100,39 @@ function adicionarBlocoDocumento() {
 
     container.appendChild(bloco);
 }
+
+// ADICIONAR FORNECEDOR
+document.getElementById("adicionarFornecedor").addEventListener("click", function () {
+    const container = document.getElementById("fornecedores-container");
+    const blocoOriginal = container.querySelector(".fornecedor-bloco");
+
+    // Clonar bloco
+    const novoBloco = blocoOriginal.cloneNode(true);
+
+    // Limpar inputs
+    novoBloco.querySelectorAll("input, textarea").forEach(input => input.value = "");
+
+    // Ativar botão remover no novo bloco
+    novoBloco.querySelector(".remover-fornecedor").addEventListener("click", function () {
+        removerBlocoFornecedor(novoBloco);
+    });
+
+    container.appendChild(novoBloco);
+});
+
+// REMOVER FORNECEDOR
+function removerBlocoFornecedor(bloco) {
+    const container = document.getElementById("fornecedores-container");
+    const total = container.querySelectorAll(".fornecedor-bloco").length;
+
+    if (total > 1) {
+        bloco.remove();
+    }
+}
+
+// Ativar remover no primeiro bloco
+document.querySelectorAll(".remover-fornecedor").forEach(btn => {
+    btn.addEventListener("click", function () {
+        removerBlocoFornecedor(btn.closest(".fornecedor-bloco"));
+    });
+});

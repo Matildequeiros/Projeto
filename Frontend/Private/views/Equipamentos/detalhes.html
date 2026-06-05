@@ -285,55 +285,172 @@
 
                             <h5 class="section-title">Aquisição</h5>
 
-                            <div class="info-row"><span class="info-label">Data de Aquisição:</span><span
-                                    class="info-value">12/03/2025</span></div>
-                            <div class="info-row"><span class="info-label">Custo (€):</span><span
-                                    class="info-value">3500</span></div>
-                            <div class="info-row"><span class="info-label">Tipo de Entrada:</span><span
-                                    class="info-value">Compra</span></div>
-                            <div class="info-row"><span class="info-label">Nº Fatura:</span><span
-                                    class="info-value">FT‑2025‑00321</span></div>
-                            <div class="info-row"><span class="info-label">Fatura (PDF):</span><span
-                                    class="info-value"><a href="#" target="_blank"
-                                        style="color:#1a826d; font-weight:600;">Ver Fatura</a></span></div>
+                            <div class="info-row"><span class="info-label">Data de Aquisição:</span>
+                                <span class="info-value">12/03/2025</span>
+                            </div>
+
+                            <div class="info-row"><span class="info-label">Custo (€):</span>
+                                <span class="info-value">3500</span>
+                            </div>
+
+                            <div class="info-row"><span class="info-label">Tipo de Entrada:</span>
+                                <span class="info-value">Compra</span>
+                            </div>
+
+                            <div class="info-row"><span class="info-label">Nº Fatura:</span>
+                                <span class="info-value">FT‑2025‑00321</span>
+                            </div>
+
+                            <div class="info-row"><span class="info-label">Fatura (PDF):</span>
+                                <span class="info-value">
+                                    <a href="#" target="_blank" style="color:#1a826d; font-weight:600;">Ver Fatura</a>
+                                </span>
+                            </div>
 
                         </div>
                     </div>
+
 
                     <!-- SEPARADOR 3 — FORNECEDOR ASSOCIADO -->
                     <div class="tab-pane fade" id="fornecedor">
-                        <div class="info-box">
 
-                            <h5 class="section-title">Fornecedor Associado</h5>
+                        <div class="accordion" id="accordionFornecedores">
 
-                            <div class="info-row"><span class="info-label">Código Interno:</span><span
-                                    class="info-value">F001</span></div>
-                            <div class="info-row"><span class="info-label">Empresa:</span><span
-                                    class="info-value">MedTech Solutions</span></div>
-                            <div class="info-row"><span class="info-label">NIF:</span><span
-                                    class="info-value">123456789</span></div>
-                            <div class="info-row"><span class="info-label">Telefone:</span><span
-                                    class="info-value">912345678</span></div>
-                            <div class="info-row"><span class="info-label">Email:</span><span
-                                    class="info-value">email@empresa.com</span></div>
-                            <div class="info-row"><span class="info-label">Morada:</span><span class="info-value">Rua
-                                    Exemplo, Porto</span></div>
-                            <div class="info-row"><span class="info-label">Website:</span><span
-                                    class="info-value">www.empresa.com</span></div>
-                            <div class="info-row"><span class="info-label">Pessoa de Contacto:</span><span
-                                    class="info-value">João Silva</span></div>
-                            <div class="info-row"><span class="info-label">Telefone Contacto:</span><span
-                                    class="info-value">912345678</span></div>
-                            <div class="info-row"><span class="info-label">Tipo:</span><span
-                                    class="info-value">Fabricante</span></div>
+                            <!-- FORNECEDOR 1 -->
+                            <div class="accordion-item">
+
+                                <h2 class="accordion-header" id="heading1">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse1">
+                                        F001 – MedTech Solutions
+                                    </button>
+                                </h2>
+
+                                <div id="collapse1" class="accordion-collapse collapse show"
+                                    data-bs-parent="#accordionFornecedores">
+
+                                    <div class="accordion-body">
+
+                                        <!-- SECÇÃO 1 — DADOS DA ASSOCIAÇÃO -->
+                                        <h5 class="section-title">Dados da Associação</h5>
+
+                                        <div class="row">
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Tipo:</span>
+                                                    <span class="info-value">Fabricante</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Pessoa de Contacto:</span>
+                                                    <span class="info-value">João Silva</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Telefone Contacto:</span>
+                                                    <span class="info-value">912345678</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Morada Associada:</span>
+                                                    <span class="info-value">Armazém Norte – Braga</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="info-row">
+                                                    <span class="info-label">Observações:</span>
+                                                    <span class="info-value">Responsável pelas revisões anuais</span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <hr>
+
+                                        <!-- SECÇÃO 2 — DADOS DO FORNECEDOR -->
+                                        <h5 class="section-title">Informação do Fornecedor</h5>
+
+                                        <div class="row">
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Código Interno:</span>
+                                                    <span class="info-value">F001</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Empresa:</span>
+                                                    <span class="info-value">MedTech Solutions</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">NIF:</span>
+                                                    <span class="info-value">123456789</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Telefone:</span>
+                                                    <span class="info-value">912345678</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Email:</span>
+                                                    <span class="info-value">email@empresa.com</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Morada:</span>
+                                                    <span class="info-value">Rua Exemplo, Porto</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="info-row">
+                                                    <span class="info-label">Website:</span>
+                                                    <span class="info-value">www.empresa.com</span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
+
                     </div>
+
+
 
                     <!-- SEPARADOR 4 — LOCALIZAÇÃO ASSOCIADA -->
                     <div class="tab-pane fade" id="localizacao">
                         <div class="info-box">
 
                             <h5 class="section-title">Localização Associada</h5>
+
+                            <div class="info-row">
+                                <span class="info-label">Código:</span>
+                                <span class="info-value">LOC001</span>
+                            </div>
 
                             <div class="info-row"><span class="info-label">Edifício:</span><span
                                     class="info-value">Edifício A</span></div>

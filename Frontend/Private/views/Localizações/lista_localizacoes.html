@@ -175,34 +175,17 @@
                     <!-- Pesquisa geral -->
                     <div class="mb-3">
                         <input type="text" id="pesquisaLocalizacao" class="form-control search-input"
-                            placeholder="Pesquisar por qualquer campo…">
+                            placeholder="Edifício, piso, serviço...">
                     </div>
 
                     <div class="row g-3">
 
-                        <!-- Edifício -->
+                        <!-- Código -->
                         <div class="col-md-3">
-                            <label class="form-label">Edifício</label>
-                            <input type="text" id="filtroEdificio" class="form-control" placeholder="Ex: Edifício A">
+                            <label class="form-label">Código</label>
+                            <input type="text" id="filtroCodigo" class="form-control" placeholder="Ex: LOC001">
                         </div>
 
-                        <!-- Piso -->
-                        <div class="col-md-3">
-                            <label class="form-label">Piso</label>
-                            <input type="text" id="filtroPiso" class="form-control" placeholder="Ex: 1, 2, 3…">
-                        </div>
-
-                        <!-- Serviço -->
-                        <div class="col-md-3">
-                            <label class="form-label">Serviço</label>
-                            <input type="text" id="filtroServicoLocal" class="form-control" placeholder="Ex: Urgência">
-                        </div>
-
-                        <!-- Sala -->
-                        <div class="col-md-3">
-                            <label class="form-label">Sala</label>
-                            <input type="text" id="filtroSala" class="form-control" placeholder="Ex: Sala 12">
-                        </div>
 
                     </div>
 
@@ -223,6 +206,7 @@
                     <table class="table table-bordered table-striped align-middle" style="min-width: 1100px;">
                         <thead>
                             <tr style="background-color: #1a826d; color: white;">
+                                <th>Código</th>
                                 <th>Edifício</th>
                                 <th>Piso</th>
                                 <th>Serviço</th>
@@ -233,6 +217,7 @@
 
                         <tbody>
                             <tr>
+                                <td>[codigo]</td>
                                 <td>[edificio]</td>
                                 <td>[piso]</td>
                                 <td>[servico]</td>
@@ -248,7 +233,7 @@
                                     </a>
 
                                     <a class="acao-box" style="cursor: pointer;" onclick="abrirModalApagarLocalizacao(
-       '#',
+       'LOC001',
        'Edifício A',
        'Piso 2',
        'Urgência',
@@ -271,7 +256,7 @@
 
     <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
 
-    <!-- MODAL REMOVER LOCALIZAÇÃO (ESTILO IGUAL AO APAGAR.HTML) -->
+    <!-- MODAL REMOVER LOCALIZAÇÃO -->
     <div class="modal fade" id="modalApagarLocalizacao" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
             <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
@@ -298,9 +283,11 @@
                 <div class="d-flex justify-content-between mt-4">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 
-                    <a id="btnConfirmarApagarLocalizacao" class="btn" style="background-color: #1a826d; color: white;">
+                    <a href="lista_localizacoes.html" id="btnConfirmarApagarLocalizacao" class="btn"
+                        style="background-color: #1a826d; color: white;">
                         <i class="fa-solid fa-trash me-2"></i> Remover Localização
                     </a>
+
                 </div>
 
             </div>
@@ -308,20 +295,20 @@
     </div>
 
     <script>
-        function abrirModalApagarLocalizacao(link, edificio, piso, servico, sala) {
+        function abrirModalApagarLocalizacao(codigo, edificio, piso, servico, sala) {
 
             document.getElementById("dadosLocalizacao").innerHTML = `
+        <p><strong>Código:</strong> ${codigo}</p>
         <p><strong>Edifício:</strong> ${edificio}</p>
         <p><strong>Piso:</strong> ${piso}</p>
         <p><strong>Serviço / Departamento:</strong> ${servico}</p>
         <p><strong>Sala / Gabinete:</strong> ${sala}</p>
     `;
 
-            document.getElementById("btnConfirmarApagarLocalizacao").href = link;
-
             const modal = new bootstrap.Modal(document.getElementById("modalApagarLocalizacao"));
             modal.show();
         }
+
     </script>
 
 </body>

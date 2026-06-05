@@ -212,11 +212,11 @@
                     <table class="table table-bordered table-striped align-middle" style="min-width: 1100px;">
                         <thead>
                             <tr style="background-color: #1a826d; color: white;">
-                                <th>Código</th>
+                                <th>Código Interno</th>
                                 <th>Nome</th>
                                 <th>Tipo</th>
-                                <th>Contacto Geral</th>
-                                <th>Telefone da Responsável</th>
+                                <th>Telefone Geral</th>
+                                <th>Telefone da Pessoa de Contacto</th>
                                 <th>Estado</th>
                                 <th class="text-center">Ações</th>
                             </tr>
@@ -224,11 +224,11 @@
 
                         <tbody>
                             <tr>
-                                <td>[codigo]</td>
+                                <td>[codigo interno]</td>
                                 <td>[nome]</td>
                                 <td>[tipo]</td>
-                                <td>[contacto geral]</td>
-                                <td>[telefone do responsável]</td>
+                                <td>[telefone geral]</td>
+                                <td>[telefone da pessoa de contacto]</td>
                                 <td>[estado]</td>
 
                                 <td class="text-center">
@@ -241,10 +241,9 @@
                                     </a>
 
                                     <a class="acao-box" style="cursor: pointer;" onclick="abrirModalApagarFornecedor(
-       '#', 
-       'MedSupply Portugal', 
-       '509 332 118', 
-       'geral@medsupply.pt'
+       'F001',
+    'MedSupply Portugal',
+    'Distribuidor / Comercial'
    )">
                                         <i class="fa-solid fa-trash"></i> Eliminar
                                     </a>
@@ -290,9 +289,11 @@
                 <div class="d-flex justify-content-between mt-4">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 
-                    <a id="btnConfirmarApagarFornecedor" class="btn" style="background-color: #1a826d; color: white;">
+                    <a href="lista_fornecedores.html" id="btnConfirmarApagarFornecedor" class="btn"
+                        style="background-color: #1a826d; color: white;">
                         <i class="fa-solid fa-trash me-2"></i> Remover Fornecedor
                     </a>
+
                 </div>
 
             </div>
@@ -300,20 +301,19 @@
     </div>
 
     <script>
-        function abrirModalApagarFornecedor(link, nome, nif, email) {
+        function abrirModalApagarFornecedor(codigo, nome, tipo) {
 
             document.getElementById("dadosFornecedor").innerHTML = `
+        <p><strong>Código:</strong> ${codigo}</p>
         <p><strong>Nome:</strong> ${nome}</p>
-        <p><strong>NIF:</strong> ${nif}</p>
-        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Tipo:</strong> ${tipo}</p>
     `;
-
-            document.getElementById("btnConfirmarApagarFornecedor").href = link;
 
             const modal = new bootstrap.Modal(document.getElementById("modalApagarFornecedor"));
             modal.show();
         }
     </script>
+
 
 </body>
 

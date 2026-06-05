@@ -600,6 +600,55 @@ body {
     opacity: 0.8;
 }
 
+/* Total (azul suave) */
+.card-indicador.total {
+    border-color: #6cb4ff !important;
+}
+.card-indicador.total h3 {
+    color: #6cb4ff !important;
+}
+
+/* Ativos (verde suave) */
+.card-indicador.ativos {
+    border-color: #6ec1b6 !important;
+}
+.card-indicador.ativos h3 {
+    color: #6ec1b6 !important;
+}
+
+/* Em Manutenção (amarelo pastel) */
+.card-indicador.manutencao {
+    border-color: #f7d774 !important;
+}
+.card-indicador.manutencao h3 {
+    color: #f7d774 !important;
+}
+
+/* Inativos (vermelho pastel) */
+.card-indicador.inativos {
+    border-color: #f28b82 !important;
+}
+.card-indicador.inativos h3 {
+    color: #f28b82 !important;
+}
+
+/* Garantia Expirada (laranja suave) */
+.card-indicador.garantia {
+    border-color: #f6a76e !important;
+}
+.card-indicador.garantia h3 {
+    color: #f6a76e !important;
+}
+
+/* Sem Documentação (roxo pastel) */
+.card-indicador.sem-doc {
+    border-color: #c8a2c8 !important;
+}
+.card-indicador.sem-doc h3 {
+    color: #c8a2c8 !important;
+}
+
+
 
 
 /* EDITAR_PUBLIC (ACCORDION) */
@@ -638,3 +687,4 @@ body {
 .accordion-button::after {
     filter: hue-rotate(120deg) brightness(0.7);
 }
+
