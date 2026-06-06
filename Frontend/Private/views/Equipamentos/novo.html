@@ -459,13 +459,134 @@
                                         <input type="text" class="form-control" placeholder="Ex: FT-2025-00321">
                                     </div>
 
-                                    <!-- PDF da fatura -->
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Fatura (PDF)</label>
-                                        <input type="file" class="form-control" id="pdfFatura" accept="application/pdf">
+
+
+                                </div>
+
+                                <hr class="my-4">
+
+                                <div class="accordion" id="accordionAquisicao">
+
+                                    <!-- ITEM 1 — Documentos da Aquisição -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingDocAquisicao">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseDocAquisicao" aria-expanded="true"
+                                                aria-controls="collapseDocAquisicao">
+                                                Documentos da Aquisição
+                                            </button>
+                                        </h2>
+
+                                        <div id="collapseDocAquisicao" class="accordion-collapse collapse show"
+                                            aria-labelledby="headingDocAquisicao" data-bs-parent="#accordionAquisicao">
+
+                                            <div class="accordion-body">
+
+                                                <div class="row">
+
+                                                    <!-- BLOCO 1 — Contrato de Aquisição -->
+                                                    <div class="col-md-6">
+                                                        <div class="border rounded p-3 mb-3">
+
+                                                            <h5 class="mb-3" style="color:#1a826d;">Contrato de
+                                                                Aquisição</h5>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Tipo de Documento *</label>
+                                                                <select class="form-select">
+                                                                    <option>Contrato de Compra</option>
+                                                                    <option>Nota de Encomenda</option>
+                                                                    <option>Contrato de Leasing</option>
+                                                                    <option>Contrato de Comodato</option>
+                                                                    <option>Contrato de Aluguer</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Nome do Documento *</label>
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Ex: Contrato de Compra">
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Data do Documento
+                                                                        *</label>
+                                                                    <input type="date" class="form-control">
+                                                                </div>
+
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Data de Validade</label>
+                                                                    <input type="date" class="form-control">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Ficheiro (PDF) *</label>
+                                                                <input type="file" class="form-control"
+                                                                    accept="application/pdf">
+                                                            </div>
+
+                                                            <button type="button" class="btn btn-danger">Remover
+                                                                Documento</button>
+
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- BLOCO 2 — Fatura da Aquisição -->
+                                                    <div class="col-md-6">
+                                                        <div class="border rounded p-3 mb-3">
+
+                                                            <h5 class="mb-3" style="color:#1a826d;">Fatura da Aquisição
+                                                            </h5>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Tipo de Documento *</label>
+                                                                <select class="form-select">
+                                                                    <option>Fatura</option>
+                                                                    <option>Nota de Crédito</option>
+                                                                    <option>Documento de Pagamento</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Nome do Documento *</label>
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Ex: Fatura FT-2025-00321">
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Data da Fatura *</label>
+                                                                    <input type="date" class="form-control">
+                                                                </div>
+
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Data de Pagamento</label>
+                                                                    <input type="date" class="form-control">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Ficheiro (PDF) *</label>
+                                                                <input type="file" class="form-control"
+                                                                    accept="application/pdf">
+                                                            </div>
+
+                                                            <button type="button" class="btn btn-danger">Remover
+                                                                Documento</button>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
+
 
                                 <!-- Botões -->
                                 <div class="d-flex justify-content-between mt-4">
@@ -634,11 +755,77 @@
                                     <textarea class="form-control" rows="3"></textarea>
                                 </div>
 
-                                <!-- Documento PDF -->
-                                <div class="mb-3">
-                                    <label class="form-label">Documento da Garantia (PDF)</label>
-                                    <input type="file" class="form-control" accept="application/pdf">
+                                <hr class="my-4">
+
+                                <div class="accordion" id="accordionGarantia">
+
+                                    <!-- ITEM 1 — Certificado de Garantia -->
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingCertGarantia">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseCertGarantia" aria-expanded="true"
+                                                aria-controls="collapseCertGarantia">
+                                                Certificado de Garantia
+                                            </button>
+                                        </h2>
+
+                                        <div id="collapseCertGarantia" class="accordion-collapse collapse show"
+                                            aria-labelledby="headingCertGarantia" data-bs-parent="#accordionGarantia">
+
+                                            <div class="accordion-body">
+
+                                                <div class="border rounded p-3 mb-3">
+
+                                                    <h5 class="mb-3" style="color:#1a826d;">Certificado de Garantia</h5>
+
+                                                    <!-- Tipo de Documento -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Tipo de Documento *</label>
+                                                        <select class="form-select">
+                                                            <option>Certificado de Garantia</option>
+                                                            <option>Termos da Garantia</option>
+                                                            <option>Comprovativo de Garantia</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Nome -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Nome do Documento *</label>
+                                                        <input type="text" class="form-control"
+                                                            placeholder="Ex: Certificado de Garantia">
+                                                    </div>
+
+                                                    <!-- Datas -->
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Data do Documento *</label>
+                                                            <input type="date" class="form-control">
+                                                        </div>
+
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Data de Validade</label>
+                                                            <input type="date" class="form-control">
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- PDF -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Ficheiro (PDF) *</label>
+                                                        <input type="file" class="form-control"
+                                                            accept="application/pdf">
+                                                    </div>
+
+                                                    <button type="button" class="btn btn-danger">Remover
+                                                        Documento</button>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
+
 
                                 <!-- Botões -->
                                 <div class="d-flex justify-content-between mt-4">
@@ -714,11 +901,79 @@
                                         <textarea class="form-control" rows="3"></textarea>
                                     </div>
 
-                                    <!-- PDF -->
-                                    <div class="mb-3">
-                                        <label class="form-label">Documento do Contrato (PDF)</label>
-                                        <input type="file" class="form-control" accept="application/pdf">
+                                    <hr class="my-4">
+
+                                    <div class="accordion" id="accordionContratoManutencao">
+
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="headingContratoManutencaoDoc">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                    data-bs-target="#collapseContratoManutencaoDoc" aria-expanded="true"
+                                                    aria-controls="collapseContratoManutencaoDoc">
+                                                    Documento do Contrato de Manutenção
+                                                </button>
+                                            </h2>
+
+                                            <div id="collapseContratoManutencaoDoc"
+                                                class="accordion-collapse collapse show"
+                                                aria-labelledby="headingContratoManutencaoDoc"
+                                                data-bs-parent="#accordionContratoManutencao">
+
+                                                <div class="accordion-body">
+
+                                                    <div class="border rounded p-3 mb-3">
+
+                                                        <h5 class="mb-3" style="color:#1a826d;">Contrato de Manutenção
+                                                        </h5>
+
+                                                        <!-- Tipo de Documento -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Tipo de Documento *</label>
+                                                            <select class="form-select">
+                                                                <option>Contrato de Manutenção</option>
+                                                                <option>SLA</option>
+                                                                <option>Plano de Manutenção</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <!-- Nome -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Nome do Documento *</label>
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Ex: Contrato de Manutenção 2024-2025">
+                                                        </div>
+
+                                                        <!-- Datas -->
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="form-label">Data do Documento *</label>
+                                                                <input type="date" class="form-control">
+                                                            </div>
+
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="form-label">Data de Validade</label>
+                                                                <input type="date" class="form-control">
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- PDF -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Ficheiro (PDF) *</label>
+                                                            <input type="file" class="form-control"
+                                                                accept="application/pdf">
+                                                        </div>
+
+                                                        <button type="button" class="btn btn-danger">Remover
+                                                            Documento</button>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
+
 
                                 </div>
 
