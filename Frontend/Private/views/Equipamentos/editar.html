@@ -700,7 +700,8 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
 
                                 <!-- Botões -->
                                 <div class="d-flex justify-content-between mt-4">
-                                    <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('componentes')">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="mostrarSeparador('componentes')">
                                         ← Anterior
                                     </button>
 
@@ -791,7 +792,8 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
 
                                 <!-- Botões navegação -->
                                 <div class="d-flex justify-content-between mt-3">
-                                    <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('aquisicao')">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="mostrarSeparador('aquisicao')">
                                         ← Anterior
                                     </button>
 
@@ -860,10 +862,28 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                                     </div>
                                 </div>
 
-                                <!-- Observações -->
-                                <div class="mb-3">
-                                    <label class="form-label">Observações</label>
-                                    <textarea class="form-control" rows="3"></textarea>
+                                <!-- Observações + Entidade Responsável -->
+                                <div class="row">
+
+                                    <!-- Entidade Responsável -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Entidade Responsável *</label>
+                                        <select class="form-select">
+                                            <option value="">Selecione...</option>
+                                            <option>Fabricante</option>
+                                            <option>Fornecedor Comercial</option>
+                                            <option>Distribuidor Autorizado</option>
+                                            <option>Outro</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Observações -->
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Observações</label>
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+
+
                                 </div>
 
                                 <hr class="my-4">
@@ -1007,10 +1027,27 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                                         </div>
                                     </div>
 
-                                    <!-- Observações -->
-                                    <div class="mb-3">
-                                        <label class="form-label">Observações</label>
-                                        <textarea class="form-control" rows="3"></textarea>
+                                    <!-- Observações + Entidade Responsável -->
+                                    <div class="row">
+
+                                        <!-- Entidade Responsável -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Entidade Responsável *</label>
+                                            <select class="form-select">
+                                                <option value="">Selecione...</option>
+                                                <option>Empresa de assistência técnica</option>
+                                                <option>Fabricante</option>
+                                                <option>Distribuidor Autorizado</option>
+                                                <option>Outro</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Observações -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Observações</label>
+                                            <textarea class="form-control" rows="3"></textarea>
+                                        </div>
+
                                     </div>
 
                                     <hr class="my-4">
