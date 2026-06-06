@@ -48,58 +48,42 @@ function validarEAvancar(separadorAtual, separadorSeguinte) {
 }
 
 
-// DOCUMENTO ASSOCIADO
-function adicionarBlocoDocumento() {
-
+// ADICIONAR DOCUMENTO
+document.getElementById("adicionarDocumento").addEventListener("click", function () {
     const container = document.getElementById("documentosContainer");
+    const blocoOriginal = container.querySelector(".documento-bloco");
 
-    const bloco = document.createElement("div");
-    bloco.classList.add("p-3", "border", "rounded", "mb-3");
-    bloco.style.borderColor = "#86b0aa";
+    // Clonar bloco
+    const novoBloco = blocoOriginal.cloneNode(true);
 
-    bloco.innerHTML = `
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Tipo de Documento *</label>
-                <select class="form-select">
-                    <option>Manual</option>
-                    <option>Ficha Técnica</option>
-                    <option>Certificado</option>
-                    <option>Relatório</option>
-                    <option>Outro</option>
-                </select>
-            </div>
+    // Limpar inputs
+    novoBloco.querySelectorAll("input, textarea").forEach(input => input.value = "");
+    novoBloco.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
 
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Nome do Documento *</label>
-                <input type="text" class="form-control" placeholder="Ex: Manual do Utilizador">
-            </div>
-        </div>
+    // Ativar botão remover
+    novoBloco.querySelector(".remover-documento").addEventListener("click", function () {
+        removerBlocoDocumento(novoBloco);
+    });
 
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Data do Documento *</label>
-                <input type="date" class="form-control">
-            </div>
+    container.appendChild(novoBloco);
+});
 
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Data de Validade</label>
-                <input type="date" class="form-control">
-            </div>
-        </div>
+// REMOVER DOCUMENTO
+function removerBlocoDocumento(bloco) {
+    const container = document.getElementById("documentosContainer");
+    const total = container.querySelectorAll(".documento-bloco").length;
 
-        <div class="mb-3">
-            <label class="form-label">Ficheiro (PDF) *</label>
-            <input type="file" class="form-control" accept="application/pdf">
-        </div>
-
-        <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">
-            Remover Documento
-        </button>
-    `;
-
-    container.appendChild(bloco);
+    if (total > 1) {
+        bloco.remove();
+    }
 }
+
+// Ativar remover no primeiro bloco
+document.querySelectorAll(".remover-documento").forEach(btn => {
+    btn.addEventListener("click", function () {
+        removerBlocoDocumento(btn.closest(".documento-bloco"));
+    });
+});
 
 // ADICIONAR FORNECEDOR
 document.getElementById("adicionarFornecedor").addEventListener("click", function () {
@@ -141,4 +125,62 @@ document.querySelectorAll(".remover-fornecedor").forEach(btn => {
 document.addEventListener("DOMContentLoaded", function () {
     const popovers = document.querySelectorAll('[data-bs-toggle="popover"]');
     popovers.forEach(p => new bootstrap.Popover(p));
+});
+
+
+
+// Bloquear a fatura de aquisição ao selecionar um tipo de entrada específico
+document.getElementById('tipoEntrada').addEventListener('change', function () {
+    const tipo = this.value;
+    const blocoFatura = document.getElementById('blocoFatura');
+
+    // Seleciona todos os inputs e selects dentro do bloco da fatura
+    const campos = blocoFatura.querySelectorAll('input, select');
+
+    if (tipo === 'compra') {
+        // Ativar campos
+        campos.forEach(c => c.disabled = false);
+        blocoFatura.style.opacity = "1";
+    } else {
+        // Desativar campos
+        campos.forEach(c => c.disabled = true);
+        blocoFatura.style.opacity = "0.5";
+    }
+});
+
+// ADICIONAR COMPONENTE
+document.getElementById("adicionarComponente").addEventListener("click", function () {
+    const container = document.getElementById("componentesContainer");
+    const blocoOriginal = container.querySelector(".componente-bloco");
+
+    // Clonar bloco
+    const novoBloco = blocoOriginal.cloneNode(true);
+
+    // Limpar inputs
+    novoBloco.querySelectorAll("input, textarea").forEach(input => input.value = "");
+    novoBloco.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+
+    // Ativar botão remover
+    novoBloco.querySelector(".remover-componente").addEventListener("click", function () {
+        removerBlocoComponente(novoBloco);
+    });
+
+    container.appendChild(novoBloco);
+});
+
+// REMOVER COMPONENTE
+function removerBlocoComponente(bloco) {
+    const container = document.getElementById("componentesContainer");
+    const total = container.querySelectorAll(".componente-bloco").length;
+
+    if (total > 1) {
+        bloco.remove();
+    }
+}
+
+// Ativar remover no primeiro bloco
+document.querySelectorAll(".remover-componente").forEach(btn => {
+    btn.addEventListener("click", function () {
+        removerBlocoComponente(btn.closest(".componente-bloco"));
+    });
 });

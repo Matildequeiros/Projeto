@@ -47,8 +47,10 @@
 
         .nav-tabs {
             border-bottom: 2px solid #1a826d;
-            justify-content: space-between;
-
+            justify-content: flex-start;
+            /* separadores juntos */
+            gap: 4px;
+            /* espaço pequeno entre eles */
         }
 
         .tab-content {
@@ -61,9 +63,9 @@
             font-weight: 600;
             border: none;
             border-radius: 8px 8px 0 0;
-            padding: 10px 18px;
+            padding: 6px 12px;
             text-align: center;
-            min-width: 120px;
+            min-width: 90px;
             line-height: 1.2;
             transition: 0.2s;
         }
@@ -192,6 +194,13 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dados" type="button">
                                 Equipamento
+                            </button>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#componentes"
+                                type="button">
+                                Componentes <br> e Consumíveis
                             </button>
                         </li>
 
@@ -370,10 +379,16 @@
                                             <i class="fa-solid fa-circle-info ms-1 text-muted" data-bs-toggle="popover"
                                                 data-bs-trigger="hover focus" data-bs-html="true" title="Criticidade"
                                                 data-bs-content="
-        Baixa - Indisponibilidade com impacto mínimo.<br>
-        Média - Indisponibilidade causa constrangimentos.<br>
-        Alta - Indisponibilidade compromete os cuidados<br>
-        Suporte de vida - Indisponibilidade coloca vidas em risco.
+        Baixa - Equipamentos cuja falha não tem impacto direto na
+segurança do doente.<br>
+        Média - Equipamentos utilizados em procedimentos clínicos,
+mas cuja falha não compromete imediatamente a vida
+do doente.
+<br>
+        Alta - Equipamentos essenciais para diagnóstico ou
+tratamento clínico.<br>
+        Suporte de vida - Equipamentos cuja falha pode colocar em risco
+imediato a vida do doente.
    ">
                                             </i>
 
@@ -400,7 +415,114 @@
                                     <a href="lista.html" class="btn btn-secondary">← Voltar</a>
 
                                     <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                        onclick="validarEAvancar('dados', 'aquisicao')">
+                                        onclick="validarEAvancar('dados', 'componentes')">
+                                        Seguinte →
+                                    </button>
+                                </div>
+
+                            </div>
+
+                            <!-- SEPARADOR 2 — COMPONENTES ASSOCIADOS -->
+                            <div class="tab-pane fade" id="componentes" role="tabpanel">
+
+                                <h4 class="mb-3" style="color:#1a826d;">Componentes Associados</h4>
+
+                                <p class="text-muted mb-3">
+                                    Adicione componentes ou consumíveis que fazem parte do equipamento principal.
+                                </p>
+
+                                <div id="componentesContainer">
+
+                                    <!-- BLOCO BASE DO COMPONENTE -->
+                                    <div class="componente-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
+
+                                        <div class="row g-3">
+
+                                            <!-- Tipo -->
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">
+                                                    Tipo *
+                                                    <i class="fa-solid fa-circle-info ms-1 text-muted"
+                                                        data-bs-toggle="popover" data-bs-trigger="hover focus"
+                                                        data-bs-html="true" title="Tipo de Item" data-bs-content="
+Componente - Parte técnica do equipamento (sensores, cabos, baterias, módulos).<br>
+Consumível - Item usado e substituído regularmente (gel, filtros, papel térmico).
+           ">
+                                                    </i>
+                                                </label>
+
+                                                <select class="form-select">
+                                                    <option value="componente">Componente</option>
+                                                    <option value="consumivel">Consumível</option>
+                                                </select>
+                                            </div>
+
+
+                                            <!-- Nome -->
+                                            <div class="col-md-4">
+                                                <label class="form-label">Nome *</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="Ex: Sensor SpO2, Gel, Cabo ECG">
+                                            </div>
+
+                                            <!-- Referência -->
+                                            <div class="col-md-4">
+                                                <label class="form-label">Referência</label>
+                                                <input type="text" class="form-control" placeholder="Ex: DS-100A">
+                                            </div>
+
+                                            <!-- Quantidade -->
+                                            <div class="col-md-4">
+                                                <label class="form-label">Quantidade</label>
+                                                <input type="number" class="form-control" placeholder="Ex: 3">
+                                            </div>
+
+                                            <!-- Estado -->
+                                            <div class="col-md-4">
+                                                <label class="form-label">Estado</label>
+                                                <select class="form-select">
+                                                    <option value="">—</option>
+                                                    <option>Ativo</option>
+                                                    <option>Em manutenção</option>
+                                                    <option>Inativo</option>
+                                                    <option>Em calibração</option>
+                                                    <option>Abatido</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Observações -->
+                                            <div class="col-md-12">
+                                                <label class="form-label">Observações</label>
+                                                <textarea class="form-control" rows="1"
+                                                    placeholder="Notas adicionais"></textarea>
+                                            </div>
+
+                                            <!-- Botão remover -->
+                                            <div class="col-12 text-end mt-1">
+                                                <button type="button" class="btn btn-danger btn-sm remover-componente">
+                                                    Remover
+                                                </button>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Botão adicionar -->
+                                <button type="button" class="btn btn-success mb-4" id="adicionarComponente">
+                                    + Adicionar
+                                </button>
+
+                                <!-- Botões navegação -->
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('dados')">
+                                        ← Anterior
+                                    </button>
+
+                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                        onclick="validarEAvancar('componentes', 'aquisicao')">
                                         Seguinte →
                                     </button>
                                 </div>
@@ -408,7 +530,7 @@
                             </div>
 
 
-                            <!-- SEPARADOR 2 — AQUISIÇÃO -->
+                            <!-- SEPARADOR 3 — AQUISIÇÃO -->
                             <div class="tab-pane fade" id="aquisicao" role="tabpanel">
 
                                 <h4 class="mb-3" style="color:#1a826d;">Aquisição</h4>
@@ -437,29 +559,20 @@
                                                 title="Tipo de Entrada" data-bs-content="
             Compra - Adquirido pela instituição.<br>
             Doação - Recebido sem contrapartida financeira.<br>
-            Leasing - Obtido através de contrato de leasing.<br>
-            Comodato - Cedido gratuitamente por entidade externa.<br>
-            Aluguer - Obtido através de contrato de aluguer.<br>
-            Requisição interna - Transferido de outro serviço ou unidade.
+            Empréstimo - Cedido temporariamente e devolvido após uso.<br>
+            Aluguer - Obtido através de contrato de aluguer.
        ">
                                             </i>
                                         </label>
 
-                                        <select class="form-select">
-                                            <option>Compra</option>
-                                            <option>Doação</option>
-                                            <option>Aluguer</option>
-                                            <option>Empréstimo</option>
+                                        <select class="form-select" id="tipoEntrada">
+                                            <option value="compra">Compra</option>
+                                            <option value="doacao">Doação</option>
+                                            <option value="aluguer">Aluguer</option>
+                                            <option value="emprestimo">Empréstimo</option>
                                         </select>
+
                                     </div>
-
-                                    <!-- Nº de fatura -->
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Número da Fatura / Documento</label>
-                                        <input type="text" class="form-control" placeholder="Ex: FT-2025-00321">
-                                    </div>
-
-
 
                                 </div>
 
@@ -491,22 +604,25 @@
                                                             <h5 class="mb-3" style="color:#1a826d;">Contrato de
                                                                 Aquisição</h5>
 
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Tipo de Documento *</label>
-                                                                <select class="form-select">
-                                                                    <option>Contrato de Compra</option>
-                                                                    <option>Nota de Encomenda</option>
-                                                                    <option>Contrato de Leasing</option>
-                                                                    <option>Contrato de Comodato</option>
-                                                                    <option>Contrato de Aluguer</option>
-                                                                </select>
+                                                            <div class="row">
+                                                                <!-- Tipo de Documento -->
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Tipo de Documento
+                                                                        *</label>
+                                                                    <select class="form-select">
+                                                                        <option>Contrato de Aquisição</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- Nome do Documento -->
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Nome do Documento
+                                                                        *</label>
+                                                                    <input type="text" class="form-control"
+                                                                        placeholder="Ex: Contrato de Compra">
+                                                                </div>
                                                             </div>
 
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Nome do Documento *</label>
-                                                                <input type="text" class="form-control"
-                                                                    placeholder="Ex: Contrato de Compra">
-                                                            </div>
 
                                                             <div class="row">
                                                                 <div class="col-md-6 mb-3">
@@ -534,26 +650,32 @@
                                                     </div>
 
                                                     <!-- BLOCO 2 — Fatura da Aquisição -->
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-6" id="blocoFatura">
+
                                                         <div class="border rounded p-3 mb-3">
 
                                                             <h5 class="mb-3" style="color:#1a826d;">Fatura da Aquisição
                                                             </h5>
 
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Tipo de Documento *</label>
-                                                                <select class="form-select">
-                                                                    <option>Fatura</option>
-                                                                    <option>Nota de Crédito</option>
-                                                                    <option>Documento de Pagamento</option>
-                                                                </select>
+                                                            <div class="row">
+                                                                <!-- Tipo de Documento -->
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Tipo de Documento
+                                                                        *</label>
+                                                                    <select class="form-select">
+                                                                        <option>Fatura de Aquisição</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- Nome do Documento -->
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Nome do Documento
+                                                                        *</label>
+                                                                    <input type="text" class="form-control"
+                                                                        placeholder="Ex: Contrato de Compra">
+                                                                </div>
                                                             </div>
 
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Nome do Documento *</label>
-                                                                <input type="text" class="form-control"
-                                                                    placeholder="Ex: Fatura FT-2025-00321">
-                                                            </div>
 
                                                             <div class="row">
                                                                 <div class="col-md-6 mb-3">
@@ -590,7 +712,8 @@
 
                                 <!-- Botões -->
                                 <div class="d-flex justify-content-between mt-4">
-                                    <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('dados')">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="mostrarSeparador('componentes')">
                                         ← Anterior
                                     </button>
 
@@ -602,7 +725,7 @@
 
                             </div>
 
-                            <!-- SEPARADOR 3 — FORNECEDOR ASSOCIADO -->
+                            <!-- SEPARADOR 4 — FORNECEDOR ASSOCIADO -->
                             <div class="tab-pane fade" id="fornecedor" role="tabpanel">
 
                                 <h4 class="mb-3" style="color:#1a826d;">Fornecedor Associado</h4>
@@ -681,7 +804,8 @@
 
                                 <!-- Botões navegação -->
                                 <div class="d-flex justify-content-between mt-3">
-                                    <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('dados')">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="mostrarSeparador('aquisicao')">
                                         ← Anterior
                                     </button>
 
@@ -693,7 +817,7 @@
 
                             </div>
 
-                            <!-- SEPARADOR 4 — LOCALIZAÇÃO ASSOCIADA -->
+                            <!-- SEPARADOR 5 — LOCALIZAÇÃO ASSOCIADA -->
                             <div class="tab-pane fade" id="localizacao" role="tabpanel">
 
                                 <h4 class="mb-3" style="color:#1a826d;">Localização Associada</h4>
@@ -731,7 +855,7 @@
 
                             </div>
 
-                            <!-- SEPARADOR 5 — GARANTIA -->
+                            <!-- SEPARADOR 6 — GARANTIA -->
                             <div class="tab-pane fade" id="garantia" role="tabpanel">
 
                                 <h4 class="mb-3" style="color:#1a826d;">Garantia</h4>
@@ -778,22 +902,23 @@
 
                                                     <h5 class="mb-3" style="color:#1a826d;">Certificado de Garantia</h5>
 
-                                                    <!-- Tipo de Documento -->
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Tipo de Documento *</label>
-                                                        <select class="form-select">
-                                                            <option>Certificado de Garantia</option>
-                                                            <option>Termos da Garantia</option>
-                                                            <option>Comprovativo de Garantia</option>
-                                                        </select>
+                                                    <div class="row">
+                                                        <!-- Tipo de Documento -->
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Tipo de Documento *</label>
+                                                            <select class="form-select">
+                                                                <option>Certificado de Garantia</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <!-- Nome do Documento -->
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Nome do Documento *</label>
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Ex: Certificado de Garntia">
+                                                        </div>
                                                     </div>
 
-                                                    <!-- Nome -->
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Nome do Documento *</label>
-                                                        <input type="text" class="form-control"
-                                                            placeholder="Ex: Certificado de Garantia">
-                                                    </div>
 
                                                     <!-- Datas -->
                                                     <div class="row">
@@ -842,7 +967,7 @@
 
                             </div>
 
-                            <!-- SEPARADOR 6 — CONTRATO DE MANUTENÇÃO -->
+                            <!-- SEPARADOR 7 — CONTRATO DE MANUTENÇÃO -->
                             <div class="tab-pane fade" id="contrato" role="tabpanel">
 
                                 <h4 class="mb-3" style="color:#1a826d;">Contrato de Manutenção</h4>
@@ -926,22 +1051,23 @@
                                                         <h5 class="mb-3" style="color:#1a826d;">Contrato de Manutenção
                                                         </h5>
 
-                                                        <!-- Tipo de Documento -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Tipo de Documento *</label>
-                                                            <select class="form-select">
-                                                                <option>Contrato de Manutenção</option>
-                                                                <option>SLA</option>
-                                                                <option>Plano de Manutenção</option>
-                                                            </select>
+                                                        <div class="row">
+                                                            <!-- Tipo de Documento -->
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="form-label">Tipo de Documento *</label>
+                                                                <select class="form-select">
+                                                                    <option>Contrato de Manutenção</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <!-- Nome do Documento -->
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="form-label">Nome do Documento *</label>
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Ex: Contrato de Manutenção 2024-2025">
+                                                            </div>
                                                         </div>
 
-                                                        <!-- Nome -->
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Nome do Documento *</label>
-                                                            <input type="text" class="form-control"
-                                                                placeholder="Ex: Contrato de Manutenção 2024-2025">
-                                                        </div>
 
                                                         <!-- Datas -->
                                                         <div class="row">
@@ -993,19 +1119,67 @@
                             </div>
 
 
-                            <!-- SEPARADOR 7 — DOCUMENTAÇÃO ASSOCIADA -->
+                            <!-- SEPARADOR 8 — DOCUMENTAÇÃO ASSOCIADA -->
                             <div class="tab-pane fade" id="documentos" role="tabpanel">
 
                                 <h4 class="mb-3" style="color:#1a826d;">Documentação Associada</h4>
 
-                                <!-- CONTÊINER DOS DOCUMENTOS -->
-                                <div id="documentosContainer"></div>
+                                <!-- CONTAINER DOS DOCUMENTOS -->
+                                <div id="documentosContainer">
 
-                                <!-- BOTÃO ADICIONAR NOVO DOCUMENTO -->
-                                <button type="button" class="btn mt-3" style="background-color:#1a826d; color:white;"
-                                    onclick="adicionarBlocoDocumento()">
+                                    <!-- BLOCO BASE DE DOCUMENTO -->
+                                    <div class="documento-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Tipo de Documento *</label>
+                                                <select class="form-select">
+                                                    <option>Manual</option>
+                                                    <option>Ficha</option>
+                                                    <option>Certificado</option>
+                                                    <option>Relatório</option>
+                                                    <option>Declaração</option>
+                                                    <option>Outro</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Nome do Documento *</label>
+                                                <input type="text" class="form-control"
+                                                    placeholder="Ex: Manual do Utilizador">
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Data do Documento *</label>
+                                                <input type="date" class="form-control">
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Data de Validade</label>
+                                                <input type="date" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Ficheiro (PDF) *</label>
+                                            <input type="file" class="form-control" accept="application/pdf">
+                                        </div>
+
+                                        <button type="button" class="btn btn-danger btn-sm remover-documento">
+                                            Remover Documento
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- BOTÃO ADICIONAR -->
+                                <button type="button" class="btn btn-success mb-3" id="adicionarDocumento">
                                     + Adicionar Documento
                                 </button>
+
 
                                 <!-- Botões -->
                                 <div class="d-flex justify-content-between mt-4">

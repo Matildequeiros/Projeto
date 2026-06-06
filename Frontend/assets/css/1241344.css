@@ -587,6 +587,8 @@ body {
     width: 100%;
     transition: 0.2s ease;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    position: relative;
+    padding-left: 45px;
 }
 
 .card-indicador:hover {
@@ -648,6 +650,18 @@ body {
     color: #c8a2c8 !important;
 }
 
+.indicador-icon {
+    font-size: 22px;
+    opacity: 0.8;
+}
+
+
+.card-indicador.total .indicador-icon { color: #6cb4ff; }
+.card-indicador.ativos .indicador-icon { color: #6ec1b6; }
+.card-indicador.manutencao .indicador-icon { color: #f7d774; }
+.card-indicador.inativos .indicador-icon { color: #f28b82; }
+.card-indicador.garantia .indicador-icon { color: #f6a76e; }
+.card-indicador.sem-doc .indicador-icon { color: #c8a2c8; }
 
 
 
