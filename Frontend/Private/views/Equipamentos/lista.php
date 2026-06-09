@@ -19,7 +19,7 @@
                     <strong>Listagem de Equipamentos</strong>
                 </h2>
 
-                <a href="novo.html" class="btn" style="background-color: #1a826d; color: white;">
+                <a href="novo.php" class="btn" style="background-color: #1a826d; color: white;">
                     <i class="fa-solid fa-plus me-2"></i> Novo Equipamento
                 </a>
             </div>
@@ -133,16 +133,16 @@
                             <td>[Criticidade]</td>
                             <td>[Localização]</td>
                             <td style="text-align: center;">
-                                <a href="detalhes.html" class="acao-box">
+                                <a href="detalhes.php" class="acao-box">
                                     <i class="fa-solid fa-eye"></i> Consultar
                                 </a>
 
-                                <a href="editar.html" class="acao-box">
+                                <a href="editar.php" class="acao-box">
                                     <i class="fa-solid fa-pen"></i> Editar
                                 </a>
 
                                 <a class="acao-box" style="cursor: pointer;"
-                                    onclick="abrirModalApagar('lista.html', 'EQ001', 'Monitor Cardíaco')">
+                                    onclick="abrirModalApagar('lista.php', 'EQ001', 'Monitor Cardíaco')">
                                     <i class="fa-solid fa-trash"></i> Eliminar
                                 </a>
 
@@ -189,7 +189,7 @@
             <div class="d-flex justify-content-between mt-4">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 
-                <a href="lista.html" id="btnConfirmarApagar" class="btn"
+                <a href="lista.php" id="btnConfirmarApagar" class="btn"
                     style="background-color: #1a826d; color: white;">
                     <i class="fa-solid fa-trash me-2"></i> Remover Equipamento
                 </a>

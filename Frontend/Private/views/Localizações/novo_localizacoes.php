@@ -51,8 +51,8 @@
 
                         <!-- Botões -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="lista_localizacoes.html" class="btn btn-secondary">Cancelar</a>
-                            <a href="lista_localizacoes.html" class="btn"
+                            <a href="lista_localizacoes.php" class="btn btn-secondary">Cancelar</a>
+                            <a href="lista_localizacoes.php" class="btn"
                                 style="background-color: #1a826d; color: white;">
                                 Guardar Localização
                             </a>

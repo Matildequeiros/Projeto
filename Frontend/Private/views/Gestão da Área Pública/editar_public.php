@@ -298,7 +298,7 @@
 
                         <!-- BOTÕES -->
                         <div class="d-flex justify-content-between mt-4">
-                            <a href="../../index.html" class="btn btn-secondary">
+                            <a href="../../index.php" class="btn btn-secondary">
                                 <i class="fa-solid fa-arrow-left me-2"></i> Voltar
                             </a>
 

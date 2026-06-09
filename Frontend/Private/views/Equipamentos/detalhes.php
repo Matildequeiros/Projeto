@@ -844,8 +844,8 @@
 
             <!-- BOTÕES -->
             <div class="d-flex justify-content-between mt-4">
-                <a href="lista.html" class="btn btn-secondary">Voltar</a>
-                <a href="editar.html" class="btn" style="background-color: #1a826d; color: white;">
+                <a href="lista.php" class="btn btn-secondary">Voltar</a>
+                <a href="editar.php" class="btn" style="background-color: #1a826d; color: white;">
                     Editar Equipamento
                 </a>
             </div>

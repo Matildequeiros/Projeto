@@ -95,9 +95,9 @@
 
                     <!-- Botões -->
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="lista_fornecedores.html" class="btn btn-secondary">Cancelar</a>
+                        <a href="lista_fornecedores.php" class="btn btn-secondary">Cancelar</a>
 
-                        <a href="lista_fornecedores.html" class="btn"
+                        <a href="lista_fornecedores.php" class="btn"
                             style="background-color: #1a826d; color: white;">
                             Guardar Fornecedor
                         </a>

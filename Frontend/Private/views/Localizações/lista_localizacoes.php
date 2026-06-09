@@ -18,7 +18,7 @@
                         <strong>Listagem de Localizações</strong>
                     </h2>
 
-                    <a href="novo_localizacoes.html" class="btn" style="background-color: #1a826d; color: white;">
+                    <a href="novo_localizacoes.php" class="btn" style="background-color: #1a826d; color: white;">
                         <i class="fa-solid fa-plus me-2"></i> Nova Localização
                     </a>
                 </div>
@@ -80,11 +80,11 @@
                                 <td>[sala]</td>
 
                                 <td class="text-center">
-                                    <a href="detalhes_localizacoes.html" class="acao-box">
+                                    <a href="detalhes_localizacoes.php" class="acao-box">
                                         <i class="fa-solid fa-eye"></i> Consultar
                                     </a>
 
-                                    <a href="editar_localizacoes.html" class="acao-box">
+                                    <a href="editar_localizacoes.php" class="acao-box">
                                         <i class="fa-solid fa-pen"></i> Editar
                                     </a>
 
@@ -110,7 +110,6 @@
         </div>
     </div>
 
-    <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
 
     <!-- MODAL REMOVER LOCALIZAÇÃO -->
     <div class="modal fade" id="modalApagarLocalizacao" tabindex="-1">
@@ -139,7 +138,7 @@
                 <div class="d-flex justify-content-between mt-4">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 
-                    <a href="lista_localizacoes.html" id="btnConfirmarApagarLocalizacao" class="btn"
+                    <a href="lista_localizacoes.php" id="btnConfirmarApagarLocalizacao" class="btn"
                         style="background-color: #1a826d; color: white;">
                         <i class="fa-solid fa-trash me-2"></i> Remover Localização
                     </a>

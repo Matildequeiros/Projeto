@@ -45,9 +45,9 @@
 
                     <!-- BOTÕES -->
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="lista_localizacoes.html" class="btn btn-secondary">Voltar</a>
+                        <a href="lista_localizacoes.php" class="btn btn-secondary">Voltar</a>
 
-                        <a href="editar_localizacoes.html" class="btn" style="background-color: #1a826d; color: white;">
+                        <a href="editar_localizacoes.php" class="btn" style="background-color: #1a826d; color: white;">
                             Editar Localização
                         </a>
                     </div>

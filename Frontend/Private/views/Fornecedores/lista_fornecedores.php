@@ -17,7 +17,7 @@
                         <strong>Listagem de Fornecedores</strong>
                     </h2>
 
-                    <a href="novo_fornecedores.html" class="btn" style="background-color: #1a826d; color: white;">
+                    <a href="novo_fornecedores.php" class="btn" style="background-color: #1a826d; color: white;">
                         <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
                     </a>
                 </div>
@@ -85,11 +85,11 @@
                                 <td>[estado]</td>
 
                                 <td class="text-center">
-                                    <a href="detalhes_fornecedores.html" class="acao-box">
-                                        <i class="fa-solid fa-eye"></i> Consultar
+                                    <a href="detalhes_fornecedores.php" class="acao-box">
+                                        <i class="fa-solid fa-eye"></i> Consultar 
                                     </a>
 
-                                    <a href="editar_fornecedores.html" class="acao-box">
+                                    <a href="editar_fornecedores.php" class="acao-box">
                                         <i class="fa-solid fa-pen"></i> Editar
                                     </a>
 
@@ -113,7 +113,7 @@
         </div>
     </div>
 
-    <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
+    
 
     <!-- MODAL REMOVER FORNECEDOR (ESTILO IGUAL AO APAGAR.HTML) -->
     <div class="modal fade" id="modalApagarFornecedor" tabindex="-1">
@@ -142,7 +142,7 @@
                 <div class="d-flex justify-content-between mt-4">
                     <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 
-                    <a href="lista_fornecedores.html" id="btnConfirmarApagarFornecedor" class="btn"
+                    <a href="lista_fornecedores.php" id="btnConfirmarApagarFornecedor" class="btn"
                         style="background-color: #1a826d; color: white;">
                         <i class="fa-solid fa-trash me-2"></i> Remover Fornecedor
                     </a>

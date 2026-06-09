@@ -228,7 +228,7 @@ imediato a vida do doente.
 
                             <!-- Botões -->
                             <div class="d-flex justify-content-between mt-4">
-                                <a href="lista.html" class="btn btn-secondary">← Voltar</a>
+                                <a href="lista.php" class="btn btn-secondary">← Voltar</a>
 
                                 <button type="button" class="btn" style="background-color:#1a826d; color:white;"
                                     onclick="validarEAvancar('dados', 'componentes')">
@@ -1042,7 +1042,7 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                                 </button>
 
                                 <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="window.location.href='lista.html'">
+                                    onclick="window.location.href='lista.php'">
                                     Guardar Equipamento ✔
                                 </button>
                             </div>
