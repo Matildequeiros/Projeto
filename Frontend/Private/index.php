@@ -7,7 +7,7 @@
 
             <?php include 'includes/sidebar.php'; ?> 
 
-            
+
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="col-md-9 col-lg-10 p-5 bg-light">
 
@@ -257,10 +257,3 @@
 
 
         <?php include 'includes/footer.php'; ?>
-</body>
-
-
-
-
-
-</html>

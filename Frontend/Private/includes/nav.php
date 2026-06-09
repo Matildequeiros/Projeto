@@ -5,7 +5,7 @@
             <!-- LOGO + TÍTULO -->
             <div class="col-6 d-flex align-items-center p-3">
                 <a href="index.html">
-                    <img src="../assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
+                    <img src="/PROJETO/Frontend/assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
                 </a>
                 <h3 class="mb-0 logo-text">
                     <span class="verde"><?php echo explode("Gest", APP_NAME)[0]; ?></span>

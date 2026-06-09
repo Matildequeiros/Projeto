@@ -541,13 +541,14 @@ body {
 /* 4 CARDS INICIAIS — SEMPRE EM 1 LINHA */
 .inicio-cards {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 colunas fixas */
+    grid-template-columns: repeat(4, 1fr);
+    /* 4 colunas fixas */
     gap: 20px;
     width: 100%;
 }
 
 /* Cada card */
-.inicio-cards > div {
+.inicio-cards>div {
     min-height: 180px;
     display: flex;
     flex-direction: column;
@@ -586,14 +587,14 @@ body {
     padding: 18px;
     width: 100%;
     transition: 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     position: relative;
     padding-left: 45px;
 }
 
 .card-indicador:hover {
     transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
 }
 
 .card-indicador .icon {
@@ -606,6 +607,7 @@ body {
 .card-indicador.total {
     border-color: #6cb4ff !important;
 }
+
 .card-indicador.total h3 {
     color: #6cb4ff !important;
 }
@@ -614,6 +616,7 @@ body {
 .card-indicador.ativos {
     border-color: #6ec1b6 !important;
 }
+
 .card-indicador.ativos h3 {
     color: #6ec1b6 !important;
 }
@@ -622,6 +625,7 @@ body {
 .card-indicador.manutencao {
     border-color: #f7d774 !important;
 }
+
 .card-indicador.manutencao h3 {
     color: #f7d774 !important;
 }
@@ -630,6 +634,7 @@ body {
 .card-indicador.inativos {
     border-color: #f28b82 !important;
 }
+
 .card-indicador.inativos h3 {
     color: #f28b82 !important;
 }
@@ -638,6 +643,7 @@ body {
 .card-indicador.garantia {
     border-color: #f6a76e !important;
 }
+
 .card-indicador.garantia h3 {
     color: #f6a76e !important;
 }
@@ -646,6 +652,7 @@ body {
 .card-indicador.sem-doc {
     border-color: #c8a2c8 !important;
 }
+
 .card-indicador.sem-doc h3 {
     color: #c8a2c8 !important;
 }
@@ -656,12 +663,29 @@ body {
 }
 
 
-.card-indicador.total .indicador-icon { color: #6cb4ff; }
-.card-indicador.ativos .indicador-icon { color: #6ec1b6; }
-.card-indicador.manutencao .indicador-icon { color: #f7d774; }
-.card-indicador.inativos .indicador-icon { color: #f28b82; }
-.card-indicador.garantia .indicador-icon { color: #f6a76e; }
-.card-indicador.sem-doc .indicador-icon { color: #c8a2c8; }
+.card-indicador.total .indicador-icon {
+    color: #6cb4ff;
+}
+
+.card-indicador.ativos .indicador-icon {
+    color: #6ec1b6;
+}
+
+.card-indicador.manutencao .indicador-icon {
+    color: #f7d774;
+}
+
+.card-indicador.inativos .indicador-icon {
+    color: #f28b82;
+}
+
+.card-indicador.garantia .indicador-icon {
+    color: #f6a76e;
+}
+
+.card-indicador.sem-doc .indicador-icon {
+    color: #c8a2c8;
+}
 
 
 
@@ -670,9 +694,9 @@ body {
 .accordion-item {
     border: none;
     margin-bottom: 12px;
-    border-radius: 10px ;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
 .accordion-button {
@@ -702,3 +726,48 @@ body {
     filter: hue-rotate(120deg) brightness(0.7);
 }
 
+
+/* LISTA EQUIPAMENTOS */
+.acao-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #d7f0ec;
+    color: #1a826d;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-right: 8px;
+    transition: 0.2s ease-in-out;
+    border: 1px solid #c3e7e2;
+}
+
+.acao-box:hover {
+    background-color: #c9e9e4;
+    color: #166c59;
+    border-color: #b7e0da;
+}
+
+.filtros-box {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+}
+
+.search-input {
+    border-radius: 8px;
+}
+
+.btn-filtrar {
+    background-color: #1a826d;
+    color: white;
+}
+
+.btn-filtrar:hover {
+    background-color: #166c59;
+    color: white;
+}

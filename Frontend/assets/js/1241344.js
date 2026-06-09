@@ -184,3 +184,20 @@ document.querySelectorAll(".remover-componente").forEach(btn => {
         removerBlocoComponente(btn.closest(".componente-bloco"));
     });
 });
+
+// MODAL APAGAR NA LSITA 
+ function abrirModalApagar(link, codigo, designacao) {
+
+            // Preenche os dados dentro do modal
+            document.getElementById("dadosApagar").innerHTML = `
+        <p><strong>Código Interno:</strong> ${codigo}</p>
+        <p><strong>Designação:</strong> ${designacao}</p>
+    `;
+
+            // Define o link do botão "Remover"
+            document.getElementById("btnConfirmarApagar").href = link;
+
+            // Abre o modal
+            const modal = new bootstrap.Modal(document.getElementById("modalApagar"));
+            modal.show();
+        }
