@@ -1,3 +1,23 @@
+<?php
+
+if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+ // Redireciona para o formulário de login (interface pública)
+ header('Location: ../public/login.php');
+ // Encerra a execução do script imediatamente após o redirecionamento
+ return;
+} 
+?> 
+
+<?php
+$username = isset($_POST['text_username']) ? $_POST['text_username'] : '';
+// O mesmo para o campo da password.
+$password = isset($_POST['text_password']) ? $_POST['text_password'] : '';
+
+echo "Utilizador: " . $username . "<br>";
+echo "Password: " . $password;
+?>
+
+
 <?php include 'includes/header.php'; ?>
 
 <?php include 'includes/nav.php'; ?>     
