@@ -9,6 +9,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../assets/bootstrap/bootstrap.min.css">
 
+    <!-- favicon -->
+    <link rel="shortcut icon" href="../assets/img/Logo.png" type="image/png">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="../assets/fontawesome/all.min.css">
