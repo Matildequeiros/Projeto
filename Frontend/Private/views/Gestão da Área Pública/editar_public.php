@@ -1,100 +1,12 @@
-<!DOCTYPE html>
-<html lang="pt">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HospitalGest - Consultar Fornecedor</title>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
-
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="../../../assets/css/1241344.css">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="../../../assets/fontawesome/all.min.css">
-
-    <!-- Favicon -->
-    <link rel="shortcut icon" href="../../../assets/img/Logo.png" type="image/png">
-
-
-
-</head>
-
-<body>
-
-    <!-- NAVBAR -->
-    <header class="container-fluid" style="background-color: #acd6d0;">
-        <div class="row align-items-center">
-
-            <div class="col-6 d-flex align-items-center p-3">
-                <a href="../../index.html">
-                    <img src="../../../assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
-                </a>
-                <h3 class="mb-0 logo-text">
-                    <span class="verde">Hospital</span><span class="azul">Gest</span>
-                </h3>
-            </div>
-
-            <div class="col-6 text-end p-3">
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                        style="background-color: #86B0AA; color: white; border: none;">
-                        <i class="fa-regular fa-user me-2"></i> Utilizador
-                    </button>
-
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-key me-2"></i> Alterar password</a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="../../../Login/login.html">
-                                <i class="fa-solid fa-right-from-bracket me-2"></i> Sair</a></li>
-                    </ul>
-                </div>
-            </div>
-
-        </div>
-    </header>
+<?php include '../../includes/header.php'; ?>
+<?php include '../../includes/nav.php'; ?>
 
     <div class="container-fluid">
         <div class="row">
 
-            <!-- SIDEBAR -->
-            <aside class="col-md-3 col-lg-2 p-3 min-vh-100 shadow-sm"
-                style="background-color: #86b0aa; color: white; border-radius: 0 10px 10px 0;">
+            <?php include '../../includes/sidebar.php'; ?>
 
-                <h4 class="fw-bold mb-4">Menu</h4>
-
-                <nav>
-                    <a href="../../index.html" class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white;">
-                        <i class="fas fa-chart-line me-2"></i> Dashboard
-                    </a>
-
-                    <a href="../equipamentos/lista.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                        style="color: white;">
-                        <i class="fas fa-stethoscope me-2"></i> Equipamentos
-                    </a>
-
-                    <a href="../Fornecedores/lista_fornecedores.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                        style="color: white;">
-                        <i class="fas fa-truck-medical me-2"></i> Fornecedores
-                    </a>
-
-                    <a href="../Localizações/lista_localizacoes.html" class="nav-link px-2 py-2 mb-2 d-block rounded"
-                        style="color: white;">
-                        <i class="fas fa-location-dot me-2"></i> Localizações
-                    </a>
-
-                    <a href="../Gestão da Área Pública/editar_public.html"
-                        class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white; transition: 0.2s;">
-                        <i class="fas fa-globe me-2"></i> Gestão da Área Pública
-                    </a>
-                </nav>
-            </aside>
-
+        
             <!-- CONTEÚDO PRINCIPAL -->
             <main class="col-md-9 col-lg-10 p-4">
 
@@ -408,9 +320,4 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="../../../assets/bootstrap/bootstrap.bundle.min.js"></script>
-
-</body>
-
-</html>
+<?php include '../../includes/footer.php'; ?>

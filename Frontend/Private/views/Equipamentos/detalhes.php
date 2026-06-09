@@ -1,0 +1,859 @@
+<?php include '../../includes/header.php'; ?>
+<?php include '../../includes/nav.php'; ?>
+
+
+<div class="container-fluid">
+    <div class="row">
+
+        <?php include '../../includes/sidebar.php'; ?>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+
+        <main class="col-md-9 col-lg-10 p-4">
+
+            <h2 class="mb-4" style="color: #1a826d;">
+                <i class="fa-solid fa-eye me-2"></i> Consultar Equipamento
+            </h2>
+
+            <!-- SEPARADORES -->
+            <ul class="nav nav-tabs mb-4 flex-nowrap" id="equipTabs" role="tablist">
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dados" type="button">
+                        Equipamento
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#componentes" type="button">
+                        Componentes <br> e Consumíveis
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#aquisicao" type="button">
+                        Aquisição
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#fornecedor" type="button">
+                        Fornecedor <br> Associado
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#localizacao" type="button">
+                        Localização <br> Associada
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#garantia" type="button">
+                        Garantia
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#contrato" type="button">
+                        Contrato de <br> Manutenção
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#documentos" type="button">
+                        Documentação <br> Associada
+                    </button>
+                </li>
+
+            </ul>
+
+            <!-- TODO O CONTEÚDO TEM DE ESTAR AQUI DENTRO -->
+            <div class="tab-content">
+
+                <!-- SEPARADOR 1 - EQUIPAMENTO -->
+                <div class="tab-pane fade show active" id="dados">
+                    <div class="info-box">
+
+                        <h5 class="section-title">Identificação</h5>
+                        <div class="info-row"><span class="info-label">Código Interno:</span> <span
+                                class="info-value">EQ-2025-001</span></div>
+                        <div class="info-row"><span class="info-label">Designação:</span> <span
+                                class="info-value">Monitor multiparamétrico</span></div>
+                        <div class="info-row"><span class="info-label">Categoria:</span> <span
+                                class="info-value">Monitorização</span></div>
+
+                        <hr>
+
+                        <h5 class="section-title">Especificações</h5>
+                        <div class="info-row"><span class="info-label">Marca:</span> <span
+                                class="info-value">Philips</span></div>
+                        <div class="info-row"><span class="info-label">Modelo:</span> <span
+                                class="info-value">IntelliVue MP5</span></div>
+                        <div class="info-row"><span class="info-label">Número de Série:</span> <span
+                                class="info-value">MP5-2022-45873</span></div>
+                        <div class="info-row"><span class="info-label">Fabricante:</span> <span
+                                class="info-value">Philips Healthcare</span></div>
+
+                        <hr>
+
+                        <h5 class="section-title">Estado e Criticidade</h5>
+                        <div class="info-row"><span class="info-label">Ano de Fabrico:</span> <span
+                                class="info-value">2022</span></div>
+                        <div class="info-row"><span class="info-label">Estado:</span> <span
+                                class="info-value">Ativo</span></div>
+                        <div class="info-row"><span class="info-label">Criticidade:</span> <span
+                                class="info-value">Suporte de vida</span></div>
+
+                        <hr>
+
+                        <h5 class="section-title">Observações</h5>
+                        <div class="info-row"><span class="info-label">Notas:</span> <span class="info-value">Sem
+                                observações registadas.</span></div>
+
+                    </div>
+                </div>
+
+                <!-- SEPARADOR 2 — COMPONENTES E CONSUMÍVEIS -->
+                <div class="tab-pane fade" id="componentes">
+
+                    <h5 class="section-title">Componentes e Consumíveis Associados</h5>
+
+                    <div class="accordion" id="accordionComponentes">
+
+                        <!-- ITEM 1 — Componente -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingComp1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseComp1">
+                                    Componente — Sensor SpO2
+                                </button>
+                            </h2>
+
+                            <div id="collapseComp1" class="accordion-collapse collapse show"
+                                data-bs-parent="#accordionComponentes">
+                                <div class="accordion-body">
+
+                                    <h6 class="section-title">Dados do Item</h6>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Tipo:</span>
+                                                <span class="info-value">Componente</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Nome:</span>
+                                                <span class="info-value">Sensor SpO2</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Referência:</span>
+                                                <span class="info-value">DS-100A</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Quantidade:</span>
+                                                <span class="info-value">1</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Estado:</span>
+                                                <span class="info-value">Ativo</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Observações:</span>
+                                                <span class="info-value">Incluído na aquisição inicial</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ITEM 2 — Consumível -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingComp2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseComp2">
+                                    Consumível — Gel Condutor
+                                </button>
+                            </h2>
+
+                            <div id="collapseComp2" class="accordion-collapse collapse"
+                                data-bs-parent="#accordionComponentes">
+                                <div class="accordion-body">
+
+                                    <h6 class="section-title">Dados do Item</h6>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Tipo:</span>
+                                                <span class="info-value">Consumível</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Nome:</span>
+                                                <span class="info-value">Gel Condutor</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Referência:</span>
+                                                <span class="info-value">GEL-250ML</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Quantidade:</span>
+                                                <span class="info-value">3</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Estado:</span>
+                                                <span class="info-value">—</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Observações:</span>
+                                                <span class="info-value">Consumível de uso regular</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SEPARADOR 3 — AQUISIÇÃO -->
+                <div class="tab-pane fade" id="aquisicao">
+                    <div class="info-box">
+
+                        <h5 class="section-title">Aquisição</h5>
+
+                        <div class="info-row"><span class="info-label">Data de Aquisição:</span>
+                            <span class="info-value">12/03/2025</span>
+                        </div>
+
+                        <div class="info-row"><span class="info-label">Custo de Aquisição (€):</span>
+                            <span class="info-value">3500</span>
+                        </div>
+
+                        <div class="info-row"><span class="info-label">Tipo de Entrada:</span>
+                            <span class="info-value">Compra</span>
+                        </div>
+
+                        <!-- ACCORDION — CONTRATO DE AQUISIÇÃO -->
+                        <div class="accordion mt-4" id="accordionContratoAquisicao">
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingContratoAquisicao">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseContratoAquisicao"
+                                        aria-expanded="false" aria-controls="collapseContratoAquisicao">
+                                        Contrato de Aquisição
+                                    </button>
+                                </h2>
+
+                                <div id="collapseContratoAquisicao" class="accordion-collapse collapse"
+                                    aria-labelledby="headingContratoAquisicao"
+                                    data-bs-parent="#accordionContratoAquisicao">
+
+                                    <div class="accordion-body">
+
+                                        <div class="border rounded p-3 mb-3">
+
+                                            <div class="info-row">
+                                                <span class="info-label">Tipo de Documento:</span>
+                                                <span class="info-value">Contrato de Aquisição</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Nome do Documento:</span>
+                                                <span class="info-value">Contrato de Aquisição 2024</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Data do Documento:</span>
+                                                <span class="info-value">2024-01-01</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Data de Validade:</span>
+                                                <span class="info-value">2025-01-01</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Ficheiro (PDF):</span>
+                                                <span class="info-value">
+                                                    <a href="#" target="_blank"
+                                                        style="color:#1a826d; font-weight:600;">Ver Documento</a>
+                                                </span>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- ACCORDION — FATURA DA AQUISIÇÃO -->
+                        <div class="accordion mt-4" id="accordionFaturaAquisicao">
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingFaturaAquisicao">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseFaturaAquisicao"
+                                        aria-expanded="false" aria-controls="collapseFaturaAquisicao">
+                                        Fatura da Aquisição
+                                    </button>
+                                </h2>
+
+                                <div id="collapseFaturaAquisicao" class="accordion-collapse collapse"
+                                    aria-labelledby="headingFaturaAquisicao"
+                                    data-bs-parent="#accordionFaturaAquisicao">
+
+                                    <div class="accordion-body">
+
+                                        <div class="border rounded p-3 mb-3">
+
+                                            <div class="info-row">
+                                                <span class="info-label">Tipo de Documento:</span>
+                                                <span class="info-value">Fatura da Aquisição</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Nome do Documento:</span>
+                                                <span class="info-value">Fatura Nº 2024/001</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Data da Fatura:</span>
+                                                <span class="info-value">2024-01-05</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Data de Pagamento:</span>
+                                                <span class="info-value">2024-01-10</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Ficheiro (PDF):</span>
+                                                <span class="info-value">
+                                                    <a href="#" target="_blank"
+                                                        style="color:#1a826d; font-weight:600;">Ver Documento</a>
+                                                </span>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+
+                <!-- SEPARADOR 4 — FORNECEDOR ASSOCIADO -->
+                <div class="tab-pane fade" id="fornecedor">
+
+                    <div class="accordion" id="accordionFornecedores">
+
+                        <!-- FORNECEDOR 1 -->
+                        <div class="accordion-item">
+
+                            <h2 class="accordion-header" id="heading1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse1">
+                                    F001 – MedTech Solutions
+                                </button>
+                            </h2>
+
+                            <div id="collapse1" class="accordion-collapse collapse show"
+                                data-bs-parent="#accordionFornecedores">
+
+                                <div class="accordion-body">
+
+                                    <!-- SECÇÃO 1 — DADOS DA ASSOCIAÇÃO -->
+                                    <h5 class="section-title">Dados da Associação</h5>
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Tipo:</span>
+                                                <span class="info-value">Fabricante</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Pessoa de Contacto:</span>
+                                                <span class="info-value">João Silva</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Telefone Contacto:</span>
+                                                <span class="info-value">912345678</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Morada Associada:</span>
+                                                <span class="info-value">Armazém Norte – Braga</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="info-row">
+                                                <span class="info-label">Observações:</span>
+                                                <span class="info-value">Responsável pelas revisões anuais</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <hr>
+
+                                    <!-- SECÇÃO 2 — DADOS DO FORNECEDOR -->
+                                    <h5 class="section-title">Informação do Fornecedor</h5>
+
+                                    <div class="row">
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Código Interno:</span>
+                                                <span class="info-value">F001</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Empresa:</span>
+                                                <span class="info-value">MedTech Solutions</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">NIF:</span>
+                                                <span class="info-value">123456789</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Telefone:</span>
+                                                <span class="info-value">912345678</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Email:</span>
+                                                <span class="info-value">email@empresa.com</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Morada:</span>
+                                                <span class="info-value">Rua Exemplo, Porto</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="info-row">
+                                                <span class="info-label">Website:</span>
+                                                <span class="info-value">www.empresa.com</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SEPARADOR 5 — LOCALIZAÇÃO ASSOCIADA -->
+                <div class="tab-pane fade" id="localizacao">
+                    <div class="info-box">
+
+                        <h5 class="section-title">Localização Associada</h5>
+
+                        <div class="info-row">
+                            <span class="info-label">Código:</span>
+                            <span class="info-value">LOC001</span>
+                        </div>
+
+                        <div class="info-row"><span class="info-label">Edifício:</span><span
+                                class="info-value">Edifício A</span></div>
+                        <div class="info-row"><span class="info-label">Piso:</span><span class="info-value">2</span>
+                        </div>
+                        <div class="info-row"><span class="info-label">Serviço:</span><span
+                                class="info-value">Urgência</span></div>
+                        <div class="info-row"><span class="info-label">Sala:</span><span class="info-value">Sala
+                                12</span></div>
+                    </div>
+                </div>
+
+                <!-- SEPARADOR 6 — GARANTIA -->
+                <div class="tab-pane fade" id="garantia" role="tabpanel">
+                    <div class="info-box">
+
+                        <h5 class="section-title">Garantia</h5>
+
+                        <div class="info-row">
+                            <span class="info-label">Data de Início:</span>
+                            <span class="info-value">2022-05-10</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Data de Fim:</span>
+                            <span class="info-value">2024-05-10</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Entidade Responsável</span>
+                            <span class="info-value">Fabricante</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Observações:</span>
+                            <span class="info-value">Sem observações.</span>
+                        </div>
+
+                        <!-- ACCORDION — CERTIFICADO DE GARANTIA -->
+                        <div class="accordion mt-4" id="accordionCertificadoGarantia">
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingCertificadoGarantia">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseCertificadoGarantia" aria-expanded="true"
+                                        aria-controls="collapseCertificadoGarantia">
+                                        Certificado de Garantia
+                                    </button>
+                                </h2>
+
+                                <div id="collapseCertificadoGarantia" class="accordion-collapse collapse show"
+                                    aria-labelledby="headingCertificadoGarantia"
+                                    data-bs-parent="#accordionCertificadoGarantia">
+
+                                    <div class="accordion-body">
+
+                                        <div class="border rounded p-3 mb-3">
+
+                                            <div class="info-row">
+                                                <span class="info-label">Tipo de Documento:</span>
+                                                <span class="info-value">Certificado de Garantia</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Nome do Documento:</span>
+                                                <span class="info-value">Certificado de Garantia 2024</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Data do Documento:</span>
+                                                <span class="info-value">2024-01-01</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Data de Validade:</span>
+                                                <span class="info-value">2025-01-01</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Ficheiro (PDF):</span>
+                                                <span class="info-value">
+                                                    <a href="#" target="_blank"
+                                                        style="color:#1a826d; font-weight:600;">Ver Documento</a>
+                                                </span>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+                <!-- SEPARADOR 7 — CONTRATO DE MANUTENÇÃO -->
+                <div class="tab-pane fade" id="contrato" role="tabpanel">
+
+                    <h4 class="mb-3" style="color:#1a826d;">Contrato de Manutenção</h4>
+
+                    <div class="info-box">
+
+                        <!-- BLOCO SE EXISTE CONTRATO = SIM -->
+                        <div id="contratoSim">
+                            <div class="info-row">
+                                <span class="info-label">Existe Contrato?</span>
+                                <span class="info-value">Sim</span>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="info-row">
+                                        <span class="info-label">Tipo de Contrato:</span>
+                                        <span class="info-value">Manutenção Preventiva</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-row">
+                                        <span class="info-label">Periodicidade:</span>
+                                        <span class="info-value">Anual</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="info-row">
+                                        <span class="info-label">Data de Início:</span>
+                                        <span class="info-value">2023-01-01</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-row">
+                                        <span class="info-label">Data de Fim:</span>
+                                        <span class="info-value">2024-01-01</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="info-row">
+                                        <span class="info-label">Entidade Responsável:</span>
+                                        <span class="info-value">Empresa de Assistência Técnica</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="info-row">
+                                        <span class="info-label">Observações:</span>
+                                        <span class="info-value">Sem observações.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ACCORDION — DOCUMENTO DO CONTRATO DE MANUTENÇÃO -->
+                        <div class="accordion mt-4" id="accordionDocContrato">
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingDocContrato">
+                                    <button class="accordion-button collapsed" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapseDocContrato"
+                                        aria-expanded="false" aria-controls="collapseDocContrato">
+                                        Documento do Contrato de Manutenção
+                                    </button>
+                                </h2>
+
+                                <div id="collapseDocContrato" class="accordion-collapse collapse"
+                                    aria-labelledby="headingDocContrato" data-bs-parent="#accordionDocContrato">
+
+                                    <div class="accordion-body">
+
+                                        <div class="border rounded p-3 mb-3">
+
+                                            <div class="info-row">
+                                                <span class="info-label">Tipo de Documento:</span>
+                                                <span class="info-value">Contrato de Manutenção</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Nome do Documento:</span>
+                                                <span class="info-value">Contrato de Manutenção 2024-2025</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Data do Documento:</span>
+                                                <span class="info-value">2024-01-01</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Data de Validade:</span>
+                                                <span class="info-value">2025-01-01</span>
+                                            </div>
+
+                                            <div class="info-row">
+                                                <span class="info-label">Ficheiro (PDF):</span>
+                                                <span class="info-value">
+                                                    <a href="#" target="_blank"
+                                                        style="color:#1a826d; font-weight:600;">Ver Documento</a>
+                                                </span>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- BLOCO SE EXISTE CONTRATO = NÃO -->
+                        <div id="contratoNao" style="display:none;">
+                            <div class="info-row">
+                                <span class="info-label">Existe Contrato?</span>
+                                <span class="info-value">Não</span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">Observações:</span>
+                                <span class="info-value">Sem observações.</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SEPARADOR 8 — DOCUMENTAÇÃO ASSOCIADA -->
+                <div class="tab-pane fade" id="documentos" role="tabpanel">
+
+                    <div class="info-box">
+
+                        <h5 class="section-title">Documentação Associada</h5>
+
+                        <!-- Tabela de documentos -->
+                        <table class="table mt-3">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Nome</th>
+                                    <th>Data</th>
+                                    <th>Origem</th>
+                                    <th>Ficheiro</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <!-- EXEMPLO 1 -->
+                                <tr>
+                                    <td>Manual</td>
+                                    <td>Manual do Utilizador</td>
+                                    <td>2022-05-10</td>
+                                    <td>Adicionado Manualmente</td>
+                                    <td>
+                                        <a href="#" target="_blank" style="color:#1a826d; font-weight:600;">Ver
+                                            PDF</a>
+                                    </td>
+                                </tr>
+
+                                <!-- EXEMPLO 2 -->
+                                <tr>
+                                    <td>Fatura</td>
+                                    <td>FT‑2025‑00321</td>
+                                    <td>2025-03-12</td>
+                                    <td>Aquisição</td>
+                                    <td>
+                                        <a href="#" target="_blank" style="color:#1a826d; font-weight:600;">Ver
+                                            PDF</a>
+                                    </td>
+                                </tr>
+
+                                <!-- EXEMPLO 3 -->
+                                <tr>
+                                    <td>Certificado</td>
+                                    <td>Certificado de Conformidade</td>
+                                    <td>2023-01-01</td>
+                                    <td>Adicionado Manualmente</td>
+                                    <td>
+                                        <a href="#" target="_blank" style="color:#1a826d; font-weight:600;">Ver
+                                            PDF</a>
+                                    </td>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+
+            <!-- BOTÕES -->
+            <div class="d-flex justify-content-between mt-4">
+                <a href="lista.html" class="btn btn-secondary">Voltar</a>
+                <a href="editar.html" class="btn" style="background-color: #1a826d; color: white;">
+                    Editar Equipamento
+                </a>
+            </div>
+
+        </main>
+
+
+    </div>
+</div>
+
+<?php include '../../includes/footer.php'; ?>

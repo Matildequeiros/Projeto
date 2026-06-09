@@ -771,3 +771,223 @@ body {
     background-color: #166c59;
     color: white;
 }
+
+/* EDITAR EQUIPAMENTOS */
+.card-form {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.card-form label {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.card-form input,
+.card-form select,
+.card-form textarea {
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.card-form h2 {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #1a826d;
+    justify-content: flex-start;
+    /* separadores juntos */
+    gap: 4px;
+    /* espaço pequeno entre eles */
+}
+
+.tab-content {
+    margin-top: 15px;
+
+}
+
+.nav-tabs .nav-link {
+    color: #1a826d;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    padding: 6px 12px;
+    text-align: center;
+    min-width: 90px;
+    line-height: 1.2;
+    transition: 0.2s;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #e6f4f2;
+    color: #146b57;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #1a826d;
+    color: white;
+    border: none;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nav-tabs .nav-link br {
+    display: block;
+}
+
+
+.nav-tabs .nav-link {
+    white-space: nowrap;
+}
+
+/* NOVO EQUIPAMENTOS */
+.card-form {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.card-form label {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.card-form input,
+.card-form select,
+.card-form textarea {
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.card-form h2 {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #1a826d;
+    justify-content: flex-start;
+    /* separadores juntos */
+    gap: 4px;
+    /* espaço pequeno entre eles */
+}
+
+.tab-content {
+    margin-top: 15px;
+
+}
+
+.nav-tabs .nav-link {
+    color: #1a826d;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    padding: 6px 12px;
+    text-align: center;
+    min-width: 90px;
+    line-height: 1.2;
+    transition: 0.2s;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #e6f4f2;
+    color: #146b57;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #1a826d;
+    color: white;
+    border: none;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.nav-tabs .nav-link br {
+    display: block;
+}
+
+
+.nav-tabs .nav-link {
+    white-space: nowrap;
+}
+
+/* DETALHES EQUIPAMENTO */
+/* caixa branca */
+.info-box {
+    background: #ffffff;
+    padding: 30px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* TÍTULOS DAS SECÇÕES */
+.section-title {
+    font-weight: 700;
+    color: #1a826d;
+    margin-bottom: 10px;
+    margin-top: 25px;
+}
+
+.section-title:first-of-type {
+    margin-top: 5px;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    margin-right: 6px;
+}
+
+.info-value {
+    color: #555;
+}
+
+/* SEPARADORES */
+.nav-tabs {
+    border-bottom: 2px solid #1a826d;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.nav-tabs .nav-link {
+    color: #1a826d;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    padding: 6px 12px;
+    min-width: 90px;
+    transition: 0.2s;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #e6f4f2;
+    color: #146b57;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #1a826d;
+    color: white;
+    border: none;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ESPAÇAMENTO ENTRE TABS E CONTEÚDO */
+.tab-content {
+    margin-top: 15px;
+}
+

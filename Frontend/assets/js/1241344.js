@@ -201,3 +201,34 @@ document.querySelectorAll(".remover-componente").forEach(btn => {
             const modal = new bootstrap.Modal(document.getElementById("modalApagar"));
             modal.show();
         }
+
+
+
+// MODAL APAGAR LISTA FORNECEDORES 
+ function abrirModalApagarFornecedor(codigo, nome, tipo) {
+
+            document.getElementById("dadosFornecedor").innerHTML = `
+        <p><strong>Código:</strong> ${codigo}</p>
+        <p><strong>Nome:</strong> ${nome}</p>
+        <p><strong>Tipo:</strong> ${tipo}</p>
+    `;
+
+            const modal = new bootstrap.Modal(document.getElementById("modalApagarFornecedor"));
+            modal.show();
+        }
+
+
+// MODAL APAGAR LISTA LOCALIZAÇÕES
+ function abrirModalApagarLocalizacao(codigo, edificio, piso, servico, sala) {
+
+            document.getElementById("dadosLocalizacao").innerHTML = `
+        <p><strong>Código:</strong> ${codigo}</p>
+        <p><strong>Edifício:</strong> ${edificio}</p>
+        <p><strong>Piso:</strong> ${piso}</p>
+        <p><strong>Serviço / Departamento:</strong> ${servico}</p>
+        <p><strong>Sala / Gabinete:</strong> ${sala}</p>
+    `;
+
+            const modal = new bootstrap.Modal(document.getElementById("modalApagarLocalizacao"));
+            modal.show();
+        }
