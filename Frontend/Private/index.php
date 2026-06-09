@@ -1,10 +1,16 @@
+<?php
+require_once __DIR__ . '/../config/config.php';
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="pt">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HospitalGest - Área Reservada</title>
+    <title><?php echo APP_NAME; ?></title>
 
     <!-- Bootstrap CSS & custom CSS -->
     <link rel="stylesheet" href="../assets/bootstrap/bootstrap.min.css">
@@ -33,8 +39,11 @@
                         <img src="../assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
                     </a>
                     <h3 class="mb-0 logo-text">
-                        <span class="verde">Hospital</span><span class="azul">Gest</span>
+                        <span class="verde"><?php echo explode("Gest", APP_NAME)[0]; ?></span>
+                        <span class="azul">Gest</span>
                     </h3>
+
+
                 </div>
 
                 <!-- UTILIZADOR (dropdown) -->
@@ -349,7 +358,6 @@
                         }]
                     }
                 });
-
             </script>
 
 
