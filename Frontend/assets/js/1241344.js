@@ -232,3 +232,6 @@ document.querySelectorAll(".remover-componente").forEach(btn => {
             const modal = new bootstrap.Modal(document.getElementById("modalApagarLocalizacao"));
             modal.show();
         }
+
+
+

@@ -79,20 +79,6 @@ $ligacao = null;
                     </div>
 
                     <div class="col-md-2">
-                        <label class="form-label">Categoria</label>
-                        <select id="filtroCategoria" class="form-select">
-                            <option value="">Todas</option>
-                            <option>Monitorização</option>
-                            <option>Suporte de vida</option>
-                            <option>Terapia</option>
-                            <option>Diagnóstico</option>
-                            <option>Laboratório</option>
-                            <option>Esterilização</option>
-                            <option>Reabilitação</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
                         <label class="form-label">Criticidade</label>
                         <select id="filtroCriticidade" class="form-select">
                             <option value="">Todas</option>
@@ -100,28 +86,6 @@ $ligacao = null;
                             <option>Média</option>
                             <option>Alta</option>
                             <option>Suporte de vida</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">Serviço</label>
-                        <select id="filtroServico" class="form-select">
-                            <option value="">Todos</option>
-                            <option>Urgência</option>
-                            <option>UCI</option>
-                            <option>Medicina</option>
-                            <option>Bloco Operatório</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">Fornecedor</label>
-                        <select id="filtroFornecedor" class="form-select">
-                            <option value="">Todos</option>
-                            <option>MedTech Solutions</option>
-                            <option>Dräger</option>
-                            <option>B. Braun</option>
-                            <option>Zoll</option>
                         </select>
                     </div>
 
@@ -145,7 +109,7 @@ $ligacao = null;
 
                     <div class="table-responsive rounded-4 shadow-sm border p-0" style="overflow-x: auto;">
 
-                        <table class="table table-bordered table-striped align-middle" style="min-width: 1300px;">
+                        <table id="tabela-equipamentos" class="table table-bordered table-striped align-middle" style="min-width: 1300px;">
                             <thead>
                                 <tr style="background-color: #1a826d; color: white;">
                                     <th>Código</th>
@@ -162,8 +126,32 @@ $ligacao = null;
                                     <tr>
                                         <td><?= $equipamento->codigo ?></td>
                                         <td><?= $equipamento->designacao ?></td>
-                                        <td><?= $equipamento->estado ?></td>
-                                        <td><?= $equipamento->criticidade ?></td>
+                                        <td>
+                                            <?php
+                                            $badgeEstado = match ($equipamento->estado) {
+                                                'Ativo' => 'badge-ativo',
+                                                'Em manutenção' => 'badge-manutencao',
+                                                'Inativo' => 'badge-inativo',
+                                                'Em calibração' => 'badge-calibracao',
+                                                'Em quarentena' => 'badge-quarentena',
+                                                'Abatido' => 'badge-abatido',
+                                                default => 'bg-secondary'
+                                            };
+                                            ?>
+                                            <span class="badge <?= $badgeEstado ?>"><?= $equipamento->estado ?></span>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $badgeCriticidade = match ($equipamento->criticidade) {
+                                                'Baixa' => 'badge-baixa',
+                                                'Média' => 'badge-media',
+                                                'Alta' => 'badge-alta',
+                                                'Suporte de vida' => 'badge-suporte',
+                                                default => 'bg-secondary'
+                                            };
+                                            ?>
+                                            <span class="badge <?= $badgeCriticidade ?>"><?= $equipamento->criticidade ?></span>
+                                        </td>
                                         <td><?= $equipamento->edificio . ' / ' . $equipamento->piso . ' / ' . $equipamento->sala ?></td>
                                         <td style="text-align: center;">
                                             <a href="detalhes.php?id=<?= $equipamento->id ?>" class="acao-box">
@@ -186,8 +174,10 @@ $ligacao = null;
                 <?php endif; ?>
             <?php endif; ?>
 
-            <div class="col">
-                <p class="mb-5">Total: <strong><?= count($resultados) ?></strong></p>
+            <div class="d-flex align-items-center mt-3 mb-4">
+                <span style="background-color: #d9efec; color: #1a826d; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 1rem;">
+                    <i class="fa-solid fa-stethoscope me-2"></i> Total de equipamentos: <?= count($resultados) ?>
+                </span>
             </div>
 
 
@@ -236,5 +226,46 @@ $ligacao = null;
     </div>
 </div>
 
+
+<script>
+    var tabela;
+
+    $(document).ready(function() {
+        tabela = $('#tabela-equipamentos').DataTable({
+            pageLength: 10,
+            pagingType: "full_numbers",
+            searching: true,
+            lengthChange: false,
+            info: false,
+            dom: 'tp',
+            language: {
+                paginate: {
+                    first: "Primeira",
+                    last: "Última",
+                    next: "Seguinte",
+                    previous: "Anterior"
+                }
+            }
+        });
+    });
+
+    function aplicarFiltros() {
+        const pesquisa = document.getElementById('pesquisa')?.value || '';
+        const estado = document.getElementById('filtroEstado')?.value || '';
+        const criticidade = document.getElementById('filtroCriticidade')?.value || '';
+
+        tabela.search(pesquisa);
+        tabela.column(2).search(estado ? '^' + estado + '$' : '', true, false);
+        tabela.column(3).search(criticidade ? '^' + criticidade + '$' : '', true, false);
+        tabela.draw();
+    }
+
+    function limparFiltros() {
+        document.getElementById('pesquisa').value = '';
+        document.getElementById('filtroEstado').value = '';
+        document.getElementById('filtroCriticidade').value = '';
+        tabela.search('').columns().search('').draw();
+    }
+</script>
 
 <?php include '../../includes/footer.php'; ?>

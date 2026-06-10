@@ -991,3 +991,84 @@ body {
     margin-top: 15px;
 }
 
+/* BADGES ESTADO */
+.badge-ativo {
+    background-color: #c8f0e0;
+    color: #1a826d;
+}
+
+.badge-manutencao {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-inativo {
+    background-color: #ffd6d6;
+    color: #842029;
+}
+
+.badge-calibracao {
+    background-color: #cfe2ff;
+    color: #084298;
+}
+
+.badge-quarentena {
+    background-color: #ffe5d0;
+    color: #984c0c;
+}
+
+.badge-abatido {
+    background-color: #e2e3e5;
+    color: #41464b;
+}
+
+/* BADGES CRITICIDADE */
+.badge-baixa {
+    background-color: #c8f0e0;
+    color: #1a826d;
+}
+
+.badge-media {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-alta {
+    background-color: #ffe5d0;
+    color: #984c0c;
+}
+
+.badge-suporte {
+    background-color: #ffd6d6;
+    color: #842029;
+}
+
+/* PAGINAÇÃO DATATABLES */
+.dataTables_paginate .paginate_button {
+    border-radius: 6px !important;
+    padding: 5px 12px !important;
+    margin: 0 2px !important;
+    color: #1a826d !important;
+    border: 1px solid #d9efec !important;
+    background: white !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background-color: #d9efec !important;
+    color: #1a826d !important;
+    border: 1px solid #d9efec !important;
+}
+
+.dataTables_paginate .paginate_button.current,
+.dataTables_paginate .paginate_button.current:hover {
+    background: #d9efec !important;
+    color: #1a826d !important;
+    border: 1px solid #b7e0da !important;
+}
+
+.dataTables_paginate .paginate_button.disabled,
+.dataTables_paginate .paginate_button.disabled:hover {
+    color: #aaa !important;
+    border: 1px solid #eee !important;
+    background: white !important;
+}
