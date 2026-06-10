@@ -7,4 +7,9 @@ define('APP_NAME', 'HospitalGest');
 define('APP_VERSION', '1.0.0');
 define('APP_COPYRIGHT', '© 2026 HospitalGest');
 
-
+// Base de dados
+define('MYSQL_HOST', 'vsgate-s1.dei.isep.ipp.pt');
+define('MYSQL_PORT', 10464);
+define('MYSQL_DATABASE', 'db1241344');
+define('MYSQL_USERNAME', '1241344');
+define('MYSQL_PASSWORD', 'queirós_344');

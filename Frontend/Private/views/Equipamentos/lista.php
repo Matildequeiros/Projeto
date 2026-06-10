@@ -1,6 +1,28 @@
 <?php
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
+
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $resultados = $ligacao->query("SELECT e.*, l.edificio, l.piso, l.sala, s.nome AS servico
+        FROM equipamentos e
+        LEFT JOIN localizacoes l ON e.localizacao_id = l.id
+        LEFT JOIN servicos s ON l.servico_id = s.id
+    ")->fetchAll(PDO::FETCH_OBJ);
+
+    $erro = '';
+} catch (PDOException $err) {
+    $erro = "Aconteceu um erro na ligação.";
+    $resultados = [];
+}
+
+$ligacao = null;
 ?>
 
 <?php include '../../includes/header.php'; ?>
@@ -114,49 +136,58 @@ redirect_if_not_logged();
             </div>
 
 
-            <p class="text-muted">Não existem equipamentos registados.</p>
+            <?php if (!empty($erro)) : ?>
+                <p class="text-center text-danger"><?= $erro ?></p>
+            <?php else : ?>
+                <?php if (count($resultados) == 0) : ?>
+                    <p class="text-muted">Não existem equipamentos registados.</p>
+                <?php else : ?>
 
-            <div class="table-responsive rounded-4 shadow-sm border p-0" style="overflow-x: auto;">
+                    <div class="table-responsive rounded-4 shadow-sm border p-0" style="overflow-x: auto;">
 
-                <table class="table table-bordered table-striped align-middle" style="min-width: 1300px;">
-                    <thead>
-                        <tr style="background-color: #1a826d; color: white;">
-                            <th>Código</th>
-                            <th>Designação</th>
-                            <th>Estado</th>
-                            <th>Criticidade</th>
-                            <th>Localização</th>
-                            <th class="text-center">Ações</th>
-                        </tr>
-                    </thead>
+                        <table class="table table-bordered table-striped align-middle" style="min-width: 1300px;">
+                            <thead>
+                                <tr style="background-color: #1a826d; color: white;">
+                                    <th>Código</th>
+                                    <th>Designação</th>
+                                    <th>Estado</th>
+                                    <th>Criticidade</th>
+                                    <th>Localização</th>
+                                    <th class="text-center">Ações</th>
+                                </tr>
+                            </thead>
 
-                    <tbody>
-                        <tr>
-                            <td>[Código]</td>
-                            <td>[Designação]</td>
-                            <td>[Estado]</td>
-                            <td>[Criticidade]</td>
-                            <td>[Localização]</td>
-                            <td style="text-align: center;">
-                                <a href="detalhes.php" class="acao-box">
-                                    <i class="fa-solid fa-eye"></i> Consultar
-                                </a>
+                            <tbody>
+                                <?php foreach ($resultados as $equipamento) : ?>
+                                    <tr>
+                                        <td><?= $equipamento->codigo ?></td>
+                                        <td><?= $equipamento->designacao ?></td>
+                                        <td><?= $equipamento->estado ?></td>
+                                        <td><?= $equipamento->criticidade ?></td>
+                                        <td><?= $equipamento->edificio . ' / ' . $equipamento->piso . ' / ' . $equipamento->sala ?></td>
+                                        <td style="text-align: center;">
+                                            <a href="detalhes.php?id=<?= $equipamento->id ?>" class="acao-box">
+                                                <i class="fa-solid fa-eye"></i> Consultar
+                                            </a>
+                                            <a href="editar.php?id=<?= $equipamento->id ?>" class="acao-box">
+                                                <i class="fa-solid fa-pen"></i> Editar
+                                            </a>
+                                            <a class="acao-box" style="cursor: pointer;"
+                                                onclick="abrirModalApagar('lista.php', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
+                                                <i class="fa-solid fa-trash"></i> Eliminar
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
 
-                                <a href="editar.php" class="acao-box">
-                                    <i class="fa-solid fa-pen"></i> Editar
-                                </a>
+                <?php endif; ?>
+            <?php endif; ?>
 
-                                <a class="acao-box" style="cursor: pointer;"
-                                    onclick="abrirModalApagar('lista.php', 'EQ001', 'Monitor Cardíaco')">
-                                    <i class="fa-solid fa-trash"></i> Eliminar
-                                </a>
-
-
-                            </td>
-
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="col">
+                <p class="mb-5">Total: <strong><?= count($resultados) ?></strong></p>
             </div>
 
 
