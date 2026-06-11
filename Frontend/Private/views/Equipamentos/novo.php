@@ -6,7 +6,7 @@ redirect_if_not_logged();
 $erros = [];
 $erro_sistema = "";
 
-// Carregar fornecedores da BD
+// Carregar fornecedores e localizações da BD
 try {
     $ligacao = new PDO(
         "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
@@ -15,9 +15,14 @@ try {
     );
     $stmt = $ligacao->query("SELECT id, codigo, nome FROM fornecedores ORDER BY nome");
     $fornecedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $stmt = $ligacao->query("SELECT id, codigo, edificio, piso, sala FROM localizacoes ORDER BY codigo");
+    $localizacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     $ligacao = null;
 } catch (PDOException $e) {
     $fornecedores = [];
+    $localizacoes = [];
 }
 
 // Verificar se o formulário foi submetido
@@ -178,6 +183,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
         exit;
     }
 }
+
+// Separador 4 — Fornecedor
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep4'])) {
+
+    $erros = [];
+    $fornecedores_selecionados = [];
+    $ids = $_POST['fornecedor_id'] ?? [];
+
+    foreach ($ids as $i => $id) {
+        if (!empty($id)) {
+            $telefone = trim($_POST['telefone_contacto'][$i] ?? '');
+
+            if (!empty($telefone) && !preg_match('/^[0-9]{9}$/', $telefone)) {
+                $erros[] = "O telefone de contacto deve ter 9 dígitos.";
+            }
+
+
+            $fornecedores_selecionados[] = [
+                'fornecedor_id'    => $id,
+                'tipo_relacao'     => trim($_POST['tipo_relacao'][$i]          ?? ''),
+                'morada_associada' => trim($_POST['morada_associada'][$i]      ?? ''),
+                'pessoa_contacto'  => trim($_POST['pessoa_contacto'][$i]       ?? ''),
+                'telefone_contacto' => trim($_POST['telefone_contacto'][$i]    ?? ''),
+                'observacoes'      => trim($_POST['observacoes_fornecedor'][$i] ?? '')
+            ];
+        }
+    }
+
+    if (empty($fornecedores_selecionados)) {
+        $erros[] = "Tem de associar pelo menos um fornecedor.";
+    }
+
+    if (empty($erros)) {
+        $_SESSION['novo_equipamento']['sep4'] = $fornecedores_selecionados;
+        header("Location: novo.php?sep=localizacao");
+        exit;
+    }
+}
+
+// Separador 5 — Localização
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep5'])) {
+
+    $erros = [];
+    $localizacao_id = trim($_POST['localizacao_id'] ?? '');
+
+    if (empty($localizacao_id)) {
+        $erros[] = "A localização é obrigatória.";
+    }
+
+    if (empty($erros)) {
+        $_SESSION['novo_equipamento']['sep5'] = [
+            'localizacao_id' => $localizacao_id
+        ];
+        header("Location: novo.php?sep=garantia");
+        exit;
+    }
+}
 ?>
 
 <?php include '../../includes/header.php'; ?>
@@ -200,7 +262,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
 
                 <!-- SEPARADORES -->
                 <?php
-                $sepAtivo = $_GET['sep'] ?? (isset($_SESSION['novo_equipamento']['sep3']) ? 'fornecedor' : (isset($_SESSION['novo_equipamento']['sep2']) ? 'aquisicao' : (isset($_SESSION['novo_equipamento']['sep1']) ? 'componentes' : 'dados')));
+                $sepAtivo = $_GET['sep'] ?? (isset($_SESSION['novo_equipamento']['sep5']) ? 'garantia' : (isset($_SESSION['novo_equipamento']['sep4']) ? 'localizacao' : (isset($_SESSION['novo_equipamento']['sep3']) ? 'fornecedor' : (isset($_SESSION['novo_equipamento']['sep2']) ? 'aquisicao' : (isset($_SESSION['novo_equipamento']['sep1']) ? 'componentes' : 'dados')))));
                 ?>
 
                 <ul class="nav nav-tabs mb-4 flex-nowrap" id="equipTabs" role="tablist">
@@ -234,13 +296,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#localizacao" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'localizacao' ? 'active' : (isset($_SESSION['novo_equipamento']['sep4']) ? '' : 'disabled') ?>"
+                            data-bs-toggle="tab" data-bs-target="#localizacao" type="button">
                             Localização <br> Associada
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#garantia" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'garantia' ? 'active' : (isset($_SESSION['novo_equipamento']['sep5']) ? '' : 'disabled') ?>"
+                            data-bs-toggle="tab" data-bs-target="#garantia" type="button">
                             Garantia
                         </button>
                     </li>
@@ -707,70 +771,70 @@ Aluguer - Obtido através de contrato de aluguer.
 
                             <div id="fornecedores-container">
 
-                                <!-- BLOCO DE FORNECEDOR  -->
-                                <div class="fornecedor-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
+                                <?php
+                                $fornecedores_sessao = $_SESSION['novo_equipamento']['sep4'] ?? [['fornecedor_id' => '', 'tipo_relacao' => 'Fabricante', 'morada_associada' => '', 'pessoa_contacto' => '', 'telefone_contacto' => '', 'observacoes' => '']];
+                                foreach ($fornecedores_sessao as $forn):
+                                ?>
+                                    <div class="fornecedor-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
+                                        <div class="row g-3">
 
-                                    <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Fornecedor *</label>
+                                                <select class="form-select" name="fornecedor_id[]">
+                                                    <option value="">Selecione...</option>
+                                                    <?php foreach ($fornecedores as $f): ?>
+                                                        <option value="<?= $f['id'] ?>" <?= ($forn['fornecedor_id'] ?? '') == $f['id'] ? 'selected' : '' ?>>
+                                                            <?= htmlspecialchars($f['codigo'] . ' – ' . $f['nome']) ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </div>
 
-                                        <!-- Fornecedor -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Fornecedor *</label>
-                                            <select class="form-select" name="fornecedor_id[]">
-                                                <option value="">Selecione...</option>
-                                                <?php foreach ($fornecedores as $f): ?>
-                                                    <option value="<?= $f['id'] ?>">
-                                                        <?= htmlspecialchars($f['codigo'] . ' – ' . $f['nome']) ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Tipo *</label>
+                                                <select class="form-select" name="tipo_relacao[]">
+                                                    <option <?= ($forn['tipo_relacao'] ?? '') == 'Fabricante' ? 'selected' : '' ?>>Fabricante</option>
+                                                    <option <?= ($forn['tipo_relacao'] ?? '') == 'Distribuidor / Comercial' ? 'selected' : '' ?>>Distribuidor / Comercial</option>
+                                                    <option <?= ($forn['tipo_relacao'] ?? '') == 'Assistência Técnica' ? 'selected' : '' ?>>Assistência Técnica</option>
+                                                    <option <?= ($forn['tipo_relacao'] ?? '') == 'Consumíveis / Acessórios' ? 'selected' : '' ?>>Consumíveis / Acessórios</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Morada Associada *</label>
+                                                <input type="text" class="form-control" name="morada_associada[]"
+                                                    placeholder="Ex: Armazém Norte – Braga"
+                                                    value="<?= htmlspecialchars($forn['morada_associada'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Pessoa de Contacto</label>
+                                                <input type="text" class="form-control" name="pessoa_contacto[]"
+                                                    placeholder="Nome da pessoa"
+                                                    value="<?= htmlspecialchars($forn['pessoa_contacto'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Telefone da Pessoa de Contacto</label>
+                                                <input type="text" class="form-control" name="telefone_contacto[]"
+                                                    placeholder="Ex: 912345678" pattern="[0-9]{9}" title="Introduza um número com 9 dígitos"
+                                                    value="<?= htmlspecialchars($forn['telefone_contacto'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Observações</label>
+                                                <textarea class="form-control" name="observacoes_fornecedor[]" rows="1"><?= htmlspecialchars($forn['observacoes'] ?? '') ?></textarea>
+                                            </div>
+
+                                            <div class="col-12 text-end mt-1">
+                                                <button type="button" class="btn btn-danger btn-sm remover-fornecedor">
+                                                    Remover Fornecedor
+                                                </button>
+                                            </div>
+
                                         </div>
-
-                                        <!-- Tipo de Fornecedor-->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Tipo *</label>
-                                            <select class="form-select">
-                                                <option>Fabricante</option>
-                                                <option>Distribuidor / Comercial</option>
-                                                <option>Assistência Técnica</option>
-                                                <option>Consumíveis / Acessórios</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Morada Associada-->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Morada Associada *</label>
-                                            <input type="text" class="form-control"
-                                                placeholder="Ex: Armazém Norte – Braga">
-                                        </div>
-
-                                        <!-- Pessoa contacto -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Pessoa de Contacto</label>
-                                            <input type="text" class="form-control" placeholder="Nome da pessoa">
-                                        </div>
-
-                                        <!-- Telefone da Pessoa de Contacto-->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Telefone da Pessoa de Contacto</label>
-                                            <input type="number" class="form-control" placeholder="912345678">
-                                        </div>
-
-                                        <!-- Observações -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Observações</label>
-                                            <textarea class="form-control" rows="1"></textarea>
-                                        </div>
-
-                                        <!-- Botão remover -->
-                                        <div class="col-12 text-end mt-1">
-                                            <button type="button" class="btn btn-danger btn-sm remover-fornecedor">
-                                                Remover Fornecedor
-                                            </button>
-                                        </div>
-
                                     </div>
-
-                                </div>
+                                <?php endforeach; ?>
 
                             </div>
 
@@ -781,13 +845,11 @@ Aluguer - Obtido através de contrato de aluguer.
 
                             <!-- Botões navegação -->
                             <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-secondary"
-                                    onclick="mostrarSeparador('aquisicao')">
+                                <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('aquisicao')">
                                     ← Anterior
                                 </button>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="validarEAvancar('fornecedor', 'localizacao')">
+                                <button type="submit" name="submeter_sep4" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>
@@ -795,7 +857,7 @@ Aluguer - Obtido através de contrato de aluguer.
                         </div>
 
                         <!-- SEPARADOR 5 — LOCALIZAÇÃO ASSOCIADA -->
-                        <div class="tab-pane fade" id="localizacao" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'localizacao' ? 'show active' : '' ?>" id="localizacao" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Localização Associada</h4>
 
@@ -803,11 +865,13 @@ Aluguer - Obtido através de contrato de aluguer.
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Localização *</label>
-                                    <select class="form-select">
+                                    <select class="form-select" name="localizacao_id">
                                         <option value="">Selecione...</option>
-                                        <option value="LOC001">LOC001 – Edifício A / Piso 1 / Sala 3</option>
-                                        <option value="LOC002">LOC002 – Edifício B / Piso 0 / Urgência</option>
-                                        <option value="LOC003">LOC003 – Edifício C / Piso 2 / Sala 12</option>
+                                        <?php foreach ($localizacoes as $l): ?>
+                                            <option value="<?= $l['id'] ?>" <?= (($_POST['localizacao_id'] ?? $_SESSION['novo_equipamento']['sep5']['localizacao_id'] ?? '') == $l['id']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($l['codigo'] . ' – ' . $l['edificio'] . ' / ' . $l['piso'] . ' / ' . $l['sala']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
 
@@ -815,13 +879,11 @@ Aluguer - Obtido através de contrato de aluguer.
 
                             <!-- Botões -->
                             <div class="d-flex justify-content-between mt-4">
-                                <button type="button" class="btn btn-secondary"
-                                    onclick="mostrarSeparador('fornecedor')">
+                                <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('fornecedor')">
                                     ← Anterior
                                 </button>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="validarEAvancar('localizacao', 'garantia')">
+                                <button type="submit" name="submeter_sep5" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>
@@ -829,7 +891,7 @@ Aluguer - Obtido através de contrato de aluguer.
                         </div>
 
                         <!-- SEPARADOR 6 — GARANTIA -->
-                        <div class="tab-pane fade" id="garantia" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'garantia' ? 'show active' : '' ?>" id="garantia" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Garantia</h4>
 
