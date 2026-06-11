@@ -30,6 +30,11 @@ require_once __DIR__ . '/../../config/config.php';
     <link rel="stylesheet" href="/PROJETO/Frontend/assets/datatables/datatables.min.css">
     <script src="/PROJETO/Frontend/assets/datatables/datatables.min.js"></script>
 
+    <!-- CSS do Flatpickr -->
+<link rel="stylesheet" href="/PROJETO/Frontend/assets/flatpickr/flatpickr/flatpickr.min.css">
+
+<!-- JS do Flatpickr -->
+<script src="/PROJETO/Frontend/assets/flatpickr/flatpickr/flatpickr.js"></script>
 </head>
 
 <body>

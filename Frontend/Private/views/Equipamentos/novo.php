@@ -6,9 +6,22 @@ redirect_if_not_logged();
 $erros = [];
 $erro_sistema = "";
 
+// Carregar fornecedores da BD
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $stmt = $ligacao->query("SELECT id, codigo, nome FROM fornecedores ORDER BY nome");
+    $fornecedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $ligacao = null;
+} catch (PDOException $e) {
+    $fornecedores = [];
+}
 
 // Verificar se o formulário foi submetido
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep1'])) {
 
     // 1. Recolher dados
     $codigo       = $_POST["codigo"]       ?? "";
@@ -68,74 +81,101 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // 3. Normalizar dados
-    $designacao   = ucwords(strtolower($designacao));   // Monitor Multiparamétrico
-    $marca        = ucwords(strtolower($marca));         // Philips
-    $modelo       = ucwords(strtolower($modelo));        // Intellivue Mp5
-    $fabricante   = ucwords(strtolower($fabricante));    // Philips Healthcare
-    $codigo       = strtoupper($codigo);                 // EQ-2025-001
+    $designacao = ucwords(strtolower($designacao));
+    $marca      = ucwords(strtolower($marca));
+    $modelo     = ucwords(strtolower($modelo));
+    $fabricante = ucwords(strtolower($fabricante));
+    $codigo     = strtoupper($codigo);
 
-    /*
-    // Mostrar dados normalizados (para teste)
-    echo "<p><strong>Dados normalizados:</strong></p>";
-    echo "<ul>";
-    echo "<li>Código: $codigo</li>";
-    echo "<li>Designação: $designacao</li>";
-    echo "<li>Marca: $marca</li>";
-    echo "<li>Modelo: $modelo</li>";
-    echo "<li>Fabricante: $fabricante</li>";
-    echo "</ul>";
-    
+    // 4. Se não houver erros, guardar na sessão e avançar
+    if (empty($erros)) {
+        $_SESSION['novo_equipamento']['sep1'] = [
+            'codigo'       => $codigo,
+            'designacao'   => $designacao,
+            'categoria'    => $categoria,
+            'marca'        => $marca,
+            'modelo'       => $modelo,
+            'numero_serie' => $numero_serie,
+            'fabricante'   => $fabricante,
+            'ano_fabrico'  => $ano_fabrico,
+            'estado'       => $estado,
+            'criticidade'  => $criticidade,
+            'observacoes'  => $observacoes
+        ];
 
-    // 4. Depuração: mostrar os erros recolhidos
-    echo "<pre>";
-    print_r($erros);
-    echo "</pre>";
-    */
+        // Avançar para o separador 2
+        header("Location: novo.php?sep=componentes");
+        exit;
+    }
+}
 
-    // 5. Se não houver erros, guardar na base de dados
-    $erro_sistema = "";
+// Separador 2 — Componentes (opcional)
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep2'])) {
+
+    $componentes = [];
+    $nomes = $_POST['nome_componente'] ?? [];
+
+    foreach ($nomes as $i => $nome) {
+        $nome = trim($nome);
+
+        if (!empty($nome)) {
+            $componentes[] = [
+                'tipo'        => trim($_POST['tipo'][$i]                   ?? ''),
+                'nome'        => $nome,
+                'referencia'  => trim($_POST['referencia'][$i]             ?? ''),
+                'quantidade'  => trim($_POST['quantidade'][$i]             ?? ''),
+                'estado'      => trim($_POST['estado_componente'][$i]      ?? ''),
+                'observacoes' => trim($_POST['observacoes_componente'][$i] ?? '')
+            ];
+        }
+    }
+
+    // Guardar na sessão (pode ser array vazio se não preencheu nada)
+    $_SESSION['novo_equipamento']['sep2'] = $componentes;
+
+    // Avançar para o Sep. 3
+    header("Location: novo.php?sep=aquisicao");
+    exit;
+}
+
+// Separador 3 — Aquisição
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
+
+    $erros = [];
+
+    $data_aquisicao = trim($_POST['data_aquisicao'] ?? '');
+    $custo          = trim($_POST['custo']          ?? '');
+    $tipo_entrada   = trim($_POST['tipo_entrada']   ?? '');
+
+    if (empty($data_aquisicao)) {
+        $erros[] = "A data de aquisição é obrigatória.";
+    }
+
+    if (empty($custo)) {
+        $erros[] = "O custo de aquisição é obrigatório.";
+    } elseif (!is_numeric($custo) || $custo < 0) {
+        $erros[] = "O custo de aquisição é inválido.";
+    }
+
+    if (empty($tipo_entrada)) {
+        $erros[] = "O tipo de entrada é obrigatório.";
+    }
 
     if (empty($erros)) {
-        try {
-            $ligacao = new PDO(
-                "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
-                MYSQL_USERNAME,
-                MYSQL_PASSWORD
-            );
+        $_SESSION['novo_equipamento']['sep3'] = [
+            'data_aquisicao'              => $data_aquisicao,
+            'custo'                       => $custo,
+            'tipo_entrada'                => $tipo_entrada,
+            'contrato_aquisicao_nome'     => trim($_POST['contrato_aquisicao_nome']     ?? ''),
+            'contrato_aquisicao_data'     => trim($_POST['contrato_aquisicao_data']     ?? ''),
+            'contrato_aquisicao_validade' => trim($_POST['contrato_aquisicao_validade'] ?? ''),
+            'fatura_aquisicao_nome'       => trim($_POST['fatura_aquisicao_nome']       ?? ''),
+            'fatura_aquisicao_data'       => trim($_POST['fatura_aquisicao_data']       ?? ''),
+            'fatura_aquisicao_pagamento'  => trim($_POST['fatura_aquisicao_pagamento']  ?? ''),
+        ];
 
-            $sql = "INSERT INTO equipamentos (
-                codigo, designacao, categoria, marca, modelo,
-                numero_serie, fabricante, ano_fabrico, estado, criticidade,
-                localizacao_id, observacoes
-            ) VALUES (
-                :codigo, :designacao, :categoria, :marca, :modelo,
-                :numero_serie, :fabricante, :ano_fabrico, :estado, :criticidade,
-                1, :observacoes
-            )";
-
-            $stmt = $ligacao->prepare($sql);
-
-            $stmt->execute([
-                ':codigo'       => $codigo,
-                ':designacao'   => $designacao,
-                ':categoria'    => $categoria,
-                ':marca'        => $marca,
-                ':modelo'       => $modelo,
-                ':numero_serie' => $numero_serie,
-                ':fabricante'   => $fabricante,
-                ':ano_fabrico'  => $ano_fabrico,
-                ':estado'       => $estado,
-                ':criticidade'  => $criticidade,
-                ':observacoes'  => $observacoes
-            ]);
-
-            header("Location: lista.php");
-            exit;
-        } catch (PDOException $err) {
-            $erro_sistema = "Erro ao gravar os dados: " . $err->getMessage();
-        }
-
-        $ligacao = null;
+        header("Location: novo.php?sep=fornecedor");
+        exit;
     }
 }
 ?>
@@ -159,60 +199,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </h2>
 
                 <!-- SEPARADORES -->
+                <?php
+                $sepAtivo = $_GET['sep'] ?? (isset($_SESSION['novo_equipamento']['sep3']) ? 'fornecedor' : (isset($_SESSION['novo_equipamento']['sep2']) ? 'aquisicao' : (isset($_SESSION['novo_equipamento']['sep1']) ? 'componentes' : 'dados')));
+                ?>
+
                 <ul class="nav nav-tabs mb-4 flex-nowrap" id="equipTabs" role="tablist">
 
-
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dados" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'dados' ? 'active' : '' ?>"
+                            data-bs-toggle="tab" data-bs-target="#dados" type="button">
                             Equipamento
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#componentes"
-                            type="button">
+                        <button class="nav-link <?= $sepAtivo == 'componentes' ? 'active' : (isset($_SESSION['novo_equipamento']['sep1']) ? '' : 'disabled') ?>"
+                            data-bs-toggle="tab" data-bs-target="#componentes" type="button">
                             Componentes <br> e Consumíveis
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#aquisicao"
-                            type="button">
+                        <button class="nav-link <?= $sepAtivo == 'aquisicao' ? 'active' : (isset($_SESSION['novo_equipamento']['sep2']) ? '' : 'disabled') ?>"
+                            data-bs-toggle="tab" data-bs-target="#aquisicao" type="button">
                             Aquisição
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#fornecedor"
-                            type="button">
+                        <button class="nav-link <?= $sepAtivo == 'fornecedor' ? 'active' : (isset($_SESSION['novo_equipamento']['sep3']) ? '' : 'disabled') ?>"
+                            data-bs-toggle="tab" data-bs-target="#fornecedor" type="button">
                             Fornecedor <br> Associado
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#localizacao"
-                            type="button">
+                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#localizacao" type="button">
                             Localização <br> Associada
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#garantia"
-                            type="button">
+                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#garantia" type="button">
                             Garantia
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#contrato"
-                            type="button">
+                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#contrato" type="button">
                             Contrato de <br> Manutenção
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#documentos"
-                            type="button">
+                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#documentos" type="button">
                             Documentação <br> Associada
                         </button>
                     </li>
@@ -244,20 +284,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                         <!-- SEPARADOR 1 — EQUIPAMENTO -->
-                        <div class="tab-pane fade show active" id="dados" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'dados' ? 'show active' : '' ?>" id="dados" role="tabpanel">
 
                             <!-- Código + Designação -->
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Código Interno De Inventário *</label>
                                     <input type="text" class="form-control" name="codigo" placeholder="Ex: EQ-2025-001"
-                                        value="<?= htmlspecialchars($_POST['codigo'] ?? '') ?>">
+                                        value="<?= htmlspecialchars($_POST['codigo'] ?? $_SESSION['novo_equipamento']['sep1']['codigo'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-md-8 mb-3">
                                     <label class="form-label">Designação Do Equipamento *</label>
                                     <input type="text" class="form-control" name="designacao" placeholder="Ex: Monitor multiparamétrico"
-                                        value="<?= htmlspecialchars($_POST['designacao'] ?? '') ?>">
+                                        value="<?= htmlspecialchars($_POST['designacao'] ?? $_SESSION['novo_equipamento']['sep1']['designacao'] ?? '') ?>">
                                 </div>
                             </div>
 
@@ -280,13 +320,13 @@ Reabilitação — Apoia a recuperação funcional do paciente.
                                 </label>
 
                                 <select class="form-select" name="categoria">
-                                    <option value="Monitorização" <?= (($_POST['categoria'] ?? '') == 'Monitorização') ? 'selected' : '' ?>>Monitorização</option>
-                                    <option value="Suporte de vida" <?= (($_POST['categoria'] ?? '') == 'Suporte de vida') ? 'selected' : '' ?>>Suporte de vida</option>
-                                    <option value="Terapia" <?= (($_POST['categoria'] ?? '') == 'Terapia') ? 'selected' : '' ?>>Terapia</option>
-                                    <option value="Diagnóstico" <?= (($_POST['categoria'] ?? '') == 'Diagnóstico') ? 'selected' : '' ?>>Diagnóstico</option>
-                                    <option value="Laboratório" <?= (($_POST['categoria'] ?? '') == 'Laboratório') ? 'selected' : '' ?>>Laboratório</option>
-                                    <option value="Esterilização" <?= (($_POST['categoria'] ?? '') == 'Esterilização') ? 'selected' : '' ?>>Esterilização</option>
-                                    <option value="Reabilitação" <?= (($_POST['categoria'] ?? '') == 'Reabilitação') ? 'selected' : '' ?>>Reabilitação</option>
+                                    <option value="Monitorização" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Monitorização') ? 'selected' : '' ?>>Monitorização</option>
+                                    <option value="Suporte de vida" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Suporte de vida') ? 'selected' : '' ?>>Suporte de vida</option>
+                                    <option value="Terapia" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Terapia') ? 'selected' : '' ?>>Terapia</option>
+                                    <option value="Diagnóstico" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Diagnóstico') ? 'selected' : '' ?>>Diagnóstico</option>
+                                    <option value="Laboratório" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Laboratório') ? 'selected' : '' ?>>Laboratório</option>
+                                    <option value="Esterilização" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Esterilização') ? 'selected' : '' ?>>Esterilização</option>
+                                    <option value="Reabilitação" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Reabilitação') ? 'selected' : '' ?>>Reabilitação</option>
                                 </select>
                             </div>
 
@@ -295,13 +335,13 @@ Reabilitação — Apoia a recuperação funcional do paciente.
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Marca *</label>
                                     <input type="text" class="form-control" name="marca" placeholder="Ex: Philips"
-                                        value="<?= htmlspecialchars($_POST['marca'] ?? '') ?>">
+                                        value="<?= htmlspecialchars($_POST['marca'] ?? $_SESSION['novo_equipamento']['sep1']['marca'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Modelo *</label>
                                     <input type="text" class="form-control" name="modelo" placeholder="Ex: IntelliVue MP5"
-                                        value="<?= htmlspecialchars($_POST['modelo'] ?? '') ?>">
+                                        value="<?= htmlspecialchars($_POST['modelo'] ?? $_SESSION['novo_equipamento']['sep1']['modelo'] ?? '') ?>">
                                 </div>
                             </div>
 
@@ -310,13 +350,13 @@ Reabilitação — Apoia a recuperação funcional do paciente.
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Número de Série *</label>
                                     <input type="text" class="form-control" name="numero_serie" placeholder="Ex: MP5-2022-45873"
-                                        value="<?= htmlspecialchars($_POST['numero_serie'] ?? '') ?>">
+                                        value="<?= htmlspecialchars($_POST['numero_serie'] ?? $_SESSION['novo_equipamento']['sep1']['numero_serie'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Fabricante *</label>
                                     <input type="text" class="form-control" name="fabricante" placeholder="Ex: Philips Healthcare"
-                                        value="<?= htmlspecialchars($_POST['fabricante'] ?? '') ?>">
+                                        value="<?= htmlspecialchars($_POST['fabricante'] ?? $_SESSION['novo_equipamento']['sep1']['fabricante'] ?? '') ?>">
                                 </div>
                             </div>
 
@@ -326,7 +366,7 @@ Reabilitação — Apoia a recuperação funcional do paciente.
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Ano de Fabrico *</label>
                                     <input type="number" class="form-control" name="ano_fabrico" placeholder="Ex: 2022" min="1900" max="2100"
-                                        value="<?= htmlspecialchars($_POST['ano_fabrico'] ?? '') ?>">
+                                        value="<?= htmlspecialchars($_POST['ano_fabrico'] ?? $_SESSION['novo_equipamento']['sep1']['ano_fabrico'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-md-4 mb-3">
@@ -346,12 +386,12 @@ Abatido - Removido definitivamente do inventário.
                                     </label>
 
                                     <select class="form-select" name="estado">
-                                        <option value="Ativo" <?= (($_POST['estado'] ?? '') == 'Ativo') ? 'selected' : '' ?>>Ativo</option>
-                                        <option value="Em manutenção" <?= (($_POST['estado'] ?? '') == 'Em manutenção') ? 'selected' : '' ?>>Em manutenção</option>
-                                        <option value="Inativo" <?= (($_POST['estado'] ?? '') == 'Inativo') ? 'selected' : '' ?>>Inativo</option>
-                                        <option value="Em calibração" <?= (($_POST['estado'] ?? '') == 'Em calibração') ? 'selected' : '' ?>>Em calibração</option>
-                                        <option value="Em quarentena" <?= (($_POST['estado'] ?? '') == 'Em quarentena') ? 'selected' : '' ?>>Em quarentena</option>
-                                        <option value="Abatido" <?= (($_POST['estado'] ?? '') == 'Abatido') ? 'selected' : '' ?>>Abatido</option>
+                                        <option value="Ativo" <?= (($_POST['estado'] ?? $_SESSION['novo_equipamento']['sep1']['estado'] ?? '') == 'Ativo') ? 'selected' : '' ?>>Ativo</option>
+                                        <option value="Em manutenção" <?= (($_POST['estado'] ?? $_SESSION['novo_equipamento']['sep1']['estado'] ?? '') == 'Em manutenção') ? 'selected' : '' ?>>Em manutenção</option>
+                                        <option value="Inativo" <?= (($_POST['estado'] ?? $_SESSION['novo_equipamento']['sep1']['estado'] ?? '') == 'Inativo') ? 'selected' : '' ?>>Inativo</option>
+                                        <option value="Em calibração" <?= (($_POST['estado'] ?? $_SESSION['novo_equipamento']['sep1']['estado'] ?? '') == 'Em calibração') ? 'selected' : '' ?>>Em calibração</option>
+                                        <option value="Em quarentena" <?= (($_POST['estado'] ?? $_SESSION['novo_equipamento']['sep1']['estado'] ?? '') == 'Em quarentena') ? 'selected' : '' ?>>Em quarentena</option>
+                                        <option value="Abatido" <?= (($_POST['estado'] ?? $_SESSION['novo_equipamento']['sep1']['estado'] ?? '') == 'Abatido') ? 'selected' : '' ?>>Abatido</option>
                                     </select>
                                 </div>
 
@@ -370,10 +410,10 @@ Suporte de vida - Equipamentos cuja falha pode colocar em risco imediato a vida 
                                     </label>
 
                                     <select class="form-select" name="criticidade">
-                                        <option value="Baixa" <?= (($_POST['criticidade'] ?? '') == 'Baixa') ? 'selected' : '' ?>>Baixa</option>
-                                        <option value="Média" <?= (($_POST['criticidade'] ?? '') == 'Média') ? 'selected' : '' ?>>Média</option>
-                                        <option value="Alta" <?= (($_POST['criticidade'] ?? '') == 'Alta') ? 'selected' : '' ?>>Alta</option>
-                                        <option value="Suporte de vida" <?= (($_POST['criticidade'] ?? '') == 'Suporte de vida') ? 'selected' : '' ?>>Suporte de vida</option>
+                                        <option value="Baixa" <?= (($_POST['criticidade'] ?? $_SESSION['novo_equipamento']['sep1']['criticidade'] ?? '') == 'Baixa') ? 'selected' : '' ?>>Baixa</option>
+                                        <option value="Média" <?= (($_POST['criticidade'] ?? $_SESSION['novo_equipamento']['sep1']['criticidade'] ?? '') == 'Média') ? 'selected' : '' ?>>Média</option>
+                                        <option value="Alta" <?= (($_POST['criticidade'] ?? $_SESSION['novo_equipamento']['sep1']['criticidade'] ?? '') == 'Alta') ? 'selected' : '' ?>>Alta</option>
+                                        <option value="Suporte de vida" <?= (($_POST['criticidade'] ?? $_SESSION['novo_equipamento']['sep1']['criticidade'] ?? '') == 'Suporte de vida') ? 'selected' : '' ?>>Suporte de vida</option>
                                     </select>
                                 </div>
                             </div>
@@ -381,13 +421,14 @@ Suporte de vida - Equipamentos cuja falha pode colocar em risco imediato a vida 
                             <!-- Observações -->
                             <div class="mb-3">
                                 <label class="form-label">Observações</label>
-                                <textarea class="form-control" name="observacoes" rows="3"><?= htmlspecialchars($_POST['observacoes'] ?? '') ?></textarea>
+                                <textarea class="form-control" name="observacoes" rows="3"><?= htmlspecialchars($_POST['observacoes'] ?? $_SESSION['novo_equipamento']['sep1']['observacoes'] ?? '') ?></textarea>
                             </div>
+
                             <!-- Botões -->
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="lista.php" class="btn btn-secondary">← Voltar</a>
 
-                                <button type="submit" class="btn" style="background-color:#1a826d; color:white;">
+                                <button type="submit" name="submeter_sep1" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>
@@ -395,7 +436,7 @@ Suporte de vida - Equipamentos cuja falha pode colocar em risco imediato a vida 
                         </div>
 
                         <!-- SEPARADOR 2 — COMPONENTES ASSOCIADOS -->
-                        <div class="tab-pane fade" id="componentes" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'componentes' ? 'show active' : '' ?>" id="componentes" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Componentes Associados</h4>
 
@@ -405,82 +446,77 @@ Suporte de vida - Equipamentos cuja falha pode colocar em risco imediato a vida 
 
                             <div id="componentesContainer">
 
-                                <!-- BLOCO BASE DO COMPONENTE -->
-                                <div class="componente-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
+                                <?php
+                                $componentes_sessao = $_SESSION['novo_equipamento']['sep2'] ?? [['tipo' => 'componente', 'nome' => '', 'referencia' => '', 'quantidade' => '', 'estado' => '', 'observacoes' => '']];
+                                foreach ($componentes_sessao as $comp):
+                                ?>
+                                    <div class="componente-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
+                                        <div class="row g-3">
 
-                                    <div class="row g-3">
-
-                                        <!-- Tipo -->
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label">
-                                                Tipo *
-                                                <i class="fa-solid fa-circle-info ms-1 text-muted"
-                                                    data-bs-toggle="popover" data-bs-trigger="hover focus"
-                                                    data-bs-html="true" title="Tipo de Item" data-bs-content="
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Tipo *
+                                                    <i class="fa-solid fa-circle-info ms-1 text-muted" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-html="true" title="Tipo de Item" data-bs-content="
 Componente - Parte técnica do equipamento (sensores, cabos, baterias, módulos).<br>
-Consumível - Item usado e substituído regularmente (gel, filtros, papel térmico).
-           ">
-                                                </i>
-                                            </label>
+Consumível - Item usado e substituído regularmente (gel, filtros, papel térmico)."></i>
+                                                </label>
+                                                <select class="form-select" name="tipo[]">
+                                                    <option value="componente" <?= ($comp['tipo'] ?? '') == 'componente' ? 'selected' : '' ?>>Componente</option>
+                                                    <option value="consumivel" <?= ($comp['tipo'] ?? '') == 'consumivel' ? 'selected' : '' ?>>Consumível</option>
+                                                </select>
+                                            </div>
 
-                                            <select class="form-select">
-                                                <option value="componente">Componente</option>
-                                                <option value="consumivel">Consumível</option>
-                                            </select>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Nome *</label>
+                                                <input type="text" class="form-control" name="nome_componente[]"
+                                                    placeholder="Ex: Sensor SpO2, Gel, Cabo ECG"
+                                                    value="<?= htmlspecialchars($comp['nome'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Referência</label>
+                                                <input type="text" class="form-control" name="referencia[]"
+                                                    placeholder="Ex: DS-100A"
+                                                    value="<?= htmlspecialchars($comp['referencia'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Quantidade</label>
+                                                <input type="number" class="form-control" name="quantidade[]"
+                                                    placeholder="Ex: 3" min="0"
+                                                    value="<?= htmlspecialchars($comp['quantidade'] ?? '') ?>">
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Estado</label>
+                                                <select class="form-select" name="estado_componente[]">
+                                                    <option value="">—</option>
+                                                    <option value="Ativo" <?= ($comp['estado'] ?? '') == 'Ativo' ? 'selected' : '' ?>>Ativo</option>
+                                                    <option value="Em manutenção" <?= ($comp['estado'] ?? '') == 'Em manutenção' ? 'selected' : '' ?>>Em manutenção</option>
+                                                    <option value="Inativo" <?= ($comp['estado'] ?? '') == 'Inativo' ? 'selected' : '' ?>>Inativo</option>
+                                                    <option value="Em calibração" <?= ($comp['estado'] ?? '') == 'Em calibração' ? 'selected' : '' ?>>Em calibração</option>
+                                                    <option value="Abatido" <?= ($comp['estado'] ?? '') == 'Abatido' ? 'selected' : '' ?>>Abatido</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <label class="form-label">Observações</label>
+                                                <textarea class="form-control" name="observacoes_componente[]" rows="1"
+                                                    placeholder="Notas adicionais"><?= htmlspecialchars($comp['observacoes'] ?? '') ?></textarea>
+                                            </div>
+
+                                            <div class="col-12 text-end mt-1">
+                                                <button type="button" class="btn btn-danger btn-sm remover-componente">
+                                                    Remover
+                                                </button>
+                                            </div>
+
                                         </div>
-
-
-                                        <!-- Nome -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Nome *</label>
-                                            <input type="text" class="form-control"
-                                                placeholder="Ex: Sensor SpO2, Gel, Cabo ECG">
-                                        </div>
-
-                                        <!-- Referência -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Referência</label>
-                                            <input type="text" class="form-control" placeholder="Ex: DS-100A">
-                                        </div>
-
-                                        <!-- Quantidade -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Quantidade</label>
-                                            <input type="number" class="form-control" placeholder="Ex: 3">
-                                        </div>
-
-                                        <!-- Estado -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Estado</label>
-                                            <select class="form-select">
-                                                <option value="">—</option>
-                                                <option>Ativo</option>
-                                                <option>Em manutenção</option>
-                                                <option>Inativo</option>
-                                                <option>Em calibração</option>
-                                                <option>Abatido</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Observações -->
-                                        <div class="col-md-12">
-                                            <label class="form-label">Observações</label>
-                                            <textarea class="form-control" rows="1"
-                                                placeholder="Notas adicionais"></textarea>
-                                        </div>
-
-                                        <!-- Botão remover -->
-                                        <div class="col-12 text-end mt-1">
-                                            <button type="button" class="btn btn-danger btn-sm remover-componente">
-                                                Remover
-                                            </button>
-                                        </div>
-
                                     </div>
-
-                                </div>
+                                <?php endforeach; ?>
 
                             </div>
+
+
 
                             <!-- Botão adicionar -->
                             <button type="button" class="btn btn-success mb-4" id="adicionarComponente">
@@ -493,17 +529,15 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                                     ← Anterior
                                 </button>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="validarEAvancar('componentes', 'aquisicao')">
+                                <button type="submit" name="submeter_sep2" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>
 
                         </div>
 
-
                         <!-- SEPARADOR 3 — AQUISIÇÃO -->
-                        <div class="tab-pane fade" id="aquisicao" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'aquisicao' ? 'show active' : '' ?>" id="aquisicao" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Aquisição</h4>
 
@@ -512,14 +546,15 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                                 <!-- Data de aquisição -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Data de Aquisição *</label>
-                                    <input type="date" class="form-control">
+                                    <input type="text" class="form-control" id="data_aquisicao" name="data_aquisicao"
+                                        value="<?= htmlspecialchars($_POST['data_aquisicao'] ?? $_SESSION['novo_equipamento']['sep3']['data_aquisicao'] ?? '') ?>">
                                 </div>
 
                                 <!-- Custo -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Custo de Aquisição (€) *</label>
-                                    <input type="number" class="form-control" placeholder="Ex: 3500" min="0"
-                                        step="0.01">
+                                    <input type="number" class="form-control" name="custo" placeholder="Ex: 3500" min="0" step="0.01"
+                                        value="<?= htmlspecialchars($_POST['custo'] ?? $_SESSION['novo_equipamento']['sep3']['custo'] ?? '') ?>">
                                 </div>
 
                                 <!-- Tipo de entrada -->
@@ -529,19 +564,19 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                                         <i class="fa-solid fa-circle-info ms-1 text-muted" data-bs-toggle="popover"
                                             data-bs-trigger="hover focus" data-bs-html="true"
                                             title="Tipo de Entrada" data-bs-content="
-            Compra - Adquirido pela instituição.<br>
-            Doação - Recebido sem contrapartida financeira.<br>
-            Empréstimo - Cedido temporariamente e devolvido após uso.<br>
-            Aluguer - Obtido através de contrato de aluguer.
-       ">
+Compra - Adquirido pela instituição.<br>
+Doação - Recebido sem contrapartida financeira.<br>
+Empréstimo - Cedido temporariamente e devolvido após uso.<br>
+Aluguer - Obtido através de contrato de aluguer.
+">
                                         </i>
                                     </label>
 
-                                    <select class="form-select" id="tipoEntrada">
-                                        <option value="compra">Compra</option>
-                                        <option value="doacao">Doação</option>
-                                        <option value="aluguer">Aluguer</option>
-                                        <option value="emprestimo">Empréstimo</option>
+                                    <select class="form-select" name="tipo_entrada" id="tipoEntrada">
+                                        <option value="compra" <?= (($_POST['tipo_entrada'] ?? $_SESSION['novo_equipamento']['sep3']['tipo_entrada'] ?? '') == 'compra') ? 'selected' : '' ?>>Compra</option>
+                                        <option value="doacao" <?= (($_POST['tipo_entrada'] ?? $_SESSION['novo_equipamento']['sep3']['tipo_entrada'] ?? '') == 'doacao') ? 'selected' : '' ?>>Doação</option>
+                                        <option value="aluguer" <?= (($_POST['tipo_entrada'] ?? $_SESSION['novo_equipamento']['sep3']['tipo_entrada'] ?? '') == 'aluguer') ? 'selected' : '' ?>>Aluguer</option>
+                                        <option value="emprestimo" <?= (($_POST['tipo_entrada'] ?? $_SESSION['novo_equipamento']['sep3']['tipo_entrada'] ?? '') == 'emprestimo') ? 'selected' : '' ?>>Empréstimo</option>
                                     </select>
 
                                 </div>
@@ -551,8 +586,6 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                             <hr class="my-4">
 
                             <div class="accordion" id="accordionAquisicao">
-
-                                <!-- ITEM 1 — Documentos da Aquisição -->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="headingDocAquisicao">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -566,131 +599,101 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                                         aria-labelledby="headingDocAquisicao" data-bs-parent="#accordionAquisicao">
 
                                         <div class="accordion-body">
-
                                             <div class="row">
 
                                                 <!-- BLOCO 1 — Contrato de Aquisição -->
                                                 <div class="col-md-6">
                                                     <div class="border rounded p-3 mb-3">
-
-                                                        <h5 class="mb-3" style="color:#1a826d;">Contrato de
-                                                            Aquisição</h5>
+                                                        <h5 class="mb-3" style="color:#1a826d;">Contrato de Aquisição</h5>
 
                                                         <div class="row">
-                                                            <!-- Tipo de Documento -->
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="form-label">Tipo de Documento
-                                                                    *</label>
-                                                                <select class="form-select">
+                                                                <label class="form-label">Tipo de Documento *</label>
+                                                                <select class="form-select" name="contrato_aquisicao_tipo">
                                                                     <option>Contrato de Aquisição</option>
                                                                 </select>
                                                             </div>
-
-                                                            <!-- Nome do Documento -->
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="form-label">Nome do Documento
-                                                                    *</label>
-                                                                <input type="text" class="form-control"
-                                                                    placeholder="Ex: Contrato de Compra">
+                                                                <label class="form-label">Nome do Documento *</label>
+                                                                <input type="text" class="form-control" name="contrato_aquisicao_nome"
+                                                                    placeholder="Ex: Contrato de Compra"
+                                                                    value="<?= htmlspecialchars($_POST['contrato_aquisicao_nome'] ?? $_SESSION['novo_equipamento']['sep3']['contrato_aquisicao_nome'] ?? '') ?>">
                                                             </div>
                                                         </div>
 
-
                                                         <div class="row">
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="form-label">Data do Documento
-                                                                    *</label>
-                                                                <input type="date" class="form-control">
+                                                                <label class="form-label">Data do Documento *</label>
+                                                                <input type="text" class="form-control" id="contrato_aquisicao_data" name="contrato_aquisicao_data"
+                                                                    value="<?= htmlspecialchars($_POST['contrato_aquisicao_data'] ?? $_SESSION['novo_equipamento']['sep3']['contrato_aquisicao_data'] ?? '') ?>">
                                                             </div>
-
                                                             <div class="col-md-6 mb-3">
                                                                 <label class="form-label">Data de Validade</label>
-                                                                <input type="date" class="form-control">
+                                                                <input type="text" class="form-control" id="contrato_aquisicao_validade" name="contrato_aquisicao_validade"
+                                                                    value="<?= htmlspecialchars($_POST['contrato_aquisicao_validade'] ?? $_SESSION['novo_equipamento']['sep3']['contrato_aquisicao_validade'] ?? '') ?>">
                                                             </div>
                                                         </div>
 
                                                         <div class="mb-3">
                                                             <label class="form-label">Ficheiro (PDF) *</label>
-                                                            <input type="file" class="form-control"
-                                                                accept="application/pdf">
+                                                            <input type="file" class="form-control" name="contrato_aquisicao_ficheiro" accept="application/pdf">
                                                         </div>
 
-                                                        <button type="button" class="btn btn-danger">Remover
-                                                            Documento</button>
-
+                                                        <button type="button" class="btn btn-danger">Remover Documento</button>
                                                     </div>
                                                 </div>
 
                                                 <!-- BLOCO 2 — Fatura da Aquisição -->
                                                 <div class="col-md-6" id="blocoFatura">
-
                                                     <div class="border rounded p-3 mb-3">
-
-                                                        <h5 class="mb-3" style="color:#1a826d;">Fatura da Aquisição
-                                                        </h5>
+                                                        <h5 class="mb-3" style="color:#1a826d;">Fatura da Aquisição</h5>
 
                                                         <div class="row">
-                                                            <!-- Tipo de Documento -->
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="form-label">Tipo de Documento
-                                                                    *</label>
-                                                                <select class="form-select">
+                                                                <label class="form-label">Tipo de Documento *</label>
+                                                                <select class="form-select" name="fatura_aquisicao_tipo">
                                                                     <option>Fatura de Aquisição</option>
                                                                 </select>
                                                             </div>
-
-                                                            <!-- Nome do Documento -->
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="form-label">Nome do Documento
-                                                                    *</label>
-                                                                <input type="text" class="form-control"
-                                                                    placeholder="Ex: Contrato de Compra">
+                                                                <label class="form-label">Nome do Documento *</label>
+                                                                <input type="text" class="form-control" name="fatura_aquisicao_nome"
+                                                                    placeholder="Ex: Fatura de Compra"
+                                                                    value="<?= htmlspecialchars($_POST['fatura_aquisicao_nome'] ?? $_SESSION['novo_equipamento']['sep3']['fatura_aquisicao_nome'] ?? '') ?>">
                                                             </div>
                                                         </div>
 
-
                                                         <div class="row">
                                                             <div class="col-md-6 mb-3">
-                                                                <label class="form-label">Data da Fatura *</label>
-                                                                <input type="date" class="form-control">
+                                                                <label class="form-label">Data do Documento *</label>
+                                                                <input type="text" class="form-control" id="fatura_aquisicao_data" name="fatura_aquisicao_data"
+                                                                    value="<?= htmlspecialchars($_POST['fatura_aquisicao_data'] ?? $_SESSION['novo_equipamento']['sep3']['fatura_aquisicao_data'] ?? '') ?>">
                                                             </div>
 
-                                                            <div class="col-md-6 mb-3">
-                                                                <label class="form-label">Data de Pagamento</label>
-                                                                <input type="date" class="form-control">
-                                                            </div>
                                                         </div>
 
                                                         <div class="mb-3">
                                                             <label class="form-label">Ficheiro (PDF) *</label>
-                                                            <input type="file" class="form-control"
-                                                                accept="application/pdf">
+                                                            <input type="file" class="form-control" name="fatura_aquisicao_ficheiro" accept="application/pdf">
                                                         </div>
 
-                                                        <button type="button" class="btn btn-danger">Remover
-                                                            Documento</button>
-
+                                                        <button type="button" class="btn btn-danger">Remover Documento</button>
                                                     </div>
                                                 </div>
 
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-
 
                             <!-- Botões -->
                             <div class="d-flex justify-content-between mt-4">
-                                <button type="button" class="btn btn-secondary"
-                                    onclick="mostrarSeparador('componentes')">
+                                <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('componentes')">
                                     ← Anterior
                                 </button>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="validarEAvancar('aquisicao', 'fornecedor')">
+                                <button type="submit" name="submeter_sep3" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>
@@ -698,7 +701,7 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                         </div>
 
                         <!-- SEPARADOR 4 — FORNECEDOR ASSOCIADO -->
-                        <div class="tab-pane fade" id="fornecedor" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'fornecedor' ? 'show active' : '' ?>" id="fornecedor" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Fornecedor Associado</h4>
 
@@ -712,11 +715,13 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                                         <!-- Fornecedor -->
                                         <div class="col-md-4">
                                             <label class="form-label">Fornecedor *</label>
-                                            <select class="form-select">
+                                            <select class="form-select" name="fornecedor_id[]">
                                                 <option value="">Selecione...</option>
-                                                <option value="1">F001 – MedTech Solutions</option>
-                                                <option value="2">F002 – Dräger Portugal</option>
-                                                <option value="3">F003 – TecAssist</option>
+                                                <?php foreach ($fornecedores as $f): ?>
+                                                    <option value="<?= $f['id'] ?>">
+                                                        <?= htmlspecialchars($f['codigo'] . ' – ' . $f['nome']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
 
@@ -794,36 +799,32 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
 
                             <h4 class="mb-3" style="color:#1a826d;">Localização Associada</h4>
 
-                            <form>
+                            <div class="row">
 
-                                <div class="row">
-
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">Localização *</label>
-                                        <select class="form-select">
-                                            <option value="">Selecione...</option>
-                                            <option value="LOC001">LOC001 – Edifício A / Piso 1 / Sala 3</option>
-                                            <option value="LOC002">LOC002 – Edifício B / Piso 0 / Urgência</option>
-                                            <option value="LOC003">LOC003 – Edifício C / Piso 2 / Sala 12</option>
-                                        </select>
-                                    </div>
-
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Localização *</label>
+                                    <select class="form-select">
+                                        <option value="">Selecione...</option>
+                                        <option value="LOC001">LOC001 – Edifício A / Piso 1 / Sala 3</option>
+                                        <option value="LOC002">LOC002 – Edifício B / Piso 0 / Urgência</option>
+                                        <option value="LOC003">LOC003 – Edifício C / Piso 2 / Sala 12</option>
+                                    </select>
                                 </div>
 
-                                <!-- Botões -->
-                                <div class="d-flex justify-content-between mt-4">
-                                    <button type="button" class="btn btn-secondary"
-                                        onclick="mostrarSeparador('fornecedor')">
-                                        ← Anterior
-                                    </button>
+                            </div>
 
-                                    <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                        onclick="validarEAvancar('localizacao', 'garantia')">
-                                        Seguinte →
-                                    </button>
-                                </div>
+                            <!-- Botões -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="mostrarSeparador('fornecedor')">
+                                    ← Anterior
+                                </button>
 
-                            </form>
+                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
+                                    onclick="validarEAvancar('localizacao', 'garantia')">
+                                    Seguinte →
+                                </button>
+                            </div>
 
                         </div>
 
@@ -1212,5 +1213,23 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
 
     </div>
 </div>
+
+<script>
+    flatpickr("#data_aquisicao", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#contrato_aquisicao_data", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#contrato_aquisicao_validade", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#fatura_aquisicao_data", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#fatura_aquisicao_pagamento", {
+        dateFormat: "Y-m-d"
+    });
+</script>
 
 <?php include '../../includes/footer.php'; ?>
