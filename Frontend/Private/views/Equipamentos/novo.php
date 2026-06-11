@@ -1,6 +1,143 @@
 <?php
+require_once __DIR__ . '/../../../config/config.php';
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
+
+$erros = [];
+$erro_sistema = "";
+
+
+// Verificar se o formulário foi submetido
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // 1. Recolher dados
+    $codigo       = $_POST["codigo"]       ?? "";
+    $designacao   = $_POST["designacao"]   ?? "";
+    $categoria    = $_POST["categoria"]    ?? "";
+    $marca        = $_POST["marca"]        ?? "";
+    $modelo       = $_POST["modelo"]       ?? "";
+    $numero_serie = $_POST["numero_serie"] ?? "";
+    $fabricante   = $_POST["fabricante"]   ?? "";
+    $ano_fabrico  = $_POST["ano_fabrico"]  ?? "";
+    $estado       = $_POST["estado"]       ?? "";
+    $criticidade  = $_POST["criticidade"]  ?? "";
+    $observacoes  = $_POST["observacoes"]  ?? "";
+
+    // 2. Validar os dados
+    $erros = [];
+
+    $codigo       = trim($codigo);
+    $designacao   = trim($designacao);
+    $marca        = trim($marca);
+    $modelo       = trim($modelo);
+    $numero_serie = trim($numero_serie);
+    $fabricante   = trim($fabricante);
+    $ano_fabrico  = trim($ano_fabrico);
+    $observacoes  = trim($observacoes);
+
+    if (empty($codigo)) {
+        $erros[] = "O código interno é obrigatório.";
+    } elseif (preg_match('/\s/', $codigo)) {
+        $erros[] = "O código interno não pode conter espaços.";
+    }
+
+    if (empty($designacao)) {
+        $erros[] = "A designação é obrigatória.";
+    }
+
+    if (empty($marca)) {
+        $erros[] = "A marca é obrigatória.";
+    }
+
+    if (empty($modelo)) {
+        $erros[] = "O modelo é obrigatório.";
+    }
+
+    if (empty($numero_serie)) {
+        $erros[] = "O número de série é obrigatório.";
+    }
+
+    if (empty($fabricante)) {
+        $erros[] = "O fabricante é obrigatório.";
+    }
+
+    if (empty($ano_fabrico)) {
+        $erros[] = "O ano de fabrico é obrigatório.";
+    } elseif (!preg_match('/^\d{4}$/', $ano_fabrico) || $ano_fabrico < 1900 || $ano_fabrico > 2100) {
+        $erros[] = "O ano de fabrico é inválido.";
+    }
+
+    // 3. Normalizar dados
+    $designacao   = ucwords(strtolower($designacao));   // Monitor Multiparamétrico
+    $marca        = ucwords(strtolower($marca));         // Philips
+    $modelo       = ucwords(strtolower($modelo));        // Intellivue Mp5
+    $fabricante   = ucwords(strtolower($fabricante));    // Philips Healthcare
+    $codigo       = strtoupper($codigo);                 // EQ-2025-001
+
+    /*
+    // Mostrar dados normalizados (para teste)
+    echo "<p><strong>Dados normalizados:</strong></p>";
+    echo "<ul>";
+    echo "<li>Código: $codigo</li>";
+    echo "<li>Designação: $designacao</li>";
+    echo "<li>Marca: $marca</li>";
+    echo "<li>Modelo: $modelo</li>";
+    echo "<li>Fabricante: $fabricante</li>";
+    echo "</ul>";
+    
+
+    // 4. Depuração: mostrar os erros recolhidos
+    echo "<pre>";
+    print_r($erros);
+    echo "</pre>";
+    */
+
+    // 5. Se não houver erros, guardar na base de dados
+    $erro_sistema = "";
+
+    if (empty($erros)) {
+        try {
+            $ligacao = new PDO(
+                "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+                MYSQL_USERNAME,
+                MYSQL_PASSWORD
+            );
+
+            $sql = "INSERT INTO equipamentos (
+                codigo, designacao, categoria, marca, modelo,
+                numero_serie, fabricante, ano_fabrico, estado, criticidade,
+                localizacao_id, observacoes
+            ) VALUES (
+                :codigo, :designacao, :categoria, :marca, :modelo,
+                :numero_serie, :fabricante, :ano_fabrico, :estado, :criticidade,
+                1, :observacoes
+            )";
+
+            $stmt = $ligacao->prepare($sql);
+
+            $stmt->execute([
+                ':codigo'       => $codigo,
+                ':designacao'   => $designacao,
+                ':categoria'    => $categoria,
+                ':marca'        => $marca,
+                ':modelo'       => $modelo,
+                ':numero_serie' => $numero_serie,
+                ':fabricante'   => $fabricante,
+                ':ano_fabrico'  => $ano_fabrico,
+                ':estado'       => $estado,
+                ':criticidade'  => $criticidade,
+                ':observacoes'  => $observacoes
+            ]);
+
+            header("Location: lista.php");
+            exit;
+        } catch (PDOException $err) {
+            $erro_sistema = "Erro ao gravar os dados: " . $err->getMessage();
+        }
+
+        $ligacao = null;
+    }
+}
 ?>
 
 <?php include '../../includes/header.php'; ?>
@@ -82,16 +219,26 @@ redirect_if_not_logged();
 
                 </ul>
 
-                <div class="alert alert-danger">
-                    <strong>Foram encontrados erros:</strong>
-                    <ul class="mt-2 mb-0">
-                        <li>Código interno é obrigatório</li>
-                        <li>Categoria é obrigatória</li>
-                    </ul>
-                </div>
+                <?php if (!empty($erros)): ?>
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Foram encontrados os seguintes erros:</strong>
+                        <ul class="mb-0">
+                            <?php foreach ($erros as $erro): ?>
+                                <li><?= htmlspecialchars($erro) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($erro_sistema)): ?>
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Erro:</strong>
+                        <p><?= htmlspecialchars($erro_sistema) ?></p>
+                    </div>
+                <?php endif; ?>
 
                 <!-- CONTEÚDO DOS SEPARADORES -->
-                <form id="formEquipamentoCompleto">
+                <form id="formEquipamentoCompleto" method="post" action="#">
 
                     <div class="tab-content" id="equipTabsContent">
 
@@ -103,13 +250,14 @@ redirect_if_not_logged();
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Código Interno De Inventário *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: EQ-2025-001">
+                                    <input type="text" class="form-control" name="codigo" placeholder="Ex: EQ-2025-001"
+                                        value="<?= htmlspecialchars($_POST['codigo'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-md-8 mb-3">
                                     <label class="form-label">Designação Do Equipamento *</label>
-                                    <input type="text" class="form-control"
-                                        placeholder="Ex: Monitor multiparamétrico">
+                                    <input type="text" class="form-control" name="designacao" placeholder="Ex: Monitor multiparamétrico"
+                                        value="<?= htmlspecialchars($_POST['designacao'] ?? '') ?>">
                                 </div>
                             </div>
 
@@ -120,27 +268,25 @@ redirect_if_not_logged();
                                     <i class="fa-solid fa-circle-info ms-1 text-muted" data-bs-toggle="popover"
                                         data-bs-trigger="hover focus" data-bs-html="true" title="Categorias"
                                         data-bs-content="
-        Diagnóstico - Obtém informação clínica para diagnóstico.<br>
-        Terapia - Utilizado no tratamento do paciente.<br>
-        Monitorização - Acompanha sinais vitais e parâmetros clínicos.<br>
-        Acessório - Complementa outro equipamento.<br>
-        Laboratório - Utilizado em análises e testes.<br>
-        Esterilização - Limpa, desinfeta ou esteriliza materiais.<br>
-        Reabilitação — Apoia a recuperação funcional do paciente.
-   ">
+Diagnóstico - Obtém informação clínica para diagnóstico.<br>
+Terapia - Utilizado no tratamento do paciente.<br>
+Monitorização - Acompanha sinais vitais e parâmetros clínicos.<br>
+Acessório - Complementa outro equipamento.<br>
+Laboratório - Utilizado em análises e testes.<br>
+Esterilização - Limpa, desinfeta ou esteriliza materiais.<br>
+Reabilitação — Apoia a recuperação funcional do paciente.
+">
                                     </i>
-
-
                                 </label>
 
-                                <select class="form-select">
-                                    <option>Monitorização</option>
-                                    <option>Suporte de vida</option>
-                                    <option>Terapia</option>
-                                    <option>Diagnóstico</option>
-                                    <option>Laboratório</option>
-                                    <option>Esterilização</option>
-                                    <option>Reabilitação</option>
+                                <select class="form-select" name="categoria">
+                                    <option value="Monitorização" <?= (($_POST['categoria'] ?? '') == 'Monitorização') ? 'selected' : '' ?>>Monitorização</option>
+                                    <option value="Suporte de vida" <?= (($_POST['categoria'] ?? '') == 'Suporte de vida') ? 'selected' : '' ?>>Suporte de vida</option>
+                                    <option value="Terapia" <?= (($_POST['categoria'] ?? '') == 'Terapia') ? 'selected' : '' ?>>Terapia</option>
+                                    <option value="Diagnóstico" <?= (($_POST['categoria'] ?? '') == 'Diagnóstico') ? 'selected' : '' ?>>Diagnóstico</option>
+                                    <option value="Laboratório" <?= (($_POST['categoria'] ?? '') == 'Laboratório') ? 'selected' : '' ?>>Laboratório</option>
+                                    <option value="Esterilização" <?= (($_POST['categoria'] ?? '') == 'Esterilização') ? 'selected' : '' ?>>Esterilização</option>
+                                    <option value="Reabilitação" <?= (($_POST['categoria'] ?? '') == 'Reabilitação') ? 'selected' : '' ?>>Reabilitação</option>
                                 </select>
                             </div>
 
@@ -148,12 +294,14 @@ redirect_if_not_logged();
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Marca *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: Philips">
+                                    <input type="text" class="form-control" name="marca" placeholder="Ex: Philips"
+                                        value="<?= htmlspecialchars($_POST['marca'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Modelo *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: IntelliVue MP5">
+                                    <input type="text" class="form-control" name="modelo" placeholder="Ex: IntelliVue MP5"
+                                        value="<?= htmlspecialchars($_POST['modelo'] ?? '') ?>">
                                 </div>
                             </div>
 
@@ -161,12 +309,14 @@ redirect_if_not_logged();
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Número de Série *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: MP5-2022-45873">
+                                    <input type="text" class="form-control" name="numero_serie" placeholder="Ex: MP5-2022-45873"
+                                        value="<?= htmlspecialchars($_POST['numero_serie'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Fabricante *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: Philips Healthcare">
+                                    <input type="text" class="form-control" name="fabricante" placeholder="Ex: Philips Healthcare"
+                                        value="<?= htmlspecialchars($_POST['fabricante'] ?? '') ?>">
                                 </div>
                             </div>
 
@@ -175,8 +325,8 @@ redirect_if_not_logged();
 
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Ano de Fabrico *</label>
-                                    <input type="number" class="form-control" placeholder="Ex: 2022" min="1900"
-                                        max="2100">
+                                    <input type="number" class="form-control" name="ano_fabrico" placeholder="Ex: 2022" min="1900" max="2100"
+                                        value="<?= htmlspecialchars($_POST['ano_fabrico'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-md-4 mb-3">
@@ -185,25 +335,23 @@ redirect_if_not_logged();
                                         <i class="fa-solid fa-circle-info ms-1 text-muted" data-bs-toggle="popover"
                                             data-bs-trigger="hover focus" data-bs-html="true" title="Estados"
                                             data-bs-content="
-        Ativo - Disponível para utilização.<br>
-        Em manutenção - Em intervenção técnica.<br>
-        Inativo - Temporariamente fora de uso.<br>
-        Em calibração - Em ajuste ou validação técnica.<br>
-        Em quarentena - Isolado para avaliação<br>
-        Abatido - Removido definitivamente do inventário.
-   ">
+Ativo - Disponível para utilização.<br>
+Em manutenção - Em intervenção técnica.<br>
+Inativo - Temporariamente fora de uso.<br>
+Em calibração - Em ajuste ou validação técnica.<br>
+Em quarentena - Isolado para avaliação<br>
+Abatido - Removido definitivamente do inventário.
+">
                                         </i>
-
-
                                     </label>
 
-                                    <select class="form-select">
-                                        <option>Ativo</option>
-                                        <option>Em manutenção</option>
-                                        <option>Inativo</option>
-                                        <option>Em calibração</option>
-                                        <option>Em quarentena</option>
-                                        <option>Abatido</option>
+                                    <select class="form-select" name="estado">
+                                        <option value="Ativo" <?= (($_POST['estado'] ?? '') == 'Ativo') ? 'selected' : '' ?>>Ativo</option>
+                                        <option value="Em manutenção" <?= (($_POST['estado'] ?? '') == 'Em manutenção') ? 'selected' : '' ?>>Em manutenção</option>
+                                        <option value="Inativo" <?= (($_POST['estado'] ?? '') == 'Inativo') ? 'selected' : '' ?>>Inativo</option>
+                                        <option value="Em calibração" <?= (($_POST['estado'] ?? '') == 'Em calibração') ? 'selected' : '' ?>>Em calibração</option>
+                                        <option value="Em quarentena" <?= (($_POST['estado'] ?? '') == 'Em quarentena') ? 'selected' : '' ?>>Em quarentena</option>
+                                        <option value="Abatido" <?= (($_POST['estado'] ?? '') == 'Abatido') ? 'selected' : '' ?>>Abatido</option>
                                     </select>
                                 </div>
 
@@ -213,27 +361,19 @@ redirect_if_not_logged();
                                         <i class="fa-solid fa-circle-info ms-1 text-muted" data-bs-toggle="popover"
                                             data-bs-trigger="hover focus" data-bs-html="true" title="Criticidade"
                                             data-bs-content="
-        Baixa - Equipamentos cuja falha não tem impacto direto na
-segurança do doente.<br>
-        Média - Equipamentos utilizados em procedimentos clínicos,
-mas cuja falha não compromete imediatamente a vida
-do doente.
-<br>
-        Alta - Equipamentos essenciais para diagnóstico ou
-tratamento clínico.<br>
-        Suporte de vida - Equipamentos cuja falha pode colocar em risco
-imediato a vida do doente.
-   ">
+Baixa - Equipamentos cuja falha não tem impacto direto na segurança do doente.<br>
+Média - Equipamentos utilizados em procedimentos clínicos, mas cuja falha não compromete imediatamente a vida do doente.<br>
+Alta - Equipamentos essenciais para diagnóstico ou tratamento clínico.<br>
+Suporte de vida - Equipamentos cuja falha pode colocar em risco imediato a vida do doente.
+">
                                         </i>
-
-
                                     </label>
 
-                                    <select class="form-select">
-                                        <option>Baixa</option>
-                                        <option>Média</option>
-                                        <option>Alta</option>
-                                        <option>Suporte de vida</option>
+                                    <select class="form-select" name="criticidade">
+                                        <option value="Baixa" <?= (($_POST['criticidade'] ?? '') == 'Baixa') ? 'selected' : '' ?>>Baixa</option>
+                                        <option value="Média" <?= (($_POST['criticidade'] ?? '') == 'Média') ? 'selected' : '' ?>>Média</option>
+                                        <option value="Alta" <?= (($_POST['criticidade'] ?? '') == 'Alta') ? 'selected' : '' ?>>Alta</option>
+                                        <option value="Suporte de vida" <?= (($_POST['criticidade'] ?? '') == 'Suporte de vida') ? 'selected' : '' ?>>Suporte de vida</option>
                                     </select>
                                 </div>
                             </div>
@@ -241,15 +381,13 @@ imediato a vida do doente.
                             <!-- Observações -->
                             <div class="mb-3">
                                 <label class="form-label">Observações</label>
-                                <textarea class="form-control" rows="3"></textarea>
+                                <textarea class="form-control" name="observacoes" rows="3"><?= htmlspecialchars($_POST['observacoes'] ?? '') ?></textarea>
                             </div>
-
                             <!-- Botões -->
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="lista.php" class="btn btn-secondary">← Voltar</a>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="validarEAvancar('dados', 'componentes')">
+                                <button type="submit" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>

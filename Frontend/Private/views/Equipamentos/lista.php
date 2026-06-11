@@ -239,6 +239,7 @@ $ligacao = null;
             info: false,
             dom: 'tp',
             language: {
+                zeroRecords: "Nenhum equipamento encontrado.",
                 paginate: {
                     first: "Primeira",
                     last: "Última",
@@ -254,9 +255,27 @@ $ligacao = null;
         const estado = document.getElementById('filtroEstado')?.value || '';
         const criticidade = document.getElementById('filtroCriticidade')?.value || '';
 
-        tabela.search(pesquisa);
-        tabela.column(2).search(estado ? '^' + estado + '$' : '', true, false);
-        tabela.column(3).search(criticidade ? '^' + criticidade + '$' : '', true, false);
+        // Pesquisa global mas só nas colunas visíveis relevantes
+        $.fn.dataTable.ext.search.pop(); // limpa filtros anteriores
+
+        $.fn.dataTable.ext.search.push(function(settings, data) {
+            const codigo = data[0].toLowerCase();
+            const designacao = data[1].toLowerCase();
+            const estadoLinha = data[2].toLowerCase();
+            const criticidadeLinha = data[3].toLowerCase();
+            const localizacao = data[4].toLowerCase();
+
+            const matchPesquisa = pesquisa === '' ||
+                codigo.includes(pesquisa.toLowerCase()) ||
+                designacao.includes(pesquisa.toLowerCase()) ||
+                localizacao.includes(pesquisa.toLowerCase());
+
+            const matchEstado = estado === '' || estadoLinha.includes(estado.toLowerCase());
+            const matchCriticidade = criticidade === '' || criticidadeLinha.includes(criticidade.toLowerCase());
+
+            return matchPesquisa && matchEstado && matchCriticidade;
+        });
+
         tabela.draw();
     }
 
@@ -264,7 +283,8 @@ $ligacao = null;
         document.getElementById('pesquisa').value = '';
         document.getElementById('filtroEstado').value = '';
         document.getElementById('filtroCriticidade').value = '';
-        tabela.search('').columns().search('').draw();
+        $.fn.dataTable.ext.search.pop();
+        tabela.draw();
     }
 </script>
 
