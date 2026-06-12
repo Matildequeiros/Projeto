@@ -154,6 +154,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
 
     if (empty($data_aquisicao)) {
         $erros[] = "A data de aquisição é obrigatória.";
+    } elseif ($data_aquisicao > date('Y-m-d')) {
+        $erros[] = "A data de aquisição não pode ser no futuro.";
     }
 
     if (empty($custo)) {
@@ -164,6 +166,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
 
     if (empty($tipo_entrada)) {
         $erros[] = "O tipo de entrada é obrigatório.";
+    }
+
+    // Validar documentos da aquisição
+    if (empty(trim($_POST['contrato_aquisicao_nome'] ?? ''))) {
+        $erros[] = "O nome do contrato de aquisição é obrigatório.";
+    }
+
+    if (empty(trim($_POST['contrato_aquisicao_data'] ?? ''))) {
+        $erros[] = "A data do contrato de aquisição é obrigatória.";
+    } elseif (trim($_POST['contrato_aquisicao_data'] ?? '') > date('Y-m-d')) {
+        $erros[] = "A data do contrato de aquisição não pode ser no futuro.";
+    } elseif (trim($_POST['contrato_aquisicao_data'] ?? '') > $data_aquisicao) {
+        $erros[] = "A data do contrato não pode ser posterior à data de aquisição do equipamento.";
+    }
+
+    // Fatura só obrigatória se tipo de entrada for compra
+    if ($tipo_entrada === 'compra') {
+        if (empty(trim($_POST['fatura_aquisicao_nome'] ?? ''))) {
+            $erros[] = "O nome da fatura de aquisição é obrigatório.";
+        }
+        if (empty(trim($_POST['fatura_aquisicao_data'] ?? ''))) {
+            $erros[] = "A data da fatura de aquisição é obrigatória.";
+        } elseif (trim($_POST['fatura_aquisicao_data'] ?? '') > date('Y-m-d')) {
+            $erros[] = "A data da fatura de aquisição não pode ser no futuro.";
+        } elseif (trim($_POST['fatura_aquisicao_data'] ?? '') > $data_aquisicao) {
+            $erros[] = "A data da fatura não pode ser posterior à data de aquisição do equipamento.";
+        }
+    }
+
+    if (!empty($erros)) {
+        $_SESSION['sep_ativo'] = 'aquisicao';
     }
 
     if (empty($erros)) {
@@ -240,6 +273,298 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep5'])) {
         exit;
     }
 }
+
+// Separador 6 — Garantia
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep6'])) {
+
+    $erros = [];
+
+    $garantia_data_inicio = trim($_POST['garantia_data_inicio'] ?? '');
+    $garantia_data_fim    = trim($_POST['garantia_data_fim']    ?? '');
+    $garantia_entidade    = trim($_POST['garantia_entidade']    ?? '');
+    $cert_garantia_nome   = trim($_POST['cert_garantia_nome']   ?? '');
+    $cert_garantia_data   = trim($_POST['cert_garantia_data']   ?? '');
+
+    if (empty($garantia_data_inicio)) {
+        $erros[] = "A data de início da garantia é obrigatória.";
+    } elseif ($garantia_data_inicio > date('Y-m-d')) {
+        $erros[] = "A data de início da garantia não pode ser no futuro.";
+    }
+
+    if (empty($garantia_data_fim)) {
+        $erros[] = "A data de fim da garantia é obrigatória.";
+    } elseif (!empty($garantia_data_inicio) && $garantia_data_fim <= $garantia_data_inicio) {
+        $erros[] = "A data de fim da garantia tem de ser posterior à data de início.";
+    }
+
+    if (empty($garantia_entidade)) {
+        $erros[] = "A entidade responsável é obrigatória.";
+    }
+
+    if (empty($cert_garantia_nome)) {
+        $erros[] = "O nome do certificado de garantia é obrigatório.";
+    }
+
+    if (empty($cert_garantia_data)) {
+        $erros[] = "A data do certificado de garantia é obrigatória.";
+    } elseif ($cert_garantia_data > date('Y-m-d')) {
+        $erros[] = "A data do certificado de garantia não pode ser no futuro.";
+    } elseif (!empty($garantia_data_inicio) && $cert_garantia_data > $garantia_data_inicio) {
+        $erros[] = "A data do certificado não pode ser posterior à data de início da garantia.";
+    }
+
+    if (!empty($erros)) {
+        $_SESSION['sep_ativo'] = 'garantia';
+    }
+
+    if (empty($erros)) {
+        $_SESSION['novo_equipamento']['sep6'] = [
+            'garantia_data_inicio'  => $garantia_data_inicio,
+            'garantia_data_fim'     => $garantia_data_fim,
+            'garantia_entidade'     => $garantia_entidade,
+            'garantia_observacoes'  => trim($_POST['garantia_observacoes']   ?? ''),
+            'cert_garantia_nome'    => $cert_garantia_nome,
+            'cert_garantia_data'    => $cert_garantia_data,
+            'cert_garantia_validade' => trim($_POST['cert_garantia_validade'] ?? ''),
+        ];
+
+        header("Location: novo.php?sep=contrato");
+        exit;
+    }
+}
+
+// Separador 7 — Contrato de Manutenção
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep7'])) {
+
+    $erros = [];
+    $tem_contrato = trim($_POST['tem_contrato'] ?? 'nao');
+
+    if ($tem_contrato === 'sim') {
+
+        $contrato_tipo         = trim($_POST['contrato_tipo']         ?? '');
+        $contrato_periodicidade = trim($_POST['contrato_periodicidade'] ?? '');
+        $contrato_data_inicio  = trim($_POST['contrato_data_inicio']  ?? '');
+        $contrato_data_fim     = trim($_POST['contrato_data_fim']     ?? '');
+        $contrato_entidade     = trim($_POST['contrato_entidade']     ?? '');
+        $doc_contrato_nome     = trim($_POST['doc_contrato_nome']     ?? '');
+        $doc_contrato_data     = trim($_POST['doc_contrato_data']     ?? '');
+
+        if (empty($contrato_data_inicio)) {
+            $erros[] = "A data de início do contrato é obrigatória.";
+        }
+
+        if (empty($contrato_data_fim)) {
+            $erros[] = "A data de fim do contrato é obrigatória.";
+        } elseif (!empty($contrato_data_inicio) && $contrato_data_fim <= $contrato_data_inicio) {
+            $erros[] = "A data de fim do contrato tem de ser posterior à data de início.";
+        }
+
+        if (empty($contrato_entidade)) {
+            $erros[] = "A entidade responsável é obrigatória.";
+        }
+
+        if (empty($doc_contrato_nome)) {
+            $erros[] = "O nome do documento do contrato é obrigatório.";
+        }
+
+        if (empty($doc_contrato_data)) {
+            $erros[] = "A data do documento do contrato é obrigatória.";
+        } elseif ($doc_contrato_data > date('Y-m-d')) {
+            $erros[] = "A data do documento do contrato não pode ser no futuro.";
+        } elseif (!empty($contrato_data_inicio) && $doc_contrato_data > $contrato_data_inicio) {
+            $erros[] = "A data do documento não pode ser posterior à data de início do contrato.";
+        }
+    }
+
+    if (!empty($erros)) {
+        $_SESSION['sep_ativo'] = 'contrato';
+    }
+
+    if (empty($erros)) {
+        $_SESSION['novo_equipamento']['sep7'] = [
+            'tem_contrato'          => $tem_contrato,
+            'contrato_tipo'         => trim($_POST['contrato_tipo']          ?? ''),
+            'contrato_periodicidade' => trim($_POST['contrato_periodicidade'] ?? ''),
+            'contrato_data_inicio'  => trim($_POST['contrato_data_inicio']   ?? ''),
+            'contrato_data_fim'     => trim($_POST['contrato_data_fim']      ?? ''),
+            'contrato_entidade'     => trim($_POST['contrato_entidade']      ?? ''),
+            'contrato_observacoes'  => trim($_POST['contrato_observacoes']   ?? ''),
+            'doc_contrato_nome'     => trim($_POST['doc_contrato_nome']      ?? ''),
+            'doc_contrato_data'     => trim($_POST['doc_contrato_data']      ?? ''),
+            'doc_contrato_validade' => trim($_POST['doc_contrato_validade']  ?? ''),
+        ];
+
+        header("Location: novo.php?sep=documentos");
+        exit;
+    }
+}
+
+// Separador 8 — Documentação (opcional)
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
+
+    $documentos = [];
+    $nomes = $_POST['doc_nome'] ?? [];
+
+    foreach ($nomes as $i => $nome) {
+        $nome = trim($nome);
+        if (!empty($nome)) {
+            $documentos[] = [
+                'tipo'      => trim($_POST['doc_tipo'][$i]      ?? ''),
+                'nome'      => $nome,
+                'data'      => trim($_POST['doc_data'][$i]      ?? ''),
+                'validade'  => trim($_POST['doc_validade'][$i]  ?? ''),
+            ];
+        }
+    }
+
+    $_SESSION['novo_equipamento']['sep8'] = $documentos;
+
+    try {
+        $ligacao = new PDO(
+            "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+            MYSQL_USERNAME,
+            MYSQL_PASSWORD
+        );
+        $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // 1. Inserir equipamento
+        $sep1 = $_SESSION['novo_equipamento']['sep1'];
+        $sep3 = $_SESSION['novo_equipamento']['sep3'];
+        $sep5 = $_SESSION['novo_equipamento']['sep5'];
+
+        $stmt = $ligacao->prepare("INSERT INTO equipamentos (
+            codigo, designacao, categoria, marca, modelo,
+            numero_serie, fabricante, ano_fabrico, estado, criticidade,
+            localizacao_id, data_aquisicao, custo, tipo_entrada, observacoes
+        ) VALUES (
+            :codigo, :designacao, :categoria, :marca, :modelo,
+            :numero_serie, :fabricante, :ano_fabrico, :estado, :criticidade,
+            :localizacao_id, :data_aquisicao, :custo, :tipo_entrada, :observacoes
+        )");
+
+        $stmt->execute([
+            ':codigo'         => $sep1['codigo'],
+            ':designacao'     => $sep1['designacao'],
+            ':categoria'      => $sep1['categoria'],
+            ':marca'          => $sep1['marca'],
+            ':modelo'         => $sep1['modelo'],
+            ':numero_serie'   => $sep1['numero_serie'],
+            ':fabricante'     => $sep1['fabricante'],
+            ':ano_fabrico'    => $sep1['ano_fabrico'],
+            ':estado'         => $sep1['estado'],
+            ':criticidade'    => $sep1['criticidade'],
+            ':localizacao_id' => $sep5['localizacao_id'],
+            ':data_aquisicao' => $sep3['data_aquisicao'],
+            ':custo'          => $sep3['custo'],
+            ':tipo_entrada'   => $sep3['tipo_entrada'],
+            ':observacoes'    => $sep1['observacoes'],
+        ]);
+
+        $equipamento_id = $ligacao->lastInsertId();
+
+        // 2. Inserir componentes (opcional)
+        $sep2 = $_SESSION['novo_equipamento']['sep2'] ?? [];
+        foreach ($sep2 as $comp) {
+            $stmt = $ligacao->prepare("INSERT INTO componentes_consumiveis (
+                equipamento_id, tipo, nome, referencia, quantidade, estado, observacoes
+            ) VALUES (
+                :equipamento_id, :tipo, :nome, :referencia, :quantidade, :estado, :observacoes
+            )");
+            $stmt->execute([
+                ':equipamento_id' => $equipamento_id,
+                ':tipo'           => $comp['tipo'],
+                ':nome'           => $comp['nome'],
+                ':referencia'     => $comp['referencia'],
+                ':quantidade'     => $comp['quantidade'] ?: null,
+                ':estado'         => $comp['estado'],
+                ':observacoes'    => $comp['observacoes'],
+            ]);
+        }
+
+        // 3. Inserir fornecedores
+        $sep4 = $_SESSION['novo_equipamento']['sep4'] ?? [];
+        foreach ($sep4 as $forn) {
+            $stmt = $ligacao->prepare("INSERT INTO equipamento_fornecedor (
+                equipamento_id, fornecedor_id, tipo_relacao, morada_associada,
+                pessoa_contacto, telefone_contacto, observacoes
+            ) VALUES (
+                :equipamento_id, :fornecedor_id, :tipo_relacao, :morada_associada,
+                :pessoa_contacto, :telefone_contacto, :observacoes
+            )");
+            $stmt->execute([
+                ':equipamento_id'    => $equipamento_id,
+                ':fornecedor_id'     => $forn['fornecedor_id'],
+                ':tipo_relacao'      => $forn['tipo_relacao'],
+                ':morada_associada'  => $forn['morada_associada'],
+                ':pessoa_contacto'   => $forn['pessoa_contacto'],
+                ':telefone_contacto' => $forn['telefone_contacto'],
+                ':observacoes'       => $forn['observacoes'],
+            ]);
+        }
+
+        // 4. Inserir garantia
+        $sep6 = $_SESSION['novo_equipamento']['sep6'];
+        $stmt = $ligacao->prepare("INSERT INTO garantias (
+            equipamento_id, data_inicio, data_fim, entidade_responsavel, observacoes
+        ) VALUES (
+            :equipamento_id, :data_inicio, :data_fim, :entidade_responsavel, :observacoes
+        )");
+        $stmt->execute([
+            ':equipamento_id'       => $equipamento_id,
+            ':data_inicio'          => $sep6['garantia_data_inicio'],
+            ':data_fim'             => $sep6['garantia_data_fim'],
+            ':entidade_responsavel' => $sep6['garantia_entidade'],
+            ':observacoes'          => $sep6['garantia_observacoes'],
+        ]);
+
+        // 5. Inserir contrato (se existir)
+        $sep7 = $_SESSION['novo_equipamento']['sep7'];
+        if ($sep7['tem_contrato'] === 'sim') {
+            $stmt = $ligacao->prepare("INSERT INTO contratos (
+                equipamento_id, tipo_contrato, periodicidade, data_inicio,
+                data_fim, entidade_responsavel, observacoes
+            ) VALUES (
+                :equipamento_id, :tipo_contrato, :periodicidade, :data_inicio,
+                :data_fim, :entidade_responsavel, :observacoes
+            )");
+            $stmt->execute([
+                ':equipamento_id'       => $equipamento_id,
+                ':tipo_contrato'        => $sep7['contrato_tipo'],
+                ':periodicidade'        => $sep7['contrato_periodicidade'],
+                ':data_inicio'          => $sep7['contrato_data_inicio'],
+                ':data_fim'             => $sep7['contrato_data_fim'],
+                ':entidade_responsavel' => $sep7['contrato_entidade'],
+                ':observacoes'          => $sep7['contrato_observacoes'],
+            ]);
+        }
+
+        // 6. Inserir documentação extra (opcional)
+        $sep8 = $_SESSION['novo_equipamento']['sep8'] ?? [];
+        foreach ($sep8 as $doc) {
+            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+                equipamento_id, contexto, tipo_documento_id, nome_documento,
+                data_documento, data_validade, ficheiro
+            ) VALUES (
+                :equipamento_id, 'geral', 1, :nome_documento,
+                :data_documento, :data_validade, ''
+            )");
+            $stmt->execute([
+                ':equipamento_id' => $equipamento_id,
+                ':nome_documento' => $doc['nome'],
+                ':data_documento' => $doc['data'] ?: null,
+                ':data_validade'  => $doc['validade'] ?: null,
+            ]);
+        }
+
+        // Limpar sessão
+        unset($_SESSION['novo_equipamento']);
+
+        header("Location: lista.php?sucesso=1");
+        exit;
+    } catch (PDOException $err) {
+        $erro_sistema = "Erro ao guardar o equipamento: " . $err->getMessage();
+    }
+}
 ?>
 
 <?php include '../../includes/header.php'; ?>
@@ -262,7 +587,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep5'])) {
 
                 <!-- SEPARADORES -->
                 <?php
-                $sepAtivo = $_GET['sep'] ?? (isset($_SESSION['novo_equipamento']['sep5']) ? 'garantia' : (isset($_SESSION['novo_equipamento']['sep4']) ? 'localizacao' : (isset($_SESSION['novo_equipamento']['sep3']) ? 'fornecedor' : (isset($_SESSION['novo_equipamento']['sep2']) ? 'aquisicao' : (isset($_SESSION['novo_equipamento']['sep1']) ? 'componentes' : 'dados')))));
+                $sepAtivo = $_SESSION['sep_ativo'] ?? $_GET['sep'] ?? (isset($_SESSION['novo_equipamento']['sep7']) ? 'documentos' : (isset($_SESSION['novo_equipamento']['sep6']) ? 'contrato' : (isset($_SESSION['novo_equipamento']['sep5']) ? 'garantia' : (isset($_SESSION['novo_equipamento']['sep4']) ? 'localizacao' : (isset($_SESSION['novo_equipamento']['sep3']) ? 'fornecedor' : (isset($_SESSION['novo_equipamento']['sep2']) ? 'aquisicao' : (isset($_SESSION['novo_equipamento']['sep1']) ? 'componentes' : 'dados')))))));
+                unset($_SESSION['sep_ativo']);
                 ?>
 
                 <ul class="nav nav-tabs mb-4 flex-nowrap" id="equipTabs" role="tablist">
@@ -310,13 +636,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep5'])) {
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#contrato" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'contrato' ? 'active' : (isset($_SESSION['novo_equipamento']['sep6']) ? '' : 'disabled') ?>"
+                            data-bs-toggle="tab" data-bs-target="#contrato" type="button">
                             Contrato de <br> Manutenção
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link disabled" data-bs-toggle="tab" data-bs-target="#documentos" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'documentos' ? 'active' : (isset($_SESSION['novo_equipamento']['sep7']) ? '' : 'disabled') ?>"
+                            data-bs-toggle="tab" data-bs-target="#documentos" type="button">
                             Documentação <br> Associada
                         </button>
                     </li>
@@ -899,44 +1227,40 @@ Aluguer - Obtido através de contrato de aluguer.
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Data de Início da Garantia *</label>
-                                    <input type="date" class="form-control">
+                                    <input type="text" class="form-control" id="garantia_data_inicio" name="garantia_data_inicio"
+                                        value="<?= htmlspecialchars($_POST['garantia_data_inicio'] ?? $_SESSION['novo_equipamento']['sep6']['garantia_data_inicio'] ?? '') ?>">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Data de Fim da Garantia *</label>
-                                    <input type="date" class="form-control">
+                                    <input type="text" class="form-control" id="garantia_data_fim" name="garantia_data_fim"
+                                        value="<?= htmlspecialchars($_POST['garantia_data_fim'] ?? $_SESSION['novo_equipamento']['sep6']['garantia_data_fim'] ?? '') ?>">
                                 </div>
                             </div>
 
-                            <!-- Observações + Entidade Responsável -->
+                            <!-- Entidade Responsável + Observações -->
                             <div class="row">
 
-                                <!-- Entidade Responsável -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Entidade Responsável *</label>
-                                    <select class="form-select">
+                                    <select class="form-select" name="garantia_entidade">
                                         <option value="">Selecione...</option>
-                                        <option>Fabricante</option>
-                                        <option>Fornecedor Comercial</option>
-                                        <option>Distribuidor Autorizado</option>
-                                        <option>Outro</option>
+                                        <option value="Fabricante" <?= (($_POST['garantia_entidade'] ?? $_SESSION['novo_equipamento']['sep6']['garantia_entidade'] ?? '') == 'Fabricante') ? 'selected' : '' ?>>Fabricante</option>
+                                        <option value="Fornecedor" <?= (($_POST['garantia_entidade'] ?? $_SESSION['novo_equipamento']['sep6']['garantia_entidade'] ?? '') == 'Fornecedor') ? 'selected' : '' ?>>Fornecedor</option>
+                                        <option value="Distribuidor Autorizado" <?= (($_POST['garantia_entidade'] ?? $_SESSION['novo_equipamento']['sep6']['garantia_entidade'] ?? '') == 'Distribuidor Autorizado') ? 'selected' : '' ?>>Distribuidor Autorizado</option>
                                     </select>
                                 </div>
 
-                                <!-- Observações -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Observações</label>
-                                    <textarea class="form-control" rows="3"></textarea>
+                                    <textarea class="form-control" name="garantia_observacoes" rows="3"><?= htmlspecialchars($_POST['garantia_observacoes'] ?? $_SESSION['novo_equipamento']['sep6']['garantia_observacoes'] ?? '') ?></textarea>
                                 </div>
-
 
                             </div>
 
                             <hr class="my-4">
 
                             <div class="accordion" id="accordionGarantia">
-
-                                <!-- ITEM 1 — Certificado de Garantia -->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header" id="headingCertGarantia">
                                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -950,68 +1274,58 @@ Aluguer - Obtido através de contrato de aluguer.
                                         aria-labelledby="headingCertGarantia" data-bs-parent="#accordionGarantia">
 
                                         <div class="accordion-body">
-
                                             <div class="border rounded p-3 mb-3">
 
                                                 <h5 class="mb-3" style="color:#1a826d;">Certificado de Garantia</h5>
 
                                                 <div class="row">
-                                                    <!-- Tipo de Documento -->
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">Tipo de Documento *</label>
-                                                        <select class="form-select">
+                                                        <select class="form-select" name="cert_garantia_tipo">
                                                             <option>Certificado de Garantia</option>
                                                         </select>
                                                     </div>
-
-                                                    <!-- Nome do Documento -->
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">Nome do Documento *</label>
-                                                        <input type="text" class="form-control"
-                                                            placeholder="Ex: Certificado de Garantia">
+                                                        <input type="text" class="form-control" name="cert_garantia_nome"
+                                                            placeholder="Ex: Certificado de Garantia"
+                                                            value="<?= htmlspecialchars($_POST['cert_garantia_nome'] ?? $_SESSION['novo_equipamento']['sep6']['cert_garantia_nome'] ?? '') ?>">
                                                     </div>
                                                 </div>
 
-                                                <!-- Datas -->
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">Data do Documento *</label>
-                                                        <input type="date" class="form-control">
+                                                        <input type="text" class="form-control" id="cert_garantia_data" name="cert_garantia_data"
+                                                            value="<?= htmlspecialchars($_POST['cert_garantia_data'] ?? $_SESSION['novo_equipamento']['sep6']['cert_garantia_data'] ?? '') ?>">
                                                     </div>
-
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">Data de Validade</label>
-                                                        <input type="date" class="form-control">
+                                                        <input type="text" class="form-control" id="cert_garantia_validade" name="cert_garantia_validade"
+                                                            value="<?= htmlspecialchars($_POST['cert_garantia_validade'] ?? $_SESSION['novo_equipamento']['sep6']['cert_garantia_validade'] ?? '') ?>">
                                                     </div>
                                                 </div>
 
-                                                <!-- PDF -->
                                                 <div class="mb-3">
                                                     <label class="form-label">Ficheiro (PDF) *</label>
-                                                    <input type="file" class="form-control"
-                                                        accept="application/pdf">
+                                                    <input type="file" class="form-control" name="cert_garantia_ficheiro" accept="application/pdf">
                                                 </div>
 
-                                                <button type="button" class="btn btn-danger">Remover
-                                                    Documento</button>
+                                                <button type="button" class="btn btn-danger">Remover Documento</button>
 
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
                             <!-- Botões -->
                             <div class="d-flex justify-content-between mt-4">
-                                <button type="button" class="btn btn-secondary"
-                                    onclick="mostrarSeparador('localizacao')">
+                                <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('localizacao')">
                                     ← Anterior
                                 </button>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="validarEAvancar('garantia', 'contrato')">
+                                <button type="submit" name="submeter_sep6" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>
@@ -1020,16 +1334,15 @@ Aluguer - Obtido através de contrato de aluguer.
 
 
                         <!-- SEPARADOR 7 — CONTRATO DE MANUTENÇÃO -->
-                        <div class="tab-pane fade" id="contrato" role="tabpanel">
-
+                        <div class="tab-pane fade <?= $sepAtivo == 'contrato' ? 'show active' : '' ?>" id="contrato" role="tabpanel">
                             <h4 class="mb-3" style="color:#1a826d;">Contrato de Manutenção</h4>
 
                             <!-- Existe contrato? -->
                             <div class="mb-3">
                                 <label class="form-label">Existe Contrato de Manutenção? *</label>
-                                <select class="form-select" onchange="toggleContrato(this.value)">
-                                    <option value="nao">Não</option>
-                                    <option value="sim">Sim</option>
+                                <select class="form-select" name="tem_contrato" id="temContrato" onchange="toggleContrato(this.value)">
+                                    <option value="nao" <?= (($_POST['tem_contrato'] ?? $_SESSION['novo_equipamento']['sep7']['tem_contrato'] ?? 'nao') == 'nao') ? 'selected' : '' ?>>Não</option>
+                                    <option value="sim" <?= (($_POST['tem_contrato'] ?? $_SESSION['novo_equipamento']['sep7']['tem_contrato'] ?? '') == 'sim') ? 'selected' : '' ?>>Sim</option>
                                 </select>
                             </div>
 
@@ -1040,21 +1353,21 @@ Aluguer - Obtido através de contrato de aluguer.
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Tipo de Contrato *</label>
-                                        <select class="form-select">
-                                            <option>Manutenção Preventiva</option>
-                                            <option>Manutenção Corretiva</option>
-                                            <option>Full-Service</option>
-                                            <option>Outsourcing</option>
+                                        <select class="form-select" name="contrato_tipo">
+                                            <option value="Manutenção Preventiva" <?= (($_POST['contrato_tipo'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_tipo'] ?? '') == 'Manutenção Preventiva') ? 'selected' : '' ?>>Manutenção Preventiva</option>
+                                            <option value="Manutenção Corretiva" <?= (($_POST['contrato_tipo'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_tipo'] ?? '') == 'Manutenção Corretiva') ? 'selected' : '' ?>>Manutenção Corretiva</option>
+                                            <option value="Full-Service" <?= (($_POST['contrato_tipo'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_tipo'] ?? '') == 'Full-Service') ? 'selected' : '' ?>>Full-Service</option>
+                                            <option value="Outsourcing" <?= (($_POST['contrato_tipo'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_tipo'] ?? '') == 'Outsourcing') ? 'selected' : '' ?>>Outsourcing</option>
                                         </select>
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Periodicidade *</label>
-                                        <select class="form-select">
-                                            <option>Mensal</option>
-                                            <option>Trimestral</option>
-                                            <option>Semestral</option>
-                                            <option>Anual</option>
+                                        <select class="form-select" name="contrato_periodicidade">
+                                            <option value="Mensal" <?= (($_POST['contrato_periodicidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_periodicidade'] ?? '') == 'Mensal') ? 'selected' : '' ?>>Mensal</option>
+                                            <option value="Trimestral" <?= (($_POST['contrato_periodicidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_periodicidade'] ?? '') == 'Trimestral') ? 'selected' : '' ?>>Trimestral</option>
+                                            <option value="Semestral" <?= (($_POST['contrato_periodicidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_periodicidade'] ?? '') == 'Semestral') ? 'selected' : '' ?>>Semestral</option>
+                                            <option value="Anual" <?= (($_POST['contrato_periodicidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_periodicidade'] ?? '') == 'Anual') ? 'selected' : '' ?>>Anual</option>
                                         </select>
                                     </div>
                                 </div>
@@ -1063,42 +1376,38 @@ Aluguer - Obtido através de contrato de aluguer.
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Data de Início *</label>
-                                        <input type="date" class="form-control">
+                                        <input type="text" class="form-control" id="contrato_data_inicio" name="contrato_data_inicio"
+                                            value="<?= htmlspecialchars($_POST['contrato_data_inicio'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_data_inicio'] ?? '') ?>">
                                     </div>
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Data de Fim *</label>
-                                        <input type="date" class="form-control">
+                                        <input type="text" class="form-control" id="contrato_data_fim" name="contrato_data_fim"
+                                            value="<?= htmlspecialchars($_POST['contrato_data_fim'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_data_fim'] ?? '') ?>">
                                     </div>
                                 </div>
 
-                                <!-- Observações + Entidade Responsável -->
+                                <!-- Entidade Responsável + Observações -->
                                 <div class="row">
-
-                                    <!-- Entidade Responsável -->
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Entidade Responsável *</label>
-                                        <select class="form-select">
+                                        <select class="form-select" name="contrato_entidade">
                                             <option value="">Selecione...</option>
-                                            <option>Empresa de assistência técnica</option>
-                                            <option>Fabricante</option>
-                                            <option>Distribuidor Autorizado</option>
-                                            <option>Outro</option>
+                                            <option value="Empresa de assistência técnica" <?= (($_POST['contrato_entidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_entidade'] ?? '') == 'Empresa de assistência técnica') ? 'selected' : '' ?>>Empresa de assistência técnica</option>
+                                            <option value="Fabricante" <?= (($_POST['contrato_entidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_entidade'] ?? '') == 'Fabricante') ? 'selected' : '' ?>>Fabricante</option>
+                                            <option value="Distribuidor Autorizado" <?= (($_POST['contrato_entidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_entidade'] ?? '') == 'Distribuidor Autorizado') ? 'selected' : '' ?>>Distribuidor Autorizado</option>
                                         </select>
                                     </div>
 
-                                    <!-- Observações -->
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Observações</label>
-                                        <textarea class="form-control" rows="3"></textarea>
+                                        <textarea class="form-control" name="contrato_observacoes" rows="3"><?= htmlspecialchars($_POST['contrato_observacoes'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_observacoes'] ?? '') ?></textarea>
                                     </div>
-
                                 </div>
 
                                 <hr class="my-4">
 
                                 <div class="accordion" id="accordionContratoManutencao">
-
                                     <div class="accordion-item">
                                         <h2 class="accordion-header" id="headingContratoManutencaoDoc">
                                             <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -1108,79 +1417,63 @@ Aluguer - Obtido através de contrato de aluguer.
                                             </button>
                                         </h2>
 
-                                        <div id="collapseContratoManutencaoDoc"
-                                            class="accordion-collapse collapse show"
+                                        <div id="collapseContratoManutencaoDoc" class="accordion-collapse collapse show"
                                             aria-labelledby="headingContratoManutencaoDoc"
                                             data-bs-parent="#accordionContratoManutencao">
 
                                             <div class="accordion-body">
-
                                                 <div class="border rounded p-3 mb-3">
-
-                                                    <h5 class="mb-3" style="color:#1a826d;">Contrato de Manutenção
-                                                    </h5>
+                                                    <h5 class="mb-3" style="color:#1a826d;">Contrato de Manutenção</h5>
 
                                                     <div class="row">
-                                                        <!-- Tipo de Documento -->
                                                         <div class="col-md-6 mb-3">
                                                             <label class="form-label">Tipo de Documento *</label>
-                                                            <select class="form-select">
+                                                            <select class="form-select" name="doc_contrato_tipo">
                                                                 <option>Contrato de Manutenção</option>
                                                             </select>
                                                         </div>
-
-                                                        <!-- Nome do Documento -->
                                                         <div class="col-md-6 mb-3">
                                                             <label class="form-label">Nome do Documento *</label>
-                                                            <input type="text" class="form-control"
-                                                                placeholder="Ex: Contrato de Manutenção 2024-2025">
+                                                            <input type="text" class="form-control" name="doc_contrato_nome"
+                                                                placeholder="Ex: Contrato de Manutenção 2024-2025"
+                                                                value="<?= htmlspecialchars($_POST['doc_contrato_nome'] ?? $_SESSION['novo_equipamento']['sep7']['doc_contrato_nome'] ?? '') ?>">
                                                         </div>
                                                     </div>
 
-
-                                                    <!-- Datas -->
                                                     <div class="row">
                                                         <div class="col-md-6 mb-3">
                                                             <label class="form-label">Data do Documento *</label>
-                                                            <input type="date" class="form-control">
+                                                            <input type="text" class="form-control" id="doc_contrato_data" name="doc_contrato_data"
+                                                                value="<?= htmlspecialchars($_POST['doc_contrato_data'] ?? $_SESSION['novo_equipamento']['sep7']['doc_contrato_data'] ?? '') ?>">
                                                         </div>
-
                                                         <div class="col-md-6 mb-3">
                                                             <label class="form-label">Data de Validade</label>
-                                                            <input type="date" class="form-control">
+                                                            <input type="text" class="form-control" id="doc_contrato_validade" name="doc_contrato_validade"
+                                                                value="<?= htmlspecialchars($_POST['doc_contrato_validade'] ?? $_SESSION['novo_equipamento']['sep7']['doc_contrato_validade'] ?? '') ?>">
                                                         </div>
                                                     </div>
 
-                                                    <!-- PDF -->
                                                     <div class="mb-3">
                                                         <label class="form-label">Ficheiro (PDF) *</label>
-                                                        <input type="file" class="form-control"
-                                                            accept="application/pdf">
+                                                        <input type="file" class="form-control" name="doc_contrato_ficheiro" accept="application/pdf">
                                                     </div>
 
-                                                    <button type="button" class="btn btn-danger">Remover
-                                                        Documento</button>
-
+                                                    <button type="button" class="btn btn-danger">Remover Documento</button>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
-
 
                             </div>
 
                             <!-- Botões -->
                             <div class="d-flex justify-content-between mt-4">
-                                <button type="button" class="btn btn-secondary"
-                                    onclick="mostrarSeparador('garantia')">
+                                <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('garantia')">
                                     ← Anterior
                                 </button>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="validarEAvancar('contrato', 'documentos')">
+                                <button type="submit" name="submeter_sep7" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>
@@ -1189,32 +1482,30 @@ Aluguer - Obtido através de contrato de aluguer.
 
 
                         <!-- SEPARADOR 8 — DOCUMENTAÇÃO ASSOCIADA -->
-                        <div class="tab-pane fade" id="documentos" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'documentos' ? 'show active' : '' ?>" id="documentos" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Documentação Associada</h4>
 
-                            <!-- CONTAINER DOS DOCUMENTOS -->
                             <div id="documentosContainer">
 
-                                <!-- BLOCO BASE DE DOCUMENTO -->
                                 <div class="documento-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
 
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Tipo de Documento *</label>
-                                            <select class="form-select">
-                                                <option>Manual</option>
-                                                <option>Ficha</option>
-                                                <option>Certificado</option>
-                                                <option>Relatório</option>
-                                                <option>Declaração</option>
-                                                <option>Outro</option>
+                                            <select class="form-select" name="doc_tipo[]">
+                                                <option value="Manual">Manual</option>
+                                                <option value="Ficha">Ficha</option>
+                                                <option value="Certificado">Certificado</option>
+                                                <option value="Relatório">Relatório</option>
+                                                <option value="Declaração">Declaração</option>
+                                                <option value="Outro">Outro</option>
                                             </select>
                                         </div>
 
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Nome do Documento *</label>
-                                            <input type="text" class="form-control"
+                                            <input type="text" class="form-control" name="doc_nome[]"
                                                 placeholder="Ex: Manual do Utilizador">
                                         </div>
                                     </div>
@@ -1222,18 +1513,18 @@ Aluguer - Obtido através de contrato de aluguer.
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Data do Documento *</label>
-                                            <input type="date" class="form-control">
+                                            <input type="text" class="form-control doc-data" name="doc_data[]">
                                         </div>
 
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Data de Validade</label>
-                                            <input type="date" class="form-control">
+                                            <input type="text" class="form-control doc-validade" name="doc_validade[]">
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Ficheiro (PDF) *</label>
-                                        <input type="file" class="form-control" accept="application/pdf">
+                                        <input type="file" class="form-control" name="doc_ficheiro[]" accept="application/pdf">
                                     </div>
 
                                     <button type="button" class="btn btn-danger btn-sm remover-documento">
@@ -1249,16 +1540,13 @@ Aluguer - Obtido através de contrato de aluguer.
                                 + Adicionar Documento
                             </button>
 
-
                             <!-- Botões -->
                             <div class="d-flex justify-content-between mt-4">
-                                <button type="button" class="btn btn-secondary"
-                                    onclick="mostrarSeparador('contrato')">
+                                <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('contrato')">
                                     ← Anterior
                                 </button>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="window.location.href='lista.php'">
+                                <button type="submit" name="submeter_sep8" class="btn" style="background-color:#1a826d; color:white;">
                                     Guardar Equipamento ✔
                                 </button>
                             </div>
@@ -1292,6 +1580,48 @@ Aluguer - Obtido através de contrato de aluguer.
     flatpickr("#fatura_aquisicao_pagamento", {
         dateFormat: "Y-m-d"
     });
+    flatpickr("#garantia_data_inicio", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#garantia_data_fim", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#cert_garantia_data", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#cert_garantia_validade", {
+        dateFormat: "Y-m-d"
+    });
+
+    flatpickr("#contrato_data_inicio", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#contrato_data_fim", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#doc_contrato_data", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr("#doc_contrato_validade", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr(".doc-data", {
+        dateFormat: "Y-m-d"
+    });
+    flatpickr(".doc-validade", {
+        dateFormat: "Y-m-d"
+    });
 </script>
+
+<?php if (($_SESSION['novo_equipamento']['sep7']['tem_contrato'] ?? 'nao') == 'sim'): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const camposContrato = document.getElementById('camposContrato');
+            if (camposContrato) {
+                camposContrato.style.display = 'block';
+            }
+        });
+    </script>
+<?php endif; ?>
 
 <?php include '../../includes/footer.php'; ?>

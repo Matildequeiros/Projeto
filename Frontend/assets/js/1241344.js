@@ -19,6 +19,17 @@ function toggleContrato(valor) {
         valor === 'sim' ? 'block' : 'none';
 }
 
+// Executar ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    const popovers = document.querySelectorAll('[data-bs-toggle="popover"]');
+    popovers.forEach(p => new bootstrap.Popover(p));
+
+    // Mostrar campos do contrato se já estiver selecionado "Sim"
+    const temContrato = document.getElementById('temContrato');
+    if (temContrato && temContrato.value === 'sim') {
+        document.getElementById('camposContrato').style.display = 'block';
+    }
+});
 
 function validarSeparador(id) {
 
@@ -66,6 +77,11 @@ document.getElementById("adicionarDocumento").addEventListener("click", function
     });
 
     container.appendChild(novoBloco);
+
+    // Ativar Flatpickr nos novos campos de data
+    novoBloco.querySelectorAll('.doc-data, .doc-validade').forEach(function (input) {
+        flatpickr(input, { dateFormat: "Y-m-d" });
+    });
 });
 
 // REMOVER DOCUMENTO
@@ -120,13 +136,6 @@ document.querySelectorAll(".remover-fornecedor").forEach(btn => {
         removerBlocoFornecedor(btn.closest(".fornecedor-bloco"));
     });
 });
-
-// Popover do novo equipamento
-document.addEventListener("DOMContentLoaded", function () {
-    const popovers = document.querySelectorAll('[data-bs-toggle="popover"]');
-    popovers.forEach(p => new bootstrap.Popover(p));
-});
-
 
 
 // Bloquear a fatura de aquisição ao selecionar um tipo de entrada específico
@@ -186,42 +195,42 @@ document.querySelectorAll(".remover-componente").forEach(btn => {
 });
 
 // MODAL APAGAR NA LSITA 
- function abrirModalApagar(link, codigo, designacao) {
+function abrirModalApagar(link, codigo, designacao) {
 
-            // Preenche os dados dentro do modal
-            document.getElementById("dadosApagar").innerHTML = `
+    // Preenche os dados dentro do modal
+    document.getElementById("dadosApagar").innerHTML = `
         <p><strong>Código Interno:</strong> ${codigo}</p>
         <p><strong>Designação:</strong> ${designacao}</p>
     `;
 
-            // Define o link do botão "Remover"
-            document.getElementById("btnConfirmarApagar").href = link;
+    // Define o link do botão "Remover"
+    document.getElementById("btnConfirmarApagar").href = link;
 
-            // Abre o modal
-            const modal = new bootstrap.Modal(document.getElementById("modalApagar"));
-            modal.show();
-        }
+    // Abre o modal
+    const modal = new bootstrap.Modal(document.getElementById("modalApagar"));
+    modal.show();
+}
 
 
 
 // MODAL APAGAR LISTA FORNECEDORES 
- function abrirModalApagarFornecedor(codigo, nome, tipo) {
+function abrirModalApagarFornecedor(codigo, nome, tipo) {
 
-            document.getElementById("dadosFornecedor").innerHTML = `
+    document.getElementById("dadosFornecedor").innerHTML = `
         <p><strong>Código:</strong> ${codigo}</p>
         <p><strong>Nome:</strong> ${nome}</p>
         <p><strong>Tipo:</strong> ${tipo}</p>
     `;
 
-            const modal = new bootstrap.Modal(document.getElementById("modalApagarFornecedor"));
-            modal.show();
-        }
+    const modal = new bootstrap.Modal(document.getElementById("modalApagarFornecedor"));
+    modal.show();
+}
 
 
 // MODAL APAGAR LISTA LOCALIZAÇÕES
- function abrirModalApagarLocalizacao(codigo, edificio, piso, servico, sala) {
+function abrirModalApagarLocalizacao(codigo, edificio, piso, servico, sala) {
 
-            document.getElementById("dadosLocalizacao").innerHTML = `
+    document.getElementById("dadosLocalizacao").innerHTML = `
         <p><strong>Código:</strong> ${codigo}</p>
         <p><strong>Edifício:</strong> ${edificio}</p>
         <p><strong>Piso:</strong> ${piso}</p>
@@ -229,9 +238,9 @@ document.querySelectorAll(".remover-componente").forEach(btn => {
         <p><strong>Sala / Gabinete:</strong> ${sala}</p>
     `;
 
-            const modal = new bootstrap.Modal(document.getElementById("modalApagarLocalizacao"));
-            modal.show();
-        }
+    const modal = new bootstrap.Modal(document.getElementById("modalApagarLocalizacao"));
+    modal.show();
+}
 
 
 
