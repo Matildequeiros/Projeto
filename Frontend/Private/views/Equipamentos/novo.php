@@ -502,6 +502,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
             ]);
         }
 
+        // 3b. Inserir documentos da aquisição
+        if (!empty($sep3['contrato_aquisicao_nome'])) {
+            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+        equipamento_id, contexto, tipo_documento_id, nome_documento,
+        data_documento, data_validade, ficheiro
+    ) VALUES (
+        :equipamento_id, 'aquisicao', 1, :nome_documento,
+        :data_documento, :data_validade, ''
+    )");
+            $stmt->execute([
+                ':equipamento_id' => $equipamento_id,
+                ':nome_documento' => $sep3['contrato_aquisicao_nome'],
+                ':data_documento' => $sep3['contrato_aquisicao_data'] ?: null,
+                ':data_validade'  => $sep3['contrato_aquisicao_validade'] ?: null,
+            ]);
+        }
+
+        if (!empty($sep3['fatura_aquisicao_nome'])) {
+            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+        equipamento_id, contexto, tipo_documento_id, nome_documento,
+        data_documento, data_validade, ficheiro
+    ) VALUES (
+        :equipamento_id, 'aquisicao', 1, :nome_documento,
+        :data_documento, :data_validade, ''
+    )");
+            $stmt->execute([
+                ':equipamento_id' => $equipamento_id,
+                ':nome_documento' => $sep3['fatura_aquisicao_nome'],
+                ':data_documento' => $sep3['fatura_aquisicao_data'] ?: null,
+                ':data_validade'  => null,
+            ]);
+        }
+
         // 4. Inserir garantia
         $sep6 = $_SESSION['novo_equipamento']['sep6'];
         $stmt = $ligacao->prepare("INSERT INTO garantias (
@@ -516,6 +549,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
             ':entidade_responsavel' => $sep6['garantia_entidade'],
             ':observacoes'          => $sep6['garantia_observacoes'],
         ]);
+
+        // 4b. Inserir documento do certificado de garantia
+        if (!empty($sep6['cert_garantia_nome'])) {
+            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+        equipamento_id, contexto, tipo_documento_id, nome_documento,
+        data_documento, data_validade, ficheiro
+    ) VALUES (
+        :equipamento_id, 'garantia', 1, :nome_documento,
+        :data_documento, :data_validade, ''
+    )");
+            $stmt->execute([
+                ':equipamento_id' => $equipamento_id,
+                ':nome_documento' => $sep6['cert_garantia_nome'],
+                ':data_documento' => $sep6['cert_garantia_data'] ?: null,
+                ':data_validade'  => $sep6['cert_garantia_validade'] ?: null,
+            ]);
+        }
 
         // 5. Inserir contrato (se existir)
         $sep7 = $_SESSION['novo_equipamento']['sep7'];
@@ -535,6 +585,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
                 ':data_fim'             => $sep7['contrato_data_fim'],
                 ':entidade_responsavel' => $sep7['contrato_entidade'],
                 ':observacoes'          => $sep7['contrato_observacoes'],
+            ]);
+        }
+
+        // 5b. Inserir documento do contrato de manutenção
+        if ($sep7['tem_contrato'] === 'sim' && !empty($sep7['doc_contrato_nome'])) {
+            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+        equipamento_id, contexto, tipo_documento_id, nome_documento,
+        data_documento, data_validade, ficheiro
+    ) VALUES (
+        :equipamento_id, 'contrato', 1, :nome_documento,
+        :data_documento, :data_validade, ''
+    )");
+            $stmt->execute([
+                ':equipamento_id' => $equipamento_id,
+                ':nome_documento' => $sep7['doc_contrato_nome'],
+                ':data_documento' => $sep7['doc_contrato_data'] ?: null,
+                ':data_validade'  => $sep7['doc_contrato_validade'] ?: null,
             ]);
         }
 
@@ -839,7 +906,10 @@ Suporte de vida - Equipamentos cuja falha pode colocar em risco imediato a vida 
                             <div id="componentesContainer">
 
                                 <?php
-                                $componentes_sessao = $_SESSION['novo_equipamento']['sep2'] ?? [['tipo' => 'componente', 'nome' => '', 'referencia' => '', 'quantidade' => '', 'estado' => '', 'observacoes' => '']];
+                                $componentes_sessao = $_SESSION['novo_equipamento']['sep2'] ?? [];
+                                if (empty($componentes_sessao)) {
+                                    $componentes_sessao = [['tipo' => 'componente', 'nome' => '', 'referencia' => '', 'quantidade' => '', 'estado' => '', 'observacoes' => '']];
+                                }
                                 foreach ($componentes_sessao as $comp):
                                 ?>
                                     <div class="componente-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
@@ -1352,7 +1422,18 @@ Aluguer - Obtido através de contrato de aluguer.
                                 <!-- Tipo + Periodicidade -->
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">Tipo de Contrato *</label>
+                                        <label class="form-label">
+                                            Tipo de Contrato *
+                                            <i class="fa-solid fa-circle-info ms-1 text-muted" data-bs-toggle="popover"
+                                                data-bs-trigger="hover focus" data-bs-html="true" title="Tipo de Contrato"
+                                                data-bs-content="
+Manutenção Preventiva - Intervenções periódicas programadas para prevenir avarias e prolongar a vida útil dos equipamentos.<br>
+Manutenção Corretiva - Reparação de avarias após a sua ocorrência, restabelecendo o funcionamento normal dos equipamentos.<br>
+Full-Service - Contrato completo que inclui peças, mão de obra e manutenção preventiva e corretiva.<br>
+Outsourcing - Gestão integral da manutenção dos equipamentos por uma entidade externa especializada.
+">
+                                            </i>
+                                        </label>
                                         <select class="form-select" name="contrato_tipo">
                                             <option value="Manutenção Preventiva" <?= (($_POST['contrato_tipo'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_tipo'] ?? '') == 'Manutenção Preventiva') ? 'selected' : '' ?>>Manutenção Preventiva</option>
                                             <option value="Manutenção Corretiva" <?= (($_POST['contrato_tipo'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_tipo'] ?? '') == 'Manutenção Corretiva') ? 'selected' : '' ?>>Manutenção Corretiva</option>
