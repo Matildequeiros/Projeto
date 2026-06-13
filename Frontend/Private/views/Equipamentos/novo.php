@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../../config/config.php';
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
+require_once __DIR__ . '/../../includes/validacoes.php';
 
 $erros = [];
 $erro_sistema = "";
@@ -46,44 +47,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep1'])) {
 
     $codigo       = trim($codigo);
     $designacao   = trim($designacao);
+    $categoria    = trim($categoria);
     $marca        = trim($marca);
     $modelo       = trim($modelo);
     $numero_serie = trim($numero_serie);
     $fabricante   = trim($fabricante);
     $ano_fabrico  = trim($ano_fabrico);
+    $estado       = trim($estado);
+    $criticidade  = trim($criticidade);
     $observacoes  = trim($observacoes);
 
-    if (empty($codigo)) {
-        $erros[] = "O código interno é obrigatório.";
-    } elseif (preg_match('/\s/', $codigo)) {
-        $erros[] = "O código interno não pode conter espaços.";
-    }
+    $erros = array_merge($erros, validar_codigo($codigo));
+    $erros = array_merge($erros, validar_texto_obrigatorio($designacao, 'A designação'));
+    $erros = array_merge($erros, validar_select($categoria, 'A categoria'));
+    $erros = array_merge($erros, validar_texto_obrigatorio($marca, 'A marca'));
+    $erros = array_merge($erros, validar_texto_obrigatorio($modelo, 'O modelo'));
+    $erros = array_merge($erros, validar_numero_serie($numero_serie));
+    $erros = array_merge($erros, validar_texto_obrigatorio($fabricante, 'O fabricante'));
+    $erros = array_merge($erros, validar_ano_fabrico($ano_fabrico));
+    $erros = array_merge($erros, validar_select($estado, 'O estado'));
+    $erros = array_merge($erros, validar_select($criticidade, 'A criticidade'));
 
-    if (empty($designacao)) {
-        $erros[] = "A designação é obrigatória.";
-    }
-
-    if (empty($marca)) {
-        $erros[] = "A marca é obrigatória.";
-    }
-
-    if (empty($modelo)) {
-        $erros[] = "O modelo é obrigatório.";
-    }
-
-    if (empty($numero_serie)) {
-        $erros[] = "O número de série é obrigatório.";
-    }
-
-    if (empty($fabricante)) {
-        $erros[] = "O fabricante é obrigatório.";
-    }
-
-    if (empty($ano_fabrico)) {
-        $erros[] = "O ano de fabrico é obrigatório.";
-    } elseif (!preg_match('/^\d{4}$/', $ano_fabrico) || $ano_fabrico < 1900 || $ano_fabrico > 2100) {
-        $erros[] = "O ano de fabrico é inválido.";
-    }
 
     // 3. Normalizar dados
     $designacao = ucwords(strtolower($designacao));
@@ -92,7 +76,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep1'])) {
     $fabricante = ucwords(strtolower($fabricante));
     $codigo     = strtoupper($codigo);
 
+    
     // 4. Se não houver erros, guardar na sessão e avançar
+    if (empty($erros)) {
+
+        // Verificar se o código já existe na BD
+        try {
+            $ligacao = new PDO(
+                "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+                MYSQL_USERNAME,
+                MYSQL_PASSWORD
+            );
+            $stmt = $ligacao->prepare("SELECT id FROM equipamentos WHERE codigo = :codigo");
+            $stmt->bindParam(':codigo', $codigo, PDO::PARAM_STR);
+            $stmt->execute();
+            if ($stmt->fetch()) {
+                $erros[] = "O código {$codigo} já existe na base de dados.";
+            }
+            $ligacao = null;
+        } catch (PDOException $e) {
+            $erros[] = "Erro ao verificar o código.";
+        }
+    }
+
     if (empty($erros)) {
         $_SESSION['novo_equipamento']['sep1'] = [
             'codigo'       => $codigo,
@@ -779,6 +785,7 @@ Reabilitação — Apoia a recuperação funcional do paciente.
                                 </label>
 
                                 <select class="form-select" name="categoria">
+                                    <option value="">Selecione...</option>
                                     <option value="Monitorização" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Monitorização') ? 'selected' : '' ?>>Monitorização</option>
                                     <option value="Suporte de vida" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Suporte de vida') ? 'selected' : '' ?>>Suporte de vida</option>
                                     <option value="Terapia" <?= (($_POST['categoria'] ?? $_SESSION['novo_equipamento']['sep1']['categoria'] ?? '') == 'Terapia') ? 'selected' : '' ?>>Terapia</option>
@@ -845,6 +852,7 @@ Abatido - Removido definitivamente do inventário.
                                     </label>
 
                                     <select class="form-select" name="estado">
+                                        <option value="">Selecione...</option>
                                         <option value="Ativo" <?= (($_POST['estado'] ?? $_SESSION['novo_equipamento']['sep1']['estado'] ?? '') == 'Ativo') ? 'selected' : '' ?>>Ativo</option>
                                         <option value="Em manutenção" <?= (($_POST['estado'] ?? $_SESSION['novo_equipamento']['sep1']['estado'] ?? '') == 'Em manutenção') ? 'selected' : '' ?>>Em manutenção</option>
                                         <option value="Inativo" <?= (($_POST['estado'] ?? $_SESSION['novo_equipamento']['sep1']['estado'] ?? '') == 'Inativo') ? 'selected' : '' ?>>Inativo</option>
@@ -869,6 +877,7 @@ Suporte de vida - Equipamentos cuja falha pode colocar em risco imediato a vida 
                                     </label>
 
                                     <select class="form-select" name="criticidade">
+                                        <option value="">Selecione...</option>
                                         <option value="Baixa" <?= (($_POST['criticidade'] ?? $_SESSION['novo_equipamento']['sep1']['criticidade'] ?? '') == 'Baixa') ? 'selected' : '' ?>>Baixa</option>
                                         <option value="Média" <?= (($_POST['criticidade'] ?? $_SESSION['novo_equipamento']['sep1']['criticidade'] ?? '') == 'Média') ? 'selected' : '' ?>>Média</option>
                                         <option value="Alta" <?= (($_POST['criticidade'] ?? $_SESSION['novo_equipamento']['sep1']['criticidade'] ?? '') == 'Alta') ? 'selected' : '' ?>>Alta</option>

@@ -1,6 +1,112 @@
 <?php
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
+require_once __DIR__ . '/../../includes/validacoes.php';
+
+if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'])) {
+    header('Location: ' . BASE_URL . '/Private/views/Equipamentos/lista.php');
+    exit;
+}
+
+$idEquipamentoEncrypted = $_GET['id_equipamento'] ?? null;
+$idEquipamento = aes_decrypt($idEquipamentoEncrypted);
+
+if (!$idEquipamento || !is_numeric($idEquipamento)) {
+    header('Location: ' . BASE_URL . '/Private/views/Equipamentos/lista.php');
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $novaDesignacao  = $_POST['designacao']   ?? '';
+    $novaMarca       = $_POST['marca']        ?? '';
+    $novoModelo      = $_POST['modelo']       ?? '';
+    $novoNumSerie    = $_POST['numero_serie'] ?? '';
+    $novoFabricante  = $_POST['fabricante']   ?? '';
+    $novoAnoFabrico  = $_POST['ano_fabrico']  ?? '';
+    $novoEstado      = $_POST['estado']       ?? '';
+    $novaCriticidade = $_POST['criticidade']  ?? '';
+    $novaCategoria   = $_POST['categoria']    ?? '';
+    $novasObs        = $_POST['observacoes']  ?? '';
+
+    $erros = [];
+    $erros = array_merge($erros, validar_texto_obrigatorio($novaDesignacao, 'A designação'));
+    $erros = array_merge($erros, validar_texto_obrigatorio($novaMarca, 'A marca'));
+    $erros = array_merge($erros, validar_texto_obrigatorio($novoModelo, 'O modelo'));
+    $erros = array_merge($erros, validar_numero_serie($novoNumSerie));
+    $erros = array_merge($erros, validar_texto_obrigatorio($novoFabricante, 'O fabricante'));
+    $erros = array_merge($erros, validar_ano_fabrico($novoAnoFabrico));
+
+    if (empty($erros)) {
+        try {
+            $ligacao = new PDO(
+                "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+                MYSQL_USERNAME,
+                MYSQL_PASSWORD
+            );
+            $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $stmt = $ligacao->prepare("
+                UPDATE equipamentos
+                SET designacao   = :designacao,
+                    categoria    = :categoria,
+                    marca        = :marca,
+                    modelo       = :modelo,
+                    numero_serie = :numero_serie,
+                    fabricante   = :fabricante,
+                    ano_fabrico  = :ano_fabrico,
+                    estado       = :estado,
+                    criticidade  = :criticidade,
+                    observacoes  = :observacoes
+                WHERE id = :id
+            ");
+
+            $stmt->bindParam(':designacao',   $novaDesignacao,  PDO::PARAM_STR);
+            $stmt->bindParam(':categoria',    $novaCategoria,   PDO::PARAM_STR);
+            $stmt->bindParam(':marca',        $novaMarca,       PDO::PARAM_STR);
+            $stmt->bindParam(':modelo',       $novoModelo,      PDO::PARAM_STR);
+            $stmt->bindParam(':numero_serie', $novoNumSerie,    PDO::PARAM_STR);
+            $stmt->bindParam(':fabricante',   $novoFabricante,  PDO::PARAM_STR);
+            $stmt->bindParam(':ano_fabrico',  $novoAnoFabrico,  PDO::PARAM_INT);
+            $stmt->bindParam(':estado',       $novoEstado,      PDO::PARAM_STR);
+            $stmt->bindParam(':criticidade',  $novaCriticidade, PDO::PARAM_STR);
+            $stmt->bindParam(':observacoes',  $novasObs,        PDO::PARAM_STR);
+            $stmt->bindParam(':id',           $idEquipamento,   PDO::PARAM_INT);
+
+            $stmt->execute();
+            $ligacao = null;
+
+            header('Location: lista.php');
+            exit;
+        } catch (PDOException $err) {
+            $erro = "Erro ao atualizar o equipamento: " . $err->getMessage();
+        }
+    }
+}
+
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmt = $ligacao->prepare("SELECT * FROM equipamentos WHERE id = :id");
+    $stmt->bindParam(':id', $idEquipamento, PDO::PARAM_INT);
+    $stmt->execute();
+    $equipamento = $stmt->fetch(PDO::FETCH_OBJ);
+
+    if (!$equipamento) {
+        header('Location: ' . BASE_URL . '/Private/views/Equipamentos/lista.php');
+        exit;
+    }
+} catch (PDOException $err) {
+    $erro = "Erro na ligação à base de dados.";
+    $equipamento = null;
+}
+
+$ligacao = null;
 ?>
 
 <?php include '../../includes/header.php'; ?>
@@ -22,6 +128,14 @@ redirect_if_not_logged();
                 <h2 class="mb-4" style="color: #1a826d;">
                     <i class="fa-solid fa-pen-to-square me-2"></i> Editar Equipamento
                 </h2>
+
+                <?php if (!empty($erros)) : ?>
+                    <div class="alert alert-danger text-center" role="alert">
+                        <?php foreach ($erros as $erro) : ?>
+                            <div><?= htmlspecialchars($erro) ?></div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
 
                 <!-- SEPARADORES -->
                 <ul class="nav nav-tabs mb-4 flex-nowrap" id="equipTabs" role="tablist">
@@ -78,7 +192,8 @@ redirect_if_not_logged();
 
 
                 <!-- CONTEÚDO DOS SEPARADORES -->
-                <form id="formEquipamentoCompleto">
+                <form id="formEquipamentoCompleto" method="post"
+                    action="editar.php?id_equipamento=<?= $idEquipamentoEncrypted ?>">
 
                     <div class="tab-content" id="equipTabsContent">
 
@@ -90,13 +205,14 @@ redirect_if_not_logged();
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Código Interno De Inventário *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: EQ-2025-001">
+                                    <input type="text" class="form-control"
+                                        value="<?= htmlspecialchars($equipamento->codigo) ?>" disabled>
                                 </div>
 
                                 <div class="col-md-8 mb-3">
                                     <label class="form-label">Designação Do Equipamento *</label>
-                                    <input type="text" class="form-control"
-                                        placeholder="Ex: Monitor multiparamétrico">
+                                    <input type="text" class="form-control" name="designacao"
+                                        value="<?= htmlspecialchars($equipamento->designacao) ?>">
                                 </div>
                             </div>
 
@@ -116,18 +232,16 @@ redirect_if_not_logged();
         Reabilitação - Apoia a recuperação funcional do paciente.
    ">
                                     </i>
-
-
                                 </label>
 
-                                <select class="form-select">
-                                    <option>Monitorização</option>
-                                    <option>Suporte de vida</option>
-                                    <option>Terapia</option>
-                                    <option>Diagnóstico</option>
-                                    <option>Laboratório</option>
-                                    <option>Esterilização</option>
-                                    <option>Reabilitação</option>
+                                <select class="form-select" name="categoria">
+                                    <option <?= $equipamento->categoria == 'Monitorização' ? 'selected' : '' ?>>Monitorização</option>
+                                    <option <?= $equipamento->categoria == 'Suporte de vida' ? 'selected' : '' ?>>Suporte de vida</option>
+                                    <option <?= $equipamento->categoria == 'Terapia' ? 'selected' : '' ?>>Terapia</option>
+                                    <option <?= $equipamento->categoria == 'Diagnóstico' ? 'selected' : '' ?>>Diagnóstico</option>
+                                    <option <?= $equipamento->categoria == 'Laboratório' ? 'selected' : '' ?>>Laboratório</option>
+                                    <option <?= $equipamento->categoria == 'Esterilização' ? 'selected' : '' ?>>Esterilização</option>
+                                    <option <?= $equipamento->categoria == 'Reabilitação' ? 'selected' : '' ?>>Reabilitação</option>
                                 </select>
                             </div>
 
@@ -135,12 +249,14 @@ redirect_if_not_logged();
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Marca *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: Philips">
+                                    <input type="text" class="form-control" name="marca"
+                                        value="<?= htmlspecialchars($equipamento->marca) ?>">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Modelo *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: IntelliVue MP5">
+                                    <input type="text" class="form-control" name="modelo"
+                                        value="<?= htmlspecialchars($equipamento->modelo) ?>">
                                 </div>
                             </div>
 
@@ -148,12 +264,14 @@ redirect_if_not_logged();
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Número de Série *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: MP5-2022-45873">
+                                    <input type="text" class="form-control" name="numero_serie"
+                                        value="<?= htmlspecialchars($equipamento->numero_serie) ?>">
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Fabricante *</label>
-                                    <input type="text" class="form-control" placeholder="Ex: Philips Healthcare">
+                                    <input type="text" class="form-control" name="fabricante"
+                                        value="<?= htmlspecialchars($equipamento->fabricante) ?>">
                                 </div>
                             </div>
 
@@ -162,8 +280,9 @@ redirect_if_not_logged();
 
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label">Ano de Fabrico *</label>
-                                    <input type="number" class="form-control" placeholder="Ex: 2022" min="1900"
-                                        max="2100">
+                                    <input type="number" class="form-control" name="ano_fabrico"
+                                        min="1900" max="2100"
+                                        value="<?= htmlspecialchars($equipamento->ano_fabrico) ?>">
                                 </div>
 
                                 <div class="col-md-4 mb-3">
@@ -180,17 +299,15 @@ redirect_if_not_logged();
         Abatido - Removido definitivamente do inventário.
    ">
                                         </i>
-
-
                                     </label>
 
-                                    <select class="form-select">
-                                        <option>Ativo</option>
-                                        <option>Em manutenção</option>
-                                        <option>Inativo</option>
-                                        <option>Em calibração</option>
-                                        <option>Em quarentena</option>
-                                        <option>Abatido</option>
+                                    <select class="form-select" name="estado">
+                                        <option <?= $equipamento->estado == 'Ativo' ? 'selected' : '' ?>>Ativo</option>
+                                        <option <?= $equipamento->estado == 'Em manutenção' ? 'selected' : '' ?>>Em manutenção</option>
+                                        <option <?= $equipamento->estado == 'Inativo' ? 'selected' : '' ?>>Inativo</option>
+                                        <option <?= $equipamento->estado == 'Em calibração' ? 'selected' : '' ?>>Em calibração</option>
+                                        <option <?= $equipamento->estado == 'Em quarentena' ? 'selected' : '' ?>>Em quarentena</option>
+                                        <option <?= $equipamento->estado == 'Abatido' ? 'selected' : '' ?>>Abatido</option>
                                     </select>
                                 </div>
 
@@ -212,15 +329,13 @@ tratamento clínico.<br>
 imediato a vida do doente.
    ">
                                         </i>
-
-
                                     </label>
 
-                                    <select class="form-select">
-                                        <option>Baixa</option>
-                                        <option>Média</option>
-                                        <option>Alta</option>
-                                        <option>Suporte de vida</option>
+                                    <select class="form-select" name="criticidade">
+                                        <option <?= $equipamento->criticidade == 'Baixa' ? 'selected' : '' ?>>Baixa</option>
+                                        <option <?= $equipamento->criticidade == 'Média' ? 'selected' : '' ?>>Média</option>
+                                        <option <?= $equipamento->criticidade == 'Alta' ? 'selected' : '' ?>>Alta</option>
+                                        <option <?= $equipamento->criticidade == 'Suporte de vida' ? 'selected' : '' ?>>Suporte de vida</option>
                                     </select>
                                 </div>
                             </div>
@@ -228,7 +343,7 @@ imediato a vida do doente.
                             <!-- Observações -->
                             <div class="mb-3">
                                 <label class="form-label">Observações</label>
-                                <textarea class="form-control" rows="3"></textarea>
+                                <textarea class="form-control" name="observacoes" rows="3"><?= htmlspecialchars($equipamento->observacoes ?? '') ?></textarea>
                             </div>
 
                             <!-- Botões -->
@@ -1046,8 +1161,7 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                                     ← Anterior
                                 </button>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="window.location.href='lista.php'">
+                                <button type="submit" class="btn" style="background-color:#1a826d; color:white;">
                                     Guardar Equipamento ✔
                                 </button>
                             </div>

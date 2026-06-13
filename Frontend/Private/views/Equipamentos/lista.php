@@ -157,7 +157,7 @@ $ligacao = null;
                                             <a href="detalhes.php?id=<?= $equipamento->id ?>" class="acao-box">
                                                 <i class="fa-solid fa-eye"></i> Consultar
                                             </a>
-                                            <a href="editar.php?id=<?= $equipamento->id ?>" class="acao-box">
+                                            <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box">
                                                 <i class="fa-solid fa-pen"></i> Editar
                                             </a>
                                             <a class="acao-box" style="cursor: pointer;"
