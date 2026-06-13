@@ -185,51 +185,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
 
     $erros = [];
 
-    $data_aquisicao = trim($_POST['data_aquisicao'] ?? '');
-    $custo          = trim($_POST['custo']          ?? '');
-    $tipo_entrada   = trim($_POST['tipo_entrada']   ?? '');
+    $data_aquisicao             = trim($_POST['data_aquisicao']          ?? '');
+    $custo                      = trim($_POST['custo']                   ?? '');
+    $tipo_entrada               = trim($_POST['tipo_entrada']            ?? '');
+    $contrato_aquisicao_nome    = trim($_POST['contrato_aquisicao_nome'] ?? '');
+    $contrato_aquisicao_data    = trim($_POST['contrato_aquisicao_data'] ?? '');
+    $fatura_aquisicao_nome      = trim($_POST['fatura_aquisicao_nome']   ?? '');
+    $fatura_aquisicao_data      = trim($_POST['fatura_aquisicao_data']   ?? '');
 
-    if (empty($data_aquisicao)) {
-        $erros[] = "A data de aquisição é obrigatória.";
-    } elseif ($data_aquisicao > date('Y-m-d')) {
-        $erros[] = "A data de aquisição não pode ser no futuro.";
-    }
+    $erros = array_merge($erros, validar_data_obrigatoria($data_aquisicao, 'A data de aquisição'));
+    $erros = array_merge($erros, validar_custo($custo));
+    $erros = array_merge($erros, validar_select($tipo_entrada, 'O tipo de entrada'));
+    $erros = array_merge($erros, validar_texto_obrigatorio($contrato_aquisicao_nome, 'O nome do contrato de aquisição'));
+    $erros = array_merge($erros, validar_data_obrigatoria($contrato_aquisicao_data, 'A data do contrato de aquisição'));
+    $erros = array_merge($erros, validar_data_posterior($contrato_aquisicao_data, $data_aquisicao, 'A data do contrato', 'a data de aquisição'));
 
-    if (empty($custo)) {
-        $erros[] = "O custo de aquisição é obrigatório.";
-    } elseif (!is_numeric($custo) || $custo < 0) {
-        $erros[] = "O custo de aquisição é inválido.";
-    }
-
-    if (empty($tipo_entrada)) {
-        $erros[] = "O tipo de entrada é obrigatório.";
-    }
-
-    // Validar documentos da aquisição
-    if (empty(trim($_POST['contrato_aquisicao_nome'] ?? ''))) {
-        $erros[] = "O nome do contrato de aquisição é obrigatório.";
-    }
-
-    if (empty(trim($_POST['contrato_aquisicao_data'] ?? ''))) {
-        $erros[] = "A data do contrato de aquisição é obrigatória.";
-    } elseif (trim($_POST['contrato_aquisicao_data'] ?? '') > date('Y-m-d')) {
-        $erros[] = "A data do contrato de aquisição não pode ser no futuro.";
-    } elseif (trim($_POST['contrato_aquisicao_data'] ?? '') > $data_aquisicao) {
-        $erros[] = "A data do contrato não pode ser posterior à data de aquisição do equipamento.";
-    }
-
-    // Fatura só obrigatória se tipo de entrada for compra
     if ($tipo_entrada === 'compra') {
-        if (empty(trim($_POST['fatura_aquisicao_nome'] ?? ''))) {
-            $erros[] = "O nome da fatura de aquisição é obrigatório.";
-        }
-        if (empty(trim($_POST['fatura_aquisicao_data'] ?? ''))) {
-            $erros[] = "A data da fatura de aquisição é obrigatória.";
-        } elseif (trim($_POST['fatura_aquisicao_data'] ?? '') > date('Y-m-d')) {
-            $erros[] = "A data da fatura de aquisição não pode ser no futuro.";
-        } elseif (trim($_POST['fatura_aquisicao_data'] ?? '') > $data_aquisicao) {
-            $erros[] = "A data da fatura não pode ser posterior à data de aquisição do equipamento.";
-        }
+        $erros = array_merge($erros, validar_texto_obrigatorio($fatura_aquisicao_nome, 'O nome da fatura de aquisição'));
+        $erros = array_merge($erros, validar_data_obrigatoria($fatura_aquisicao_data, 'A data da fatura de aquisição'));
+        $erros = array_merge($erros, validar_data_posterior($fatura_aquisicao_data, $data_aquisicao, 'A data da fatura', 'a data de aquisição'));
     }
 
     if (!empty($erros)) {
@@ -241,11 +215,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
             'data_aquisicao'              => $data_aquisicao,
             'custo'                       => $custo,
             'tipo_entrada'                => $tipo_entrada,
-            'contrato_aquisicao_nome'     => trim($_POST['contrato_aquisicao_nome']     ?? ''),
-            'contrato_aquisicao_data'     => trim($_POST['contrato_aquisicao_data']     ?? ''),
+            'contrato_aquisicao_nome'     => $contrato_aquisicao_nome,
+            'contrato_aquisicao_data'     => $contrato_aquisicao_data,
             'contrato_aquisicao_validade' => trim($_POST['contrato_aquisicao_validade'] ?? ''),
-            'fatura_aquisicao_nome'       => trim($_POST['fatura_aquisicao_nome']       ?? ''),
-            'fatura_aquisicao_data'       => trim($_POST['fatura_aquisicao_data']       ?? ''),
+            'fatura_aquisicao_nome'       => $fatura_aquisicao_nome,
+            'fatura_aquisicao_data'       => $fatura_aquisicao_data,
             'fatura_aquisicao_pagamento'  => trim($_POST['fatura_aquisicao_pagamento']  ?? ''),
         ];
 
@@ -265,9 +239,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep4'])) {
         if (!empty($id)) {
             $telefone = trim($_POST['telefone_contacto'][$i] ?? '');
 
-            if (!empty($telefone) && !preg_match('/^[0-9]{9}$/', $telefone)) {
-                $erros[] = "O telefone de contacto deve ter 9 dígitos.";
-            }
+            $erros = array_merge($erros, validar_telefone($telefone));
 
 
             $fornecedores_selecionados[] = [
@@ -298,9 +270,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep5'])) {
     $erros = [];
     $localizacao_id = trim($_POST['localizacao_id'] ?? '');
 
-    if (empty($localizacao_id)) {
-        $erros[] = "A localização é obrigatória.";
-    }
+    $erros = array_merge($erros, validar_select($localizacao_id, 'A localização'));
 
     if (empty($erros)) {
         $_SESSION['novo_equipamento']['sep5'] = [
@@ -322,33 +292,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep6'])) {
     $cert_garantia_nome   = trim($_POST['cert_garantia_nome']   ?? '');
     $cert_garantia_data   = trim($_POST['cert_garantia_data']   ?? '');
 
-    if (empty($garantia_data_inicio)) {
-        $erros[] = "A data de início da garantia é obrigatória.";
-    } elseif ($garantia_data_inicio > date('Y-m-d')) {
-        $erros[] = "A data de início da garantia não pode ser no futuro.";
-    }
-
-    if (empty($garantia_data_fim)) {
-        $erros[] = "A data de fim da garantia é obrigatória.";
-    } elseif (!empty($garantia_data_inicio) && $garantia_data_fim <= $garantia_data_inicio) {
-        $erros[] = "A data de fim da garantia tem de ser posterior à data de início.";
-    }
-
-    if (empty($garantia_entidade)) {
-        $erros[] = "A entidade responsável é obrigatória.";
-    }
-
-    if (empty($cert_garantia_nome)) {
-        $erros[] = "O nome do certificado de garantia é obrigatório.";
-    }
-
-    if (empty($cert_garantia_data)) {
-        $erros[] = "A data do certificado de garantia é obrigatória.";
-    } elseif ($cert_garantia_data > date('Y-m-d')) {
-        $erros[] = "A data do certificado de garantia não pode ser no futuro.";
-    } elseif (!empty($garantia_data_inicio) && $cert_garantia_data > $garantia_data_inicio) {
-        $erros[] = "A data do certificado não pode ser posterior à data de início da garantia.";
-    }
+    $erros = array_merge($erros, validar_data_obrigatoria($garantia_data_inicio, 'A data de início da garantia'));
+    $erros = array_merge($erros, validar_data_obrigatoria($garantia_data_fim, 'A data de fim da garantia'));
+    $erros = array_merge($erros, validar_data_anterior($garantia_data_fim, $garantia_data_inicio, 'A data de fim da garantia', ' data de início'));
+    $erros = array_merge($erros, validar_select($garantia_entidade, 'A entidade responsável'));
+    $erros = array_merge($erros, validar_texto_obrigatorio($cert_garantia_nome, 'O nome do certificado de garantia'));
+    $erros = array_merge($erros, validar_data_obrigatoria($cert_garantia_data, 'A data do certificado de garantia'));
+    $erros = array_merge($erros, validar_data_posterior($cert_garantia_data, $garantia_data_inicio, 'A data do certificado', ' data de início da garantia'));
 
     if (!empty($erros)) {
         $_SESSION['sep_ativo'] = 'garantia';
@@ -356,13 +306,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep6'])) {
 
     if (empty($erros)) {
         $_SESSION['novo_equipamento']['sep6'] = [
-            'garantia_data_inicio'  => $garantia_data_inicio,
-            'garantia_data_fim'     => $garantia_data_fim,
-            'garantia_entidade'     => $garantia_entidade,
-            'garantia_observacoes'  => trim($_POST['garantia_observacoes']   ?? ''),
-            'cert_garantia_nome'    => $cert_garantia_nome,
-            'cert_garantia_data'    => $cert_garantia_data,
-            'cert_garantia_validade' => trim($_POST['cert_garantia_validade'] ?? ''),
+            'garantia_data_inicio'   => $garantia_data_inicio,
+            'garantia_data_fim'      => $garantia_data_fim,
+            'garantia_entidade'      => $garantia_entidade,
+            'garantia_observacoes'   => trim($_POST['garantia_observacoes']    ?? ''),
+            'cert_garantia_nome'     => $cert_garantia_nome,
+            'cert_garantia_data'     => $cert_garantia_data,
+            'cert_garantia_validade' => trim($_POST['cert_garantia_validade']  ?? ''),
         ];
 
         header("Location: novo.php?sep=contrato");
@@ -378,39 +328,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep7'])) {
 
     if ($tem_contrato === 'sim') {
 
-        $contrato_tipo         = trim($_POST['contrato_tipo']         ?? '');
+        $contrato_tipo          = trim($_POST['contrato_tipo']          ?? '');
         $contrato_periodicidade = trim($_POST['contrato_periodicidade'] ?? '');
-        $contrato_data_inicio  = trim($_POST['contrato_data_inicio']  ?? '');
-        $contrato_data_fim     = trim($_POST['contrato_data_fim']     ?? '');
-        $contrato_entidade     = trim($_POST['contrato_entidade']     ?? '');
-        $doc_contrato_nome     = trim($_POST['doc_contrato_nome']     ?? '');
-        $doc_contrato_data     = trim($_POST['doc_contrato_data']     ?? '');
+        $contrato_data_inicio   = trim($_POST['contrato_data_inicio']   ?? '');
+        $contrato_data_fim      = trim($_POST['contrato_data_fim']      ?? '');
+        $contrato_entidade      = trim($_POST['contrato_entidade']      ?? '');
+        $doc_contrato_nome      = trim($_POST['doc_contrato_nome']      ?? '');
+        $doc_contrato_data      = trim($_POST['doc_contrato_data']      ?? '');
 
-        if (empty($contrato_data_inicio)) {
-            $erros[] = "A data de início do contrato é obrigatória.";
-        }
-
-        if (empty($contrato_data_fim)) {
-            $erros[] = "A data de fim do contrato é obrigatória.";
-        } elseif (!empty($contrato_data_inicio) && $contrato_data_fim <= $contrato_data_inicio) {
-            $erros[] = "A data de fim do contrato tem de ser posterior à data de início.";
-        }
-
-        if (empty($contrato_entidade)) {
-            $erros[] = "A entidade responsável é obrigatória.";
-        }
-
-        if (empty($doc_contrato_nome)) {
-            $erros[] = "O nome do documento do contrato é obrigatório.";
-        }
-
-        if (empty($doc_contrato_data)) {
-            $erros[] = "A data do documento do contrato é obrigatória.";
-        } elseif ($doc_contrato_data > date('Y-m-d')) {
-            $erros[] = "A data do documento do contrato não pode ser no futuro.";
-        } elseif (!empty($contrato_data_inicio) && $doc_contrato_data > $contrato_data_inicio) {
-            $erros[] = "A data do documento não pode ser posterior à data de início do contrato.";
-        }
+        $erros = array_merge($erros, validar_select($contrato_tipo, 'O tipo de contrato'));
+        $erros = array_merge($erros, validar_select($contrato_periodicidade, 'A periodicidade'));
+        $erros = array_merge($erros, validar_data_obrigatoria($contrato_data_inicio, 'A data de início do contrato'));
+        $erros = array_merge($erros, validar_data_obrigatoria($contrato_data_fim, 'A data de fim do contrato'));
+        $erros = array_merge($erros, validar_data_anterior($contrato_data_fim, $contrato_data_inicio, 'A data de fim do contrato', ' data de início'));
+        $erros = array_merge($erros, validar_select($contrato_entidade, 'A entidade responsável'));
+        $erros = array_merge($erros, validar_texto_obrigatorio($doc_contrato_nome, 'O nome do documento do contrato'));
+        $erros = array_merge($erros, validar_data_obrigatoria($doc_contrato_data, 'A data do documento do contrato'));
+        $erros = array_merge($erros, validar_data_posterior($doc_contrato_data, $contrato_data_inicio, 'A data do documento', ' data de início do contrato'));
     }
 
     if (!empty($erros)) {
@@ -419,16 +353,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep7'])) {
 
     if (empty($erros)) {
         $_SESSION['novo_equipamento']['sep7'] = [
-            'tem_contrato'          => $tem_contrato,
-            'contrato_tipo'         => trim($_POST['contrato_tipo']          ?? ''),
+            'tem_contrato'           => $tem_contrato,
+            'contrato_tipo'          => trim($_POST['contrato_tipo']          ?? ''),
             'contrato_periodicidade' => trim($_POST['contrato_periodicidade'] ?? ''),
-            'contrato_data_inicio'  => trim($_POST['contrato_data_inicio']   ?? ''),
-            'contrato_data_fim'     => trim($_POST['contrato_data_fim']      ?? ''),
-            'contrato_entidade'     => trim($_POST['contrato_entidade']      ?? ''),
-            'contrato_observacoes'  => trim($_POST['contrato_observacoes']   ?? ''),
-            'doc_contrato_nome'     => trim($_POST['doc_contrato_nome']      ?? ''),
-            'doc_contrato_data'     => trim($_POST['doc_contrato_data']      ?? ''),
-            'doc_contrato_validade' => trim($_POST['doc_contrato_validade']  ?? ''),
+            'contrato_data_inicio'   => trim($_POST['contrato_data_inicio']   ?? ''),
+            'contrato_data_fim'      => trim($_POST['contrato_data_fim']      ?? ''),
+            'contrato_entidade'      => trim($_POST['contrato_entidade']      ?? ''),
+            'contrato_observacoes'   => trim($_POST['contrato_observacoes']   ?? ''),
+            'doc_contrato_nome'      => trim($_POST['doc_contrato_nome']      ?? ''),
+            'doc_contrato_data'      => trim($_POST['doc_contrato_data']      ?? ''),
+            'doc_contrato_validade'  => trim($_POST['doc_contrato_validade']  ?? ''),
         ];
 
         header("Location: novo.php?sep=documentos");
@@ -439,37 +373,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep7'])) {
 // Separador 8 — Documentação (opcional)
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
 
+    $erros = [];
     $documentos = [];
     $nomes = $_POST['doc_nome'] ?? [];
 
     foreach ($nomes as $i => $nome) {
         $nome = trim($nome);
+        $data = trim($_POST['doc_data'][$i] ?? '');
+
+        $erros = array_merge($erros, validar_documento($nome, $data));
+
         if (!empty($nome)) {
             $documentos[] = [
-                'tipo'      => trim($_POST['doc_tipo'][$i]      ?? ''),
-                'nome'      => $nome,
-                'data'      => trim($_POST['doc_data'][$i]      ?? ''),
-                'validade'  => trim($_POST['doc_validade'][$i]  ?? ''),
+                'tipo'     => trim($_POST['doc_tipo'][$i]     ?? ''),
+                'nome'     => $nome,
+                'data'     => $data,
+                'validade' => trim($_POST['doc_validade'][$i] ?? ''),
             ];
         }
     }
 
-    $_SESSION['novo_equipamento']['sep8'] = $documentos;
+    if (!empty($erros)) {
+        $_SESSION['sep_ativo'] = 'documentos';
+    }
 
-    try {
-        $ligacao = new PDO(
-            "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
-            MYSQL_USERNAME,
-            MYSQL_PASSWORD
-        );
-        $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    if (empty($erros)) {
+        $_SESSION['novo_equipamento']['sep8'] = $documentos;
 
-        // 1. Inserir equipamento
-        $sep1 = $_SESSION['novo_equipamento']['sep1'];
-        $sep3 = $_SESSION['novo_equipamento']['sep3'];
-        $sep5 = $_SESSION['novo_equipamento']['sep5'];
+        try {
+            $ligacao = new PDO(
+                "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+                MYSQL_USERNAME,
+                MYSQL_PASSWORD
+            );
+            $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $stmt = $ligacao->prepare("INSERT INTO equipamentos (
+            // 1. Inserir equipamento
+            $sep1 = $_SESSION['novo_equipamento']['sep1'];
+            $sep3 = $_SESSION['novo_equipamento']['sep3'];
+            $sep5 = $_SESSION['novo_equipamento']['sep5'];
+
+            $stmt = $ligacao->prepare("INSERT INTO equipamentos (
             codigo, designacao, categoria, marca, modelo,
             numero_serie, fabricante, ano_fabrico, estado, criticidade,
             localizacao_id, data_aquisicao, custo, tipo_entrada, observacoes
@@ -479,195 +423,196 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
             :localizacao_id, :data_aquisicao, :custo, :tipo_entrada, :observacoes
         )");
 
-        $stmt->execute([
-            ':codigo'         => $sep1['codigo'],
-            ':designacao'     => $sep1['designacao'],
-            ':categoria'      => $sep1['categoria'],
-            ':marca'          => $sep1['marca'],
-            ':modelo'         => $sep1['modelo'],
-            ':numero_serie'   => $sep1['numero_serie'],
-            ':fabricante'     => $sep1['fabricante'],
-            ':ano_fabrico'    => $sep1['ano_fabrico'],
-            ':estado'         => $sep1['estado'],
-            ':criticidade'    => $sep1['criticidade'],
-            ':localizacao_id' => $sep5['localizacao_id'],
-            ':data_aquisicao' => $sep3['data_aquisicao'],
-            ':custo'          => $sep3['custo'],
-            ':tipo_entrada'   => $sep3['tipo_entrada'],
-            ':observacoes'    => $sep1['observacoes'],
-        ]);
+            $stmt->execute([
+                ':codigo'         => $sep1['codigo'],
+                ':designacao'     => $sep1['designacao'],
+                ':categoria'      => $sep1['categoria'],
+                ':marca'          => $sep1['marca'],
+                ':modelo'         => $sep1['modelo'],
+                ':numero_serie'   => $sep1['numero_serie'],
+                ':fabricante'     => $sep1['fabricante'],
+                ':ano_fabrico'    => $sep1['ano_fabrico'],
+                ':estado'         => $sep1['estado'],
+                ':criticidade'    => $sep1['criticidade'],
+                ':localizacao_id' => $sep5['localizacao_id'],
+                ':data_aquisicao' => $sep3['data_aquisicao'],
+                ':custo'          => $sep3['custo'],
+                ':tipo_entrada'   => $sep3['tipo_entrada'],
+                ':observacoes'    => $sep1['observacoes'],
+            ]);
 
-        $equipamento_id = $ligacao->lastInsertId();
+            $equipamento_id = $ligacao->lastInsertId();
 
-        // 2. Inserir componentes (opcional)
-        $sep2 = $_SESSION['novo_equipamento']['sep2'] ?? [];
-        foreach ($sep2 as $comp) {
-            $stmt = $ligacao->prepare("INSERT INTO componentes_consumiveis (
+            // 2. Inserir componentes (opcional)
+            $sep2 = $_SESSION['novo_equipamento']['sep2'] ?? [];
+            foreach ($sep2 as $comp) {
+                $stmt = $ligacao->prepare("INSERT INTO componentes_consumiveis (
                 equipamento_id, tipo, nome, referencia, quantidade, estado, observacoes
             ) VALUES (
                 :equipamento_id, :tipo, :nome, :referencia, :quantidade, :estado, :observacoes
             )");
-            $stmt->execute([
-                ':equipamento_id' => $equipamento_id,
-                ':tipo'           => $comp['tipo'],
-                ':nome'           => $comp['nome'],
-                ':referencia'     => $comp['referencia'],
-                ':quantidade'     => $comp['quantidade'] ?: null,
-                ':estado'         => $comp['estado'],
-                ':observacoes'    => $comp['observacoes'],
-            ]);
-        }
+                $stmt->execute([
+                    ':equipamento_id' => $equipamento_id,
+                    ':tipo'           => $comp['tipo'],
+                    ':nome'           => $comp['nome'],
+                    ':referencia'     => $comp['referencia'],
+                    ':quantidade'     => $comp['quantidade'] ?: null,
+                    ':estado'         => $comp['estado'],
+                    ':observacoes'    => $comp['observacoes'],
+                ]);
+            }
 
-        // 3. Inserir fornecedores
-        $sep4 = $_SESSION['novo_equipamento']['sep4'] ?? [];
-        foreach ($sep4 as $forn) {
-            $stmt = $ligacao->prepare("INSERT INTO equipamento_fornecedor (
+            // 3. Inserir fornecedores
+            $sep4 = $_SESSION['novo_equipamento']['sep4'] ?? [];
+            foreach ($sep4 as $forn) {
+                $stmt = $ligacao->prepare("INSERT INTO equipamento_fornecedor (
                 equipamento_id, fornecedor_id, tipo_relacao, morada_associada,
                 pessoa_contacto, telefone_contacto, observacoes
             ) VALUES (
                 :equipamento_id, :fornecedor_id, :tipo_relacao, :morada_associada,
                 :pessoa_contacto, :telefone_contacto, :observacoes
             )");
-            $stmt->execute([
-                ':equipamento_id'    => $equipamento_id,
-                ':fornecedor_id'     => $forn['fornecedor_id'],
-                ':tipo_relacao'      => $forn['tipo_relacao'],
-                ':morada_associada'  => $forn['morada_associada'],
-                ':pessoa_contacto'   => $forn['pessoa_contacto'],
-                ':telefone_contacto' => $forn['telefone_contacto'],
-                ':observacoes'       => $forn['observacoes'],
-            ]);
-        }
+                $stmt->execute([
+                    ':equipamento_id'    => $equipamento_id,
+                    ':fornecedor_id'     => $forn['fornecedor_id'],
+                    ':tipo_relacao'      => $forn['tipo_relacao'],
+                    ':morada_associada'  => $forn['morada_associada'],
+                    ':pessoa_contacto'   => $forn['pessoa_contacto'],
+                    ':telefone_contacto' => $forn['telefone_contacto'],
+                    ':observacoes'       => $forn['observacoes'],
+                ]);
+            }
 
-        // 3b. Inserir documentos da aquisição
-        if (!empty($sep3['contrato_aquisicao_nome'])) {
-            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+            // 3b. Inserir documentos da aquisição
+            if (!empty($sep3['contrato_aquisicao_nome'])) {
+                $stmt = $ligacao->prepare("INSERT INTO documentacao (
         equipamento_id, contexto, tipo_documento_id, nome_documento,
         data_documento, data_validade, ficheiro
     ) VALUES (
         :equipamento_id, 'aquisicao', 1, :nome_documento,
         :data_documento, :data_validade, ''
     )");
-            $stmt->execute([
-                ':equipamento_id' => $equipamento_id,
-                ':nome_documento' => $sep3['contrato_aquisicao_nome'],
-                ':data_documento' => $sep3['contrato_aquisicao_data'] ?: null,
-                ':data_validade'  => $sep3['contrato_aquisicao_validade'] ?: null,
-            ]);
-        }
+                $stmt->execute([
+                    ':equipamento_id' => $equipamento_id,
+                    ':nome_documento' => $sep3['contrato_aquisicao_nome'],
+                    ':data_documento' => $sep3['contrato_aquisicao_data'] ?: null,
+                    ':data_validade'  => $sep3['contrato_aquisicao_validade'] ?: null,
+                ]);
+            }
 
-        if (!empty($sep3['fatura_aquisicao_nome'])) {
-            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+            if (!empty($sep3['fatura_aquisicao_nome'])) {
+                $stmt = $ligacao->prepare("INSERT INTO documentacao (
         equipamento_id, contexto, tipo_documento_id, nome_documento,
         data_documento, data_validade, ficheiro
     ) VALUES (
         :equipamento_id, 'aquisicao', 1, :nome_documento,
         :data_documento, :data_validade, ''
     )");
-            $stmt->execute([
-                ':equipamento_id' => $equipamento_id,
-                ':nome_documento' => $sep3['fatura_aquisicao_nome'],
-                ':data_documento' => $sep3['fatura_aquisicao_data'] ?: null,
-                ':data_validade'  => null,
-            ]);
-        }
+                $stmt->execute([
+                    ':equipamento_id' => $equipamento_id,
+                    ':nome_documento' => $sep3['fatura_aquisicao_nome'],
+                    ':data_documento' => $sep3['fatura_aquisicao_data'] ?: null,
+                    ':data_validade'  => null,
+                ]);
+            }
 
-        // 4. Inserir garantia
-        $sep6 = $_SESSION['novo_equipamento']['sep6'];
-        $stmt = $ligacao->prepare("INSERT INTO garantias (
+            // 4. Inserir garantia
+            $sep6 = $_SESSION['novo_equipamento']['sep6'];
+            $stmt = $ligacao->prepare("INSERT INTO garantias (
             equipamento_id, data_inicio, data_fim, entidade_responsavel, observacoes
         ) VALUES (
             :equipamento_id, :data_inicio, :data_fim, :entidade_responsavel, :observacoes
         )");
-        $stmt->execute([
-            ':equipamento_id'       => $equipamento_id,
-            ':data_inicio'          => $sep6['garantia_data_inicio'],
-            ':data_fim'             => $sep6['garantia_data_fim'],
-            ':entidade_responsavel' => $sep6['garantia_entidade'],
-            ':observacoes'          => $sep6['garantia_observacoes'],
-        ]);
+            $stmt->execute([
+                ':equipamento_id'       => $equipamento_id,
+                ':data_inicio'          => $sep6['garantia_data_inicio'],
+                ':data_fim'             => $sep6['garantia_data_fim'],
+                ':entidade_responsavel' => $sep6['garantia_entidade'],
+                ':observacoes'          => $sep6['garantia_observacoes'],
+            ]);
 
-        // 4b. Inserir documento do certificado de garantia
-        if (!empty($sep6['cert_garantia_nome'])) {
-            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+            // 4b. Inserir documento do certificado de garantia
+            if (!empty($sep6['cert_garantia_nome'])) {
+                $stmt = $ligacao->prepare("INSERT INTO documentacao (
         equipamento_id, contexto, tipo_documento_id, nome_documento,
         data_documento, data_validade, ficheiro
     ) VALUES (
         :equipamento_id, 'garantia', 1, :nome_documento,
         :data_documento, :data_validade, ''
     )");
-            $stmt->execute([
-                ':equipamento_id' => $equipamento_id,
-                ':nome_documento' => $sep6['cert_garantia_nome'],
-                ':data_documento' => $sep6['cert_garantia_data'] ?: null,
-                ':data_validade'  => $sep6['cert_garantia_validade'] ?: null,
-            ]);
-        }
+                $stmt->execute([
+                    ':equipamento_id' => $equipamento_id,
+                    ':nome_documento' => $sep6['cert_garantia_nome'],
+                    ':data_documento' => $sep6['cert_garantia_data'] ?: null,
+                    ':data_validade'  => $sep6['cert_garantia_validade'] ?: null,
+                ]);
+            }
 
-        // 5. Inserir contrato (se existir)
-        $sep7 = $_SESSION['novo_equipamento']['sep7'];
-        if ($sep7['tem_contrato'] === 'sim') {
-            $stmt = $ligacao->prepare("INSERT INTO contratos (
+            // 5. Inserir contrato (se existir)
+            $sep7 = $_SESSION['novo_equipamento']['sep7'];
+            if ($sep7['tem_contrato'] === 'sim') {
+                $stmt = $ligacao->prepare("INSERT INTO contratos (
                 equipamento_id, tipo_contrato, periodicidade, data_inicio,
                 data_fim, entidade_responsavel, observacoes
             ) VALUES (
                 :equipamento_id, :tipo_contrato, :periodicidade, :data_inicio,
                 :data_fim, :entidade_responsavel, :observacoes
             )");
-            $stmt->execute([
-                ':equipamento_id'       => $equipamento_id,
-                ':tipo_contrato'        => $sep7['contrato_tipo'],
-                ':periodicidade'        => $sep7['contrato_periodicidade'],
-                ':data_inicio'          => $sep7['contrato_data_inicio'],
-                ':data_fim'             => $sep7['contrato_data_fim'],
-                ':entidade_responsavel' => $sep7['contrato_entidade'],
-                ':observacoes'          => $sep7['contrato_observacoes'],
-            ]);
-        }
+                $stmt->execute([
+                    ':equipamento_id'       => $equipamento_id,
+                    ':tipo_contrato'        => $sep7['contrato_tipo'],
+                    ':periodicidade'        => $sep7['contrato_periodicidade'],
+                    ':data_inicio'          => $sep7['contrato_data_inicio'],
+                    ':data_fim'             => $sep7['contrato_data_fim'],
+                    ':entidade_responsavel' => $sep7['contrato_entidade'],
+                    ':observacoes'          => $sep7['contrato_observacoes'],
+                ]);
+            }
 
-        // 5b. Inserir documento do contrato de manutenção
-        if ($sep7['tem_contrato'] === 'sim' && !empty($sep7['doc_contrato_nome'])) {
-            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+            // 5b. Inserir documento do contrato de manutenção
+            if ($sep7['tem_contrato'] === 'sim' && !empty($sep7['doc_contrato_nome'])) {
+                $stmt = $ligacao->prepare("INSERT INTO documentacao (
         equipamento_id, contexto, tipo_documento_id, nome_documento,
         data_documento, data_validade, ficheiro
     ) VALUES (
         :equipamento_id, 'contrato', 1, :nome_documento,
         :data_documento, :data_validade, ''
     )");
-            $stmt->execute([
-                ':equipamento_id' => $equipamento_id,
-                ':nome_documento' => $sep7['doc_contrato_nome'],
-                ':data_documento' => $sep7['doc_contrato_data'] ?: null,
-                ':data_validade'  => $sep7['doc_contrato_validade'] ?: null,
-            ]);
-        }
+                $stmt->execute([
+                    ':equipamento_id' => $equipamento_id,
+                    ':nome_documento' => $sep7['doc_contrato_nome'],
+                    ':data_documento' => $sep7['doc_contrato_data'] ?: null,
+                    ':data_validade'  => $sep7['doc_contrato_validade'] ?: null,
+                ]);
+            }
 
-        // 6. Inserir documentação extra (opcional)
-        $sep8 = $_SESSION['novo_equipamento']['sep8'] ?? [];
-        foreach ($sep8 as $doc) {
-            $stmt = $ligacao->prepare("INSERT INTO documentacao (
+            // 6. Inserir documentação extra (opcional)
+            $sep8 = $_SESSION['novo_equipamento']['sep8'] ?? [];
+            foreach ($sep8 as $doc) {
+                $stmt = $ligacao->prepare("INSERT INTO documentacao (
                 equipamento_id, contexto, tipo_documento_id, nome_documento,
                 data_documento, data_validade, ficheiro
             ) VALUES (
                 :equipamento_id, 'geral', 1, :nome_documento,
                 :data_documento, :data_validade, ''
             )");
-            $stmt->execute([
-                ':equipamento_id' => $equipamento_id,
-                ':nome_documento' => $doc['nome'],
-                ':data_documento' => $doc['data'] ?: null,
-                ':data_validade'  => $doc['validade'] ?: null,
-            ]);
+                $stmt->execute([
+                    ':equipamento_id' => $equipamento_id,
+                    ':nome_documento' => $doc['nome'],
+                    ':data_documento' => $doc['data'] ?: null,
+                    ':data_validade'  => $doc['validade'] ?: null,
+                ]);
+            }
+
+            // Limpar sessão
+            unset($_SESSION['novo_equipamento']);
+
+            header("Location: lista.php?sucesso=1");
+            exit;
+        } catch (PDOException $err) {
+            $erro_sistema = "Erro ao guardar o equipamento: " . $err->getMessage();
         }
-
-        // Limpar sessão
-        unset($_SESSION['novo_equipamento']);
-
-        header("Location: lista.php?sucesso=1");
-        exit;
-    } catch (PDOException $err) {
-        $erro_sistema = "Erro ao guardar o equipamento: " . $err->getMessage();
-    }
+    } // ← fecha o if (empty($erros))
 }
 ?>
 
@@ -1076,6 +1021,7 @@ Aluguer - Obtido através de contrato de aluguer.
                                     </label>
 
                                     <select class="form-select" name="tipo_entrada" id="tipoEntrada">
+                                        <option value="">Selecione...</option>
                                         <option value="compra" <?= (($_POST['tipo_entrada'] ?? $_SESSION['novo_equipamento']['sep3']['tipo_entrada'] ?? '') == 'compra') ? 'selected' : '' ?>>Compra</option>
                                         <option value="doacao" <?= (($_POST['tipo_entrada'] ?? $_SESSION['novo_equipamento']['sep3']['tipo_entrada'] ?? '') == 'doacao') ? 'selected' : '' ?>>Doação</option>
                                         <option value="aluguer" <?= (($_POST['tipo_entrada'] ?? $_SESSION['novo_equipamento']['sep3']['tipo_entrada'] ?? '') == 'aluguer') ? 'selected' : '' ?>>Aluguer</option>
@@ -1476,6 +1422,7 @@ Outsourcing - Gestão integral da manutenção dos equipamentos por uma entidade
                                             </i>
                                         </label>
                                         <select class="form-select" name="contrato_tipo">
+                                            <option value="">Selecione...</option>
                                             <option value="Manutenção Preventiva" <?= (($_POST['contrato_tipo'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_tipo'] ?? '') == 'Manutenção Preventiva') ? 'selected' : '' ?>>Manutenção Preventiva</option>
                                             <option value="Manutenção Corretiva" <?= (($_POST['contrato_tipo'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_tipo'] ?? '') == 'Manutenção Corretiva') ? 'selected' : '' ?>>Manutenção Corretiva</option>
                                             <option value="Full-Service" <?= (($_POST['contrato_tipo'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_tipo'] ?? '') == 'Full-Service') ? 'selected' : '' ?>>Full-Service</option>
@@ -1486,6 +1433,7 @@ Outsourcing - Gestão integral da manutenção dos equipamentos por uma entidade
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Periodicidade *</label>
                                         <select class="form-select" name="contrato_periodicidade">
+                                            <option value="">Selecione...</option>
                                             <option value="Mensal" <?= (($_POST['contrato_periodicidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_periodicidade'] ?? '') == 'Mensal') ? 'selected' : '' ?>>Mensal</option>
                                             <option value="Trimestral" <?= (($_POST['contrato_periodicidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_periodicidade'] ?? '') == 'Trimestral') ? 'selected' : '' ?>>Trimestral</option>
                                             <option value="Semestral" <?= (($_POST['contrato_periodicidade'] ?? $_SESSION['novo_equipamento']['sep7']['contrato_periodicidade'] ?? '') == 'Semestral') ? 'selected' : '' ?>>Semestral</option>

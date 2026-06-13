@@ -69,3 +69,56 @@ function validar_componente(string $nome, string $tipo, string $referencia, stri
 
     return $erros;
 }
+
+function validar_data_obrigatoria(string $data, string $campo): array {
+    $erros = [];
+    if (empty($data)) {
+        $erros[] = "{$campo} é obrigatória.";
+    } elseif ($data > date('Y-m-d')) {
+        $erros[] = "{$campo} não pode ser no futuro.";
+    }
+    return $erros;
+}
+
+function validar_data_posterior(string $data, string $data_limite, string $campo, string $campo_limite): array {
+    $erros = [];
+    if (!empty($data) && !empty($data_limite) && $data > $data_limite) {
+        $erros[] = "{$campo} não pode ser posterior a {$campo_limite}.";
+    }
+    return $erros;
+}
+
+function validar_custo(string $custo): array {
+    $erros = [];
+    if (empty($custo)) {
+        $erros[] = "O custo de aquisição é obrigatório.";
+    } elseif (!is_numeric($custo) || $custo < 0) {
+        $erros[] = "O custo de aquisição é inválido.";
+    }
+    return $erros;
+}
+
+function validar_telefone(string $telefone): array {
+    $erros = [];
+    if (!empty($telefone) && !preg_match('/^[0-9]{9}$/', $telefone)) {
+        $erros[] = "O telefone de contacto deve ter 9 dígitos.";
+    }
+    return $erros;
+}
+
+function validar_data_anterior(string $data, string $data_limite, string $campo, string $campo_limite): array {
+    $erros = [];
+    if (!empty($data) && !empty($data_limite) && $data <= $data_limite) {
+        $erros[] = "{$campo} tem de ser posterior a {$campo_limite}.";
+    }
+    return $erros;
+}
+
+function validar_documento(string $nome, string $data): array {
+    $erros = [];
+    $algumPreenchido = !empty($nome) || !empty($data);
+    if ($algumPreenchido && empty(trim($nome))) {
+        $erros[] = "O nome do documento é obrigatório.";
+    }
+    return $erros;
+}
