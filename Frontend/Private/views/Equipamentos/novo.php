@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep1'])) {
     $fabricante = ucwords(strtolower($fabricante));
     $codigo     = strtoupper($codigo);
 
-    
+
     // 4. Se não houver erros, guardar na sessão e avançar
     if (empty($erros)) {
 
@@ -119,16 +119,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep1'])) {
         exit;
     }
 }
-
-// Separador 2 — Componentes (opcional)
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep2'])) {
-
-    $componentes = [];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['voltar_sep1'])) {
     $nomes = $_POST['nome_componente'] ?? [];
+    $componentes = [];
 
     foreach ($nomes as $i => $nome) {
         $nome = trim($nome);
-
         if (!empty($nome)) {
             $componentes[] = [
                 'tipo'        => trim($_POST['tipo'][$i]                   ?? ''),
@@ -141,12 +137,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep2'])) {
         }
     }
 
-    // Guardar na sessão (pode ser array vazio se não preencheu nada)
     $_SESSION['novo_equipamento']['sep2'] = $componentes;
-
-    // Avançar para o Sep. 3
-    header("Location: novo.php?sep=aquisicao");
+    header("Location: novo.php?sep=dados");
     exit;
+}
+
+// Separador 2 — Componentes (opcional)
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep2'])) {
+
+    $erros = [];
+    $componentes = [];
+    $nomes = $_POST['nome_componente'] ?? [];
+
+    foreach ($nomes as $i => $nome) {
+        $nome       = trim($nome);
+        $tipo       = trim($_POST['tipo'][$i]               ?? '');
+        $referencia = trim($_POST['referencia'][$i]         ?? '');
+        $quantidade = trim($_POST['quantidade'][$i]         ?? '');
+        $estado     = trim($_POST['estado_componente'][$i]  ?? '');
+
+
+        $erros = array_merge($erros, validar_componente($nome, $tipo, $referencia, $quantidade, $estado));
+
+        if (!empty($nome)) {
+            $componentes[] = [
+                'tipo'        => $tipo,
+                'nome'        => $nome,
+                'referencia'  => $referencia,
+                'quantidade'  => $quantidade,
+                'estado'      => $estado,
+                'observacoes' => trim($_POST['observacoes_componente'][$i] ?? '')
+            ];
+        }
+    }
+
+    if (empty($erros)) {
+        $_SESSION['novo_equipamento']['sep2'] = $componentes;
+        header("Location: novo.php?sep=aquisicao");
+        exit;
+    } else {
+        $_SESSION['sep_ativo'] = 'componentes';
+    }
 }
 
 // Separador 3 — Aquisição
@@ -917,7 +948,7 @@ Suporte de vida - Equipamentos cuja falha pode colocar em risco imediato a vida 
                                 <?php
                                 $componentes_sessao = $_SESSION['novo_equipamento']['sep2'] ?? [];
                                 if (empty($componentes_sessao)) {
-                                    $componentes_sessao = [['tipo' => 'componente', 'nome' => '', 'referencia' => '', 'quantidade' => '', 'estado' => '', 'observacoes' => '']];
+                                    $componentes_sessao = [['tipo' => '', 'nome' => '', 'referencia' => '', 'quantidade' => '', 'estado' => '', 'observacoes' => '']];
                                 }
                                 foreach ($componentes_sessao as $comp):
                                 ?>
@@ -931,6 +962,7 @@ Componente - Parte técnica do equipamento (sensores, cabos, baterias, módulos)
 Consumível - Item usado e substituído regularmente (gel, filtros, papel térmico)."></i>
                                                 </label>
                                                 <select class="form-select" name="tipo[]">
+                                                    <option value="">Selecione...</option>
                                                     <option value="componente" <?= ($comp['tipo'] ?? '') == 'componente' ? 'selected' : '' ?>>Componente</option>
                                                     <option value="consumivel" <?= ($comp['tipo'] ?? '') == 'consumivel' ? 'selected' : '' ?>>Consumível</option>
                                                 </select>
@@ -996,7 +1028,7 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
 
                             <!-- Botões navegação -->
                             <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('dados')">
+                                <button type="submit" name="voltar_sep1" class="btn btn-secondary">
                                     ← Anterior
                                 </button>
 

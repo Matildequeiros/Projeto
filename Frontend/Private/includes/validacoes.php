@@ -45,3 +45,27 @@ function validar_select(string $valor, string $campo): array {
     }
     return $erros;
 }
+
+function validar_componente(string $nome, string $tipo, string $referencia, string $quantidade, string $estado): array {
+    $erros = [];
+
+    $algumPreenchido = !empty($nome) || !empty($referencia) || !empty($quantidade);
+
+    if ($algumPreenchido && empty(trim($nome))) {
+        $erros[] = "O nome do componente é obrigatório.";
+    }
+
+    if ($algumPreenchido && empty(trim($tipo))) {
+        $erros[] = "O tipo do componente é obrigatório.";
+    }
+
+    if ($algumPreenchido && empty(trim($quantidade))) {
+        $erros[] = "A quantidade do componente é obrigatória.";
+    }
+
+    if ($tipo === 'componente' && $algumPreenchido && empty(trim($estado))) {
+        $erros[] = "O estado é obrigatório para componentes.";
+    }
+
+    return $erros;
+}
