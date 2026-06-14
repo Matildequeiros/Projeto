@@ -16,26 +16,32 @@ if (!$idEquipamento || !is_numeric($idEquipamento)) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$erros = [];
+$erro_sistema = "";
 
-    $novaDesignacao  = $_POST['designacao']   ?? '';
-    $novaMarca       = $_POST['marca']        ?? '';
-    $novoModelo      = $_POST['modelo']       ?? '';
-    $novoNumSerie    = $_POST['numero_serie'] ?? '';
-    $novoFabricante  = $_POST['fabricante']   ?? '';
-    $novoAnoFabrico  = $_POST['ano_fabrico']  ?? '';
-    $novoEstado      = $_POST['estado']       ?? '';
-    $novaCriticidade = $_POST['criticidade']  ?? '';
-    $novaCategoria   = $_POST['categoria']    ?? '';
-    $novasObs        = $_POST['observacoes']  ?? '';
+// Separador 1 — Equipamento
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter_sep1'])) {
 
-    $erros = [];
+    $novaDesignacao  = trim($_POST['designacao']   ?? '');
+    $novaMarca       = trim($_POST['marca']        ?? '');
+    $novoModelo      = trim($_POST['modelo']       ?? '');
+    $novoNumSerie    = trim($_POST['numero_serie'] ?? '');
+    $novoFabricante  = trim($_POST['fabricante']   ?? '');
+    $novoAnoFabrico  = trim($_POST['ano_fabrico']  ?? '');
+    $novoEstado      = trim($_POST['estado']       ?? '');
+    $novaCriticidade = trim($_POST['criticidade']  ?? '');
+    $novaCategoria   = trim($_POST['categoria']    ?? '');
+    $novasObs        = trim($_POST['observacoes']  ?? '');
+
     $erros = array_merge($erros, validar_texto_obrigatorio($novaDesignacao, 'A designação'));
+    $erros = array_merge($erros, validar_select($novaCategoria, 'A categoria'));
     $erros = array_merge($erros, validar_texto_obrigatorio($novaMarca, 'A marca'));
     $erros = array_merge($erros, validar_texto_obrigatorio($novoModelo, 'O modelo'));
     $erros = array_merge($erros, validar_numero_serie($novoNumSerie));
     $erros = array_merge($erros, validar_texto_obrigatorio($novoFabricante, 'O fabricante'));
     $erros = array_merge($erros, validar_ano_fabrico($novoAnoFabrico));
+    $erros = array_merge($erros, validar_select($novoEstado, 'O estado'));
+    $erros = array_merge($erros, validar_select($novaCriticidade, 'A criticidade'));
 
     if (empty($erros)) {
         try {
@@ -60,30 +66,117 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     observacoes  = :observacoes
                 WHERE id = :id
             ");
-
-            $stmt->bindParam(':designacao',   $novaDesignacao,  PDO::PARAM_STR);
-            $stmt->bindParam(':categoria',    $novaCategoria,   PDO::PARAM_STR);
-            $stmt->bindParam(':marca',        $novaMarca,       PDO::PARAM_STR);
-            $stmt->bindParam(':modelo',       $novoModelo,      PDO::PARAM_STR);
-            $stmt->bindParam(':numero_serie', $novoNumSerie,    PDO::PARAM_STR);
-            $stmt->bindParam(':fabricante',   $novoFabricante,  PDO::PARAM_STR);
-            $stmt->bindParam(':ano_fabrico',  $novoAnoFabrico,  PDO::PARAM_INT);
-            $stmt->bindParam(':estado',       $novoEstado,      PDO::PARAM_STR);
-            $stmt->bindParam(':criticidade',  $novaCriticidade, PDO::PARAM_STR);
-            $stmt->bindParam(':observacoes',  $novasObs,        PDO::PARAM_STR);
-            $stmt->bindParam(':id',           $idEquipamento,   PDO::PARAM_INT);
-
-            $stmt->execute();
+            $stmt->execute([
+                ':designacao'   => $novaDesignacao,
+                ':categoria'    => $novaCategoria,
+                ':marca'        => $novaMarca,
+                ':modelo'       => $novoModelo,
+                ':numero_serie' => $novoNumSerie,
+                ':fabricante'   => $novoFabricante,
+                ':ano_fabrico'  => $novoAnoFabrico,
+                ':estado'       => $novoEstado,
+                ':criticidade'  => $novaCriticidade,
+                ':observacoes'  => $novasObs,
+                ':id'           => $idEquipamento,
+            ]);
             $ligacao = null;
 
-            header('Location: lista.php');
+            header("Location: editar.php?id_equipamento={$idEquipamentoEncrypted}&sep=componentes");
             exit;
         } catch (PDOException $err) {
-            $erro = "Erro ao atualizar o equipamento: " . $err->getMessage();
+            $erro_sistema = "Erro ao atualizar: " . $err->getMessage();
         }
     }
 }
 
+// Separador 2 — Componentes
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter_sep2'])) {
+
+    $erros = [];
+    $comp_ids     = $_POST['comp_id']          ?? [];
+    $comp_tipos   = $_POST['comp_tipo']        ?? [];
+    $comp_nomes   = $_POST['comp_nome']        ?? [];
+    $comp_refs    = $_POST['comp_referencia']  ?? [];
+    $comp_qtds    = $_POST['comp_quantidade']  ?? [];
+    $comp_estados = $_POST['comp_estado']      ?? [];
+    $comp_obs     = $_POST['comp_observacoes'] ?? [];
+
+    foreach ($comp_nomes as $i => $nome) {
+        $nome       = trim($nome);
+        $tipo       = trim($comp_tipos[$i]   ?? '');
+        $referencia = trim($comp_refs[$i]    ?? '');
+        $quantidade = trim($comp_qtds[$i]    ?? '');
+        $estado     = trim($comp_estados[$i] ?? '');
+        $erros = array_merge($erros, validar_componente($nome, $tipo, $referencia, $quantidade, $estado));
+    }
+
+    if (!empty($erros)) {
+        $_SESSION['sep_ativo'] = 'componentes';
+    }
+
+    if (empty($erros)) {
+        try {
+            $ligacao = new PDO(
+                "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+                MYSQL_USERNAME,
+                MYSQL_PASSWORD
+            );
+            $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $ids_mantidos = [];
+
+            foreach ($comp_nomes as $i => $nome) {
+                $nome = trim($nome);
+                if (empty($nome)) continue;
+
+                $id = trim($comp_ids[$i] ?? '');
+
+                if (!empty($id)) {
+                    $stmt = $ligacao->prepare("UPDATE componentes_consumiveis SET tipo=:tipo, nome=:nome, referencia=:referencia, quantidade=:quantidade, estado=:estado, observacoes=:observacoes WHERE id=:id");
+                    $stmt->execute([
+                        ':tipo'        => trim($comp_tipos[$i]   ?? ''),
+                        ':nome'        => $nome,
+                        ':referencia'  => trim($comp_refs[$i]    ?? ''),
+                        ':quantidade'  => trim($comp_qtds[$i]    ?? '') ?: null,
+                        ':estado'      => trim($comp_estados[$i] ?? ''),
+                        ':observacoes' => trim($comp_obs[$i]     ?? ''),
+                        ':id'          => $id,
+                    ]);
+                    $ids_mantidos[] = $id;
+                } else {
+                    $stmt = $ligacao->prepare("INSERT INTO componentes_consumiveis (equipamento_id, tipo, nome, referencia, quantidade, estado, observacoes) VALUES (:equipamento_id, :tipo, :nome, :referencia, :quantidade, :estado, :observacoes)");
+                    $stmt->execute([
+                        ':equipamento_id' => $idEquipamento,
+                        ':tipo'           => trim($comp_tipos[$i]   ?? ''),
+                        ':nome'           => $nome,
+                        ':referencia'     => trim($comp_refs[$i]    ?? ''),
+                        ':quantidade'     => trim($comp_qtds[$i]    ?? '') ?: null,
+                        ':estado'         => trim($comp_estados[$i] ?? ''),
+                        ':observacoes'    => trim($comp_obs[$i]     ?? ''),
+                    ]);
+                    $ids_mantidos[] = $ligacao->lastInsertId();
+                }
+            }
+
+            if (!empty($ids_mantidos)) {
+                $placeholders = implode(',', array_fill(0, count($ids_mantidos), '?'));
+                $stmt = $ligacao->prepare("DELETE FROM componentes_consumiveis WHERE equipamento_id = ? AND id NOT IN ($placeholders)");
+                $stmt->execute(array_merge([$idEquipamento], $ids_mantidos));
+            } else {
+                $stmt = $ligacao->prepare("DELETE FROM componentes_consumiveis WHERE equipamento_id = ?");
+                $stmt->execute([$idEquipamento]);
+            }
+
+            $ligacao = null;
+            header("Location: editar.php?id_equipamento={$idEquipamentoEncrypted}&sep=aquisicao");
+            exit;
+        } catch (PDOException $err) {
+            $erro_sistema = "Erro ao atualizar componentes: " . $err->getMessage();
+        }
+    }
+}
+
+// Carregar dados da BD
 try {
     $ligacao = new PDO(
         "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
@@ -101,12 +194,21 @@ try {
         header('Location: ' . BASE_URL . '/Private/views/Equipamentos/lista.php');
         exit;
     }
+
+    $stmt = $ligacao->prepare("SELECT * FROM componentes_consumiveis WHERE equipamento_id = :id ORDER BY id");
+    $stmt->bindParam(':id', $idEquipamento, PDO::PARAM_INT);
+    $stmt->execute();
+    $componentes = $stmt->fetchAll(PDO::FETCH_OBJ);
 } catch (PDOException $err) {
-    $erro = "Erro na ligação à base de dados.";
+    $erro_sistema = "Erro na ligação à base de dados.";
     $equipamento = null;
+    $componentes = [];
 }
 
 $ligacao = null;
+
+$sepAtivo = $_SESSION['sep_ativo'] ?? $_GET['sep'] ?? 'dados';
+unset($_SESSION['sep_ativo']);
 ?>
 
 <?php include '../../includes/header.php'; ?>
@@ -141,49 +243,49 @@ $ligacao = null;
                 <ul class="nav nav-tabs mb-4 flex-nowrap" id="equipTabs" role="tablist">
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#dados" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'dados' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#dados" type="button">
                             Equipamento
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#componentes" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'componentes' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#componentes" type="button">
                             Componentes <br> e Consumíveis
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#aquisicao" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'aquisicao' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#aquisicao" type="button">
                             Aquisição
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#fornecedor" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'fornecedor' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#fornecedor" type="button">
                             Fornecedor <br> Associado
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#localizacao" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'localizacao' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#localizacao" type="button">
                             Localização <br> Associada
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#garantia" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'garantia' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#garantia" type="button">
                             Garantia
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#contrato" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'contrato' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#contrato" type="button">
                             Contrato de <br> Manutenção
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#documentos" type="button">
+                        <button class="nav-link <?= $sepAtivo == 'documentos' ? 'active' : '' ?>" data-bs-toggle="tab" data-bs-target="#documentos" type="button">
                             Documentação <br> Associada
                         </button>
                     </li>
@@ -199,7 +301,7 @@ $ligacao = null;
 
 
                         <!-- SEPARADOR 1 — EQUIPAMENTO -->
-                        <div class="tab-pane fade show active" id="dados" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'dados' ? 'show active' : '' ?>" id="dados" role="tabpanel">
 
                             <!-- Código + Designação -->
                             <div class="row">
@@ -235,13 +337,14 @@ $ligacao = null;
                                 </label>
 
                                 <select class="form-select" name="categoria">
-                                    <option <?= $equipamento->categoria == 'Monitorização' ? 'selected' : '' ?>>Monitorização</option>
-                                    <option <?= $equipamento->categoria == 'Suporte de vida' ? 'selected' : '' ?>>Suporte de vida</option>
-                                    <option <?= $equipamento->categoria == 'Terapia' ? 'selected' : '' ?>>Terapia</option>
-                                    <option <?= $equipamento->categoria == 'Diagnóstico' ? 'selected' : '' ?>>Diagnóstico</option>
-                                    <option <?= $equipamento->categoria == 'Laboratório' ? 'selected' : '' ?>>Laboratório</option>
-                                    <option <?= $equipamento->categoria == 'Esterilização' ? 'selected' : '' ?>>Esterilização</option>
-                                    <option <?= $equipamento->categoria == 'Reabilitação' ? 'selected' : '' ?>>Reabilitação</option>
+                                    <option value="">Selecione...</option>
+                                    <option value="Monitorização" <?= $equipamento->categoria == 'Monitorização' ? 'selected' : '' ?>>Monitorização</option>
+                                    <option value="Suporte de vida" <?= $equipamento->categoria == 'Suporte de vida' ? 'selected' : '' ?>>Suporte de vida</option>
+                                    <option value="Terapia" <?= $equipamento->categoria == 'Terapia' ? 'selected' : '' ?>>Terapia</option>
+                                    <option value="Diagnóstico" <?= $equipamento->categoria == 'Diagnóstico' ? 'selected' : '' ?>>Diagnóstico</option>
+                                    <option value="Laboratório" <?= $equipamento->categoria == 'Laboratório' ? 'selected' : '' ?>>Laboratório</option>
+                                    <option value="Esterilização" <?= $equipamento->categoria == 'Esterilização' ? 'selected' : '' ?>>Esterilização</option>
+                                    <option value="Reabilitação" <?= $equipamento->categoria == 'Reabilitação' ? 'selected' : '' ?>>Reabilitação</option>
                                 </select>
                             </div>
 
@@ -302,12 +405,13 @@ $ligacao = null;
                                     </label>
 
                                     <select class="form-select" name="estado">
-                                        <option <?= $equipamento->estado == 'Ativo' ? 'selected' : '' ?>>Ativo</option>
-                                        <option <?= $equipamento->estado == 'Em manutenção' ? 'selected' : '' ?>>Em manutenção</option>
-                                        <option <?= $equipamento->estado == 'Inativo' ? 'selected' : '' ?>>Inativo</option>
-                                        <option <?= $equipamento->estado == 'Em calibração' ? 'selected' : '' ?>>Em calibração</option>
-                                        <option <?= $equipamento->estado == 'Em quarentena' ? 'selected' : '' ?>>Em quarentena</option>
-                                        <option <?= $equipamento->estado == 'Abatido' ? 'selected' : '' ?>>Abatido</option>
+                                        <option value="">Selecione...</option>
+                                        <option value="Ativo" <?= $equipamento->estado == 'Ativo' ? 'selected' : '' ?>>Ativo</option>
+                                        <option value="Em manutenção" <?= $equipamento->estado == 'Em manutenção' ? 'selected' : '' ?>>Em manutenção</option>
+                                        <option value="Inativo" <?= $equipamento->estado == 'Inativo' ? 'selected' : '' ?>>Inativo</option>
+                                        <option value="Em calibração" <?= $equipamento->estado == 'Em calibração' ? 'selected' : '' ?>>Em calibração</option>
+                                        <option value="Em quarentena" <?= $equipamento->estado == 'Em quarentena' ? 'selected' : '' ?>>Em quarentena</option>
+                                        <option value="Abatido" <?= $equipamento->estado == 'Abatido' ? 'selected' : '' ?>>Abatido</option>
                                     </select>
                                 </div>
 
@@ -332,10 +436,11 @@ imediato a vida do doente.
                                     </label>
 
                                     <select class="form-select" name="criticidade">
-                                        <option <?= $equipamento->criticidade == 'Baixa' ? 'selected' : '' ?>>Baixa</option>
-                                        <option <?= $equipamento->criticidade == 'Média' ? 'selected' : '' ?>>Média</option>
-                                        <option <?= $equipamento->criticidade == 'Alta' ? 'selected' : '' ?>>Alta</option>
-                                        <option <?= $equipamento->criticidade == 'Suporte de vida' ? 'selected' : '' ?>>Suporte de vida</option>
+                                        <option value="">Selecione...</option>
+                                        <option value="Baixa" <?= $equipamento->criticidade == 'Baixa' ? 'selected' : '' ?>>Baixa</option>
+                                        <option value="Média" <?= $equipamento->criticidade == 'Média' ? 'selected' : '' ?>>Média</option>
+                                        <option value="Alta" <?= $equipamento->criticidade == 'Alta' ? 'selected' : '' ?>>Alta</option>
+                                        <option value="Suporte de vida" <?= $equipamento->criticidade == 'Suporte de vida' ? 'selected' : '' ?>>Suporte de vida</option>
                                     </select>
                                 </div>
                             </div>
@@ -350,8 +455,7 @@ imediato a vida do doente.
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="lista.php" class="btn btn-secondary">← Voltar</a>
 
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="validarEAvancar('dados', 'componentes')">
+                                <button type="submit" name="submeter_sep1" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>
@@ -359,7 +463,7 @@ imediato a vida do doente.
                         </div>
 
                         <!-- SEPARADOR 2 — COMPONENTES ASSOCIADOS -->
-                        <div class="tab-pane fade" id="componentes" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'componentes' ? 'show active' : '' ?>" id="componentes" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Componentes Associados</h4>
 
@@ -369,96 +473,82 @@ imediato a vida do doente.
 
                             <div id="componentesContainer">
 
-                                <!-- BLOCO BASE DO COMPONENTE -->
-                                <div class="componente-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
+                                <?php
+                                $componentes_editar = !empty($componentes) ? $componentes : [(object)['tipo' => '', 'nome' => '', 'referencia' => '', 'quantidade' => '', 'estado' => '', 'observacoes' => '']];
+                                foreach ($componentes_editar as $comp):
+                                ?>
+                                    <div class="componente-bloco border rounded p-3 mb-3" style="border-color:#86b0aa;">
+                                        <div class="row g-3">
 
-                                    <div class="row g-3">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Tipo *</label>
+                                                <select class="form-select" name="comp_tipo[]">
+                                                    <option value="">Selecione...</option>
+                                                    <option value="Componente" <?= ($comp->tipo ?? '') == 'Componente' ? 'selected' : '' ?>>Componente</option>
+                                                    <option value="Consumivel" <?= ($comp->tipo ?? '') == 'Consumivel' ? 'selected' : '' ?>>Consumível</option>
+                                                </select>
+                                            </div>
 
-                                        <!-- Tipo -->
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label">
-                                                Tipo *
-                                                <i class="fa-solid fa-circle-info ms-1 text-muted"
-                                                    data-bs-toggle="popover" data-bs-trigger="hover focus"
-                                                    data-bs-html="true" title="Tipo de Item" data-bs-content="
-Componente - Parte técnica do equipamento (sensores, cabos, baterias, módulos).<br>
-Consumível - Item usado e substituído regularmente (gel, filtros, papel térmico).
-           ">
-                                                </i>
-                                            </label>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Nome *</label>
+                                                <input type="text" class="form-control" name="comp_nome[]"
+                                                    placeholder="Ex: Sensor SpO2"
+                                                    value="<?= htmlspecialchars($comp->nome ?? '') ?>">
+                                            </div>
 
-                                            <select class="form-select">
-                                                <option value="componente">Componente</option>
-                                                <option value="consumivel">Consumível</option>
-                                            </select>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Referência</label>
+                                                <input type="text" class="form-control" name="comp_referencia[]"
+                                                    placeholder="Ex: DS-100A"
+                                                    value="<?= htmlspecialchars($comp->referencia ?? '') ?>">
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Quantidade</label>
+                                                <input type="number" class="form-control" name="comp_quantidade[]"
+                                                    min="0" value="<?= htmlspecialchars($comp->quantidade ?? '') ?>">
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label">Estado</label>
+                                                <select class="form-select" name="comp_estado[]">
+                                                    <option value="">—</option>
+                                                    <option value="Ativo" <?= ($comp->estado ?? '') == 'Ativo' ? 'selected' : '' ?>>Ativo</option>
+                                                    <option value="Em manutenção" <?= ($comp->estado ?? '') == 'Em manutenção' ? 'selected' : '' ?>>Em manutenção</option>
+                                                    <option value="Inativo" <?= ($comp->estado ?? '') == 'Inativo' ? 'selected' : '' ?>>Inativo</option>
+                                                    <option value="Em calibração" <?= ($comp->estado ?? '') == 'Em calibração' ? 'selected' : '' ?>>Em calibração</option>
+                                                    <option value="Abatido" <?= ($comp->estado ?? '') == 'Abatido' ? 'selected' : '' ?>>Abatido</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <label class="form-label">Observações</label>
+                                                <textarea class="form-control" name="comp_observacoes[]" rows="1"><?= htmlspecialchars($comp->observacoes ?? '') ?></textarea>
+                                            </div>
+
+                                            <input type="hidden" name="comp_id[]" value="<?= $comp->id ?? '' ?>">
+
+                                            <div class="col-12 text-end mt-1">
+                                                <button type="button" class="btn btn-danger btn-sm remover-componente">
+                                                    Remover
+                                                </button>
+                                            </div>
+
                                         </div>
-
-
-                                        <!-- Nome -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Nome *</label>
-                                            <input type="text" class="form-control"
-                                                placeholder="Ex: Sensor SpO2, Gel, Cabo ECG">
-                                        </div>
-
-                                        <!-- Referência -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Referência</label>
-                                            <input type="text" class="form-control" placeholder="Ex: DS-100A">
-                                        </div>
-
-                                        <!-- Quantidade -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Quantidade</label>
-                                            <input type="number" class="form-control" placeholder="Ex: 3">
-                                        </div>
-
-                                        <!-- Estado -->
-                                        <div class="col-md-4">
-                                            <label class="form-label">Estado</label>
-                                            <select class="form-select">
-                                                <option value="">—</option>
-                                                <option>Ativo</option>
-                                                <option>Em manutenção</option>
-                                                <option>Inativo</option>
-                                                <option>Em calibração</option>
-                                                <option>Abatido</option>
-                                            </select>
-                                        </div>
-
-                                        <!-- Observações -->
-                                        <div class="col-md-12">
-                                            <label class="form-label">Observações</label>
-                                            <textarea class="form-control" rows="1"
-                                                placeholder="Notas adicionais"></textarea>
-                                        </div>
-
-                                        <!-- Botão remover -->
-                                        <div class="col-12 text-end mt-1">
-                                            <button type="button" class="btn btn-danger btn-sm remover-componente">
-                                                Remover
-                                            </button>
-                                        </div>
-
                                     </div>
-
-                                </div>
+                                <?php endforeach; ?>
 
                             </div>
 
-                            <!-- Botão adicionar -->
                             <button type="button" class="btn btn-success mb-4" id="adicionarComponente">
                                 + Adicionar
                             </button>
 
-                            <!-- Botões navegação -->
                             <div class="d-flex justify-content-between mt-3">
                                 <button type="button" class="btn btn-secondary" onclick="mostrarSeparador('dados')">
                                     ← Anterior
                                 </button>
-
-                                <button type="button" class="btn" style="background-color:#1a826d; color:white;"
-                                    onclick="validarEAvancar('componentes', 'aquisicao')">
+                                <button type="submit" name="submeter_sep2" class="btn" style="background-color:#1a826d; color:white;">
                                     Seguinte →
                                 </button>
                             </div>
@@ -466,9 +556,8 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                         </div>
 
 
-
                         <!-- SEPARADOR 3 — AQUISIÇÃO -->
-                        <div class="tab-pane fade" id="aquisicao" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'aquisicao' ? 'show active' : '' ?>" id="aquisicao" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Aquisição</h4>
 
@@ -663,7 +752,7 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                         </div>
 
                         <!-- SEPARADOR 4 — FORNECEDOR ASSOCIADO -->
-                        <div class="tab-pane fade" id="fornecedor" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'fornecedor' ? 'show active' : '' ?>" id="fornecedor" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Fornecedor Associado</h4>
 
@@ -755,7 +844,7 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                         </div>
 
                         <!-- SEPARADOR 5 — LOCALIZAÇÃO ASSOCIADA -->
-                        <div class="tab-pane fade" id="localizacao" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'localizacao' ? 'show active' : '' ?>" id="localizacao" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Localização Associada</h4>
 
@@ -794,7 +883,7 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
 
 
                         <!-- SEPARADOR 6 — GARANTIA -->
-                        <div class="tab-pane fade" id="garantia" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'garantia' ? 'show active' : '' ?>" id="garantia" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Garantia</h4>
 
@@ -924,7 +1013,7 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
                         </div>
 
                         <!-- SEPARADOR 7 — CONTRATO DE MANUTENÇÃO -->
-                        <div class="tab-pane fade" id="contrato" role="tabpanel">
+                        <div class="tab-pane fade <?= $sepAtivo == 'contrato' ? 'show active' : '' ?>" id="contrato" role="tabpanel">
 
                             <h4 class="mb-3" style="color:#1a826d;">Contrato de Manutenção</h4>
 
@@ -1093,8 +1182,7 @@ Consumível - Item usado e substituído regularmente (gel, filtros, papel térmi
 
 
                         <!-- SEPARADOR 8 — DOCUMENTAÇÃO ASSOCIADA -->
-                        <div class="tab-pane fade" id="documentos" role="tabpanel">
-
+                        <div class="tab-pane fade <?= $sepAtivo == 'documentos' ? 'show active' : '' ?>" id="documentos" role="tabpanel">
                             <h4 class="mb-3" style="color:#1a826d;">Documentação Associada</h4>
 
                             <!-- CONTAINER DOS DOCUMENTOS -->

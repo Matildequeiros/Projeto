@@ -66,6 +66,10 @@ function validar_componente(string $nome, string $tipo, string $referencia, stri
     if ($tipo === 'componente' && $algumPreenchido && empty(trim($estado))) {
         $erros[] = "O estado é obrigatório para componentes.";
     }
+    
+    if (strtolower($tipo) === 'componente' && $algumPreenchido && empty(trim($estado))) {
+    $erros[] = "O estado é obrigatório para componentes.";
+}
 
     return $erros;
 }
