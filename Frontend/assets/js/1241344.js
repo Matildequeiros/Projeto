@@ -242,5 +242,7 @@ function abrirModalApagarLocalizacao(codigo, edificio, piso, servico, sala) {
     modal.show();
 }
 
-
+function verPDF(url) {
+    window.open(url, '_blank');
+}
 

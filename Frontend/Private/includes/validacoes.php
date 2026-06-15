@@ -62,10 +62,6 @@ function validar_componente(string $nome, string $tipo, string $referencia, stri
     if ($algumPreenchido && empty(trim($quantidade))) {
         $erros[] = "A quantidade do componente é obrigatória.";
     }
-
-    if ($tipo === 'componente' && $algumPreenchido && empty(trim($estado))) {
-        $erros[] = "O estado é obrigatório para componentes.";
-    }
     
     if (strtolower($tipo) === 'componente' && $algumPreenchido && empty(trim($estado))) {
     $erros[] = "O estado é obrigatório para componentes.";
@@ -123,6 +119,14 @@ function validar_documento(string $nome, string $data): array {
     $algumPreenchido = !empty($nome) || !empty($data);
     if ($algumPreenchido && empty(trim($nome))) {
         $erros[] = "O nome do documento é obrigatório.";
+    }
+    return $erros;
+}
+
+function validar_data_obrigatoria_futura(string $data, string $campo): array {
+    $erros = [];
+    if (empty($data)) {
+        $erros[] = "{$campo} é obrigatória.";
     }
     return $erros;
 }

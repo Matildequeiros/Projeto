@@ -338,8 +338,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep7'])) {
 
         $erros = array_merge($erros, validar_select($contrato_tipo, 'O tipo de contrato'));
         $erros = array_merge($erros, validar_select($contrato_periodicidade, 'A periodicidade'));
-        $erros = array_merge($erros, validar_data_obrigatoria($contrato_data_inicio, 'A data de início do contrato'));
-        $erros = array_merge($erros, validar_data_obrigatoria($contrato_data_fim, 'A data de fim do contrato'));
+        $erros = array_merge($erros, validar_data_obrigatoria_futura($contrato_data_inicio, 'A data de início do contrato'));
+        $erros = array_merge($erros, validar_data_obrigatoria_futura($contrato_data_fim, 'A data de fim do contrato'));
         $erros = array_merge($erros, validar_data_anterior($contrato_data_fim, $contrato_data_inicio, 'A data de fim do contrato', ' data de início'));
         $erros = array_merge($erros, validar_select($contrato_entidade, 'A entidade responsável'));
         $erros = array_merge($erros, validar_texto_obrigatorio($doc_contrato_nome, 'O nome do documento do contrato'));
