@@ -237,10 +237,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep4'])) {
 
     foreach ($ids as $i => $id) {
         if (!empty($id)) {
+            $pessoa = trim($_POST['pessoa_contacto'][$i] ?? '');
             $telefone = trim($_POST['telefone_contacto'][$i] ?? '');
 
-            $erros = array_merge($erros, validar_telefone($telefone));
-
+            $erros = array_merge($erros, validar_texto_obrigatorio($pessoa, 'A pessoa de contacto'));
+            $erros = array_merge($erros, validar_texto_obrigatorio($telefone, 'O telefone de contacto'));
+            if (!empty($telefone)) {
+                $erros = array_merge($erros, validar_telefone($telefone, 'O telefone de contacto'));
+            }
 
             $fornecedores_selecionados[] = [
                 'fornecedor_id'    => $id,
@@ -1186,21 +1190,21 @@ Aluguer - Obtido através de contrato de aluguer.
                                             </div>
 
                                             <div class="col-md-4">
-                                                <label class="form-label">Morada Associada *</label>
+                                                <label class="form-label">Morada *</label>
                                                 <input type="text" class="form-control" name="morada_associada[]"
                                                     placeholder="Ex: Armazém Norte – Braga"
                                                     value="<?= htmlspecialchars($forn['morada_associada'] ?? '') ?>">
                                             </div>
 
                                             <div class="col-md-4">
-                                                <label class="form-label">Pessoa de Contacto</label>
+                                                <label class="form-label">Pessoa de Contacto *</label>
                                                 <input type="text" class="form-control" name="pessoa_contacto[]"
                                                     placeholder="Nome da pessoa"
                                                     value="<?= htmlspecialchars($forn['pessoa_contacto'] ?? '') ?>">
                                             </div>
 
                                             <div class="col-md-4">
-                                                <label class="form-label">Telefone da Pessoa de Contacto</label>
+                                                <label class="form-label">Telefone de Contacto *</label>
                                                 <input type="text" class="form-control" name="telefone_contacto[]"
                                                     placeholder="Ex: 912345678" pattern="[0-9]{9}" title="Introduza um número com 9 dígitos"
                                                     value="<?= htmlspecialchars($forn['telefone_contacto'] ?? '') ?>">

@@ -140,3 +140,13 @@ function validar_nif(string $nif): array {
     }
     return $erros;
 }
+
+function validar_email(string $email, string $campo = 'O email'): array {
+    $erros = [];
+    if (empty(trim($email))) {
+        $erros[] = "{$campo} é obrigatório.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $erros[] = "{$campo} é inválido.";
+    }
+    return $erros;
+}

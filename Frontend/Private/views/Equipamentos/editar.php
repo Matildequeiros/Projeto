@@ -274,8 +274,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter_sep4'])) {
         if (empty(trim($forn_moradas[$i] ?? ''))) {
             $erros[] = "A morada associada do fornecedor é obrigatória.";
         }
-        if (!empty($forn_telefones[$i])) {
-            $erros = array_merge($erros, validar_telefone(trim($forn_telefones[$i])));
+        if (empty(trim($forn_pessoas[$i] ?? ''))) {
+            $erros[] = "A pessoa de contacto do fornecedor é obrigatória.";
+        }
+        if (empty(trim($forn_telefones[$i] ?? ''))) {
+            $erros[] = "O telefone de contacto do fornecedor é obrigatório.";
+        } elseif (!empty($forn_telefones[$i])) {
+            $erros = array_merge($erros, validar_telefone(trim($forn_telefones[$i]), 'O telefone de contacto'));
         }
     }
 
@@ -1258,14 +1263,14 @@ imediato a vida do doente.
                                             </div>
 
                                             <div class="col-md-4">
-                                                <label class="form-label">Pessoa de Contacto</label>
+                                                <label class="form-label">Pessoa de Contacto *</label>
                                                 <input type="text" class="form-control" name="forn_pessoa_contacto[]"
                                                     placeholder="Nome da pessoa"
                                                     value="<?= htmlspecialchars($forn->pessoa_contacto ?? '') ?>">
                                             </div>
 
                                             <div class="col-md-4">
-                                                <label class="form-label">Telefone de Contacto</label>
+                                                <label class="form-label">Telefone de Contacto *</label>
                                                 <input type="text" class="form-control" name="forn_telefone[]"
                                                     placeholder="912345678"
                                                     value="<?= htmlspecialchars($forn->telefone_contacto ?? '') ?>">

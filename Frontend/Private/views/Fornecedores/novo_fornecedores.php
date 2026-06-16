@@ -3,6 +3,25 @@ require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
 require_once __DIR__ . '/../../includes/validacoes.php';
 
+// Gerar próximo código
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $stmt = $ligacao->query("SELECT codigo FROM fornecedores ORDER BY codigo DESC LIMIT 1");
+    $ultimo = $stmt->fetchColumn();
+    if ($ultimo) {
+        $num = intval(substr($ultimo, 1)) + 1;
+        $proximo_codigo = 'F' . str_pad($num, 3, '0', STR_PAD_LEFT);
+    } else {
+        $proximo_codigo = 'F001';
+    }
+    $ligacao = null;
+} catch (PDOException $e) {
+    $proximo_codigo = 'F001';
+}
 $erros = [];
 $erro_sistema = "";
 
@@ -20,14 +39,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter'])) {
     $tipo_fornecedor    = trim($_POST['tipo_fornecedor']    ?? '');
     $observacoes        = trim($_POST['observacoes']        ?? '');
 
-    $erros = array_merge($erros, validar_texto_obrigatorio($codigo, 'O código'));
     $erros = array_merge($erros, validar_texto_obrigatorio($nome, 'O nome'));
     $erros = array_merge($erros, validar_nif($nif));
     $erros = array_merge($erros, validar_texto_obrigatorio($telefone, 'O telefone'));
     if (!empty($telefone)) {
         $erros = array_merge($erros, validar_telefone($telefone, 'O telefone'));
     }
-    $erros = array_merge($erros, validar_texto_obrigatorio($email, 'O email'));
+    $erros = array_merge($erros, validar_email($email));
     $erros = array_merge($erros, validar_texto_obrigatorio($morada, 'A morada'));
     $erros = array_merge($erros, validar_texto_obrigatorio($pessoa_contacto, 'A pessoa de contacto'));
     $erros = array_merge($erros, validar_texto_obrigatorio($telefone_contacto, 'O telefone de contacto'));
@@ -45,12 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter'])) {
             );
             $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Verificar se o código já existe
-            $stmt = $ligacao->prepare("SELECT id FROM fornecedores WHERE codigo = :codigo");
-            $stmt->execute([':codigo' => strtoupper($codigo)]);
-            if ($stmt->fetch()) {
-                $erros[] = "O código {$codigo} já existe na base de dados.";
-            }
 
             if (empty($erros)) {
                 $stmt = $ligacao->prepare("INSERT INTO fornecedores (codigo, nome, nif, telefone, email, morada, website, pessoa_contacto, telefone_contacto, tipo_fornecedor, observacoes) VALUES (:codigo, :nome, :nif, :telefone, :email, :morada, :website, :pessoa_contacto, :telefone_contacto, :tipo_fornecedor, :observacoes)");
@@ -115,9 +127,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter'])) {
                 <form method="post">
 
                     <div class="mb-3">
-                        <label class="form-label">Código Interno *</label>
-                        <input type="text" class="form-control" name="codigo" placeholder="Ex: F013"
-                            value="<?= htmlspecialchars($_POST['codigo'] ?? '') ?>">
+                        <label class="form-label">Código Interno</label>
+                        <input type="text" class="form-control" value="<?= htmlspecialchars($proximo_codigo) ?>" disabled>
+                        <input type="hidden" name="codigo" value="<?= htmlspecialchars($proximo_codigo) ?>">
                     </div>
 
                     <div class="row">
