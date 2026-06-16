@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter'])) {
     $erros = array_merge($erros, validar_email($email));
     $erros = array_merge($erros, validar_texto_obrigatorio($morada, 'A morada'));
     $erros = array_merge($erros, validar_texto_obrigatorio($pessoa_contacto, 'A pessoa de contacto'));
+    $erros = array_merge($erros, validar_nome_pessoa($pessoa_contacto, 'A pessoa de contacto'));
     $erros = array_merge($erros, validar_texto_obrigatorio($telefone_contacto, 'O telefone de contacto'));
     if (!empty($telefone_contacto)) {
         $erros = array_merge($erros, validar_telefone($telefone_contacto, 'O telefone de contacto'));
@@ -63,29 +64,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter'])) {
             );
             $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
-            if (empty($erros)) {
-                $stmt = $ligacao->prepare("INSERT INTO fornecedores (codigo, nome, nif, telefone, email, morada, website, pessoa_contacto, telefone_contacto, tipo_fornecedor, observacoes) VALUES (:codigo, :nome, :nif, :telefone, :email, :morada, :website, :pessoa_contacto, :telefone_contacto, :tipo_fornecedor, :observacoes)");
-                $stmt->execute([
-                    ':codigo'            => strtoupper($codigo),
-                    ':nome'              => $nome,
-                    ':nif'               => $nif,
-                    ':telefone'          => $telefone,
-                    ':email'             => $email,
-                    ':morada'            => $morada,
-                    ':website'           => $website ?: null,
-                    ':pessoa_contacto'   => $pessoa_contacto ?: null,
-                    ':telefone_contacto' => $telefone_contacto ?: null,
-                    ':tipo_fornecedor'   => $tipo_fornecedor,
-                    ':observacoes'       => $observacoes ?: null,
-                ]);
-
-                $ligacao = null;
-                header("Location: lista_fornecedores.php?sucesso=1");
-                exit;
-            }
+            $stmt = $ligacao->prepare("INSERT INTO fornecedores (codigo, nome, nif, telefone, email, morada, website, pessoa_contacto, telefone_contacto, tipo_fornecedor, observacoes) VALUES (:codigo, :nome, :nif, :telefone, :email, :morada, :website, :pessoa_contacto, :telefone_contacto, :tipo_fornecedor, :observacoes)");
+            $stmt->execute([
+                ':codigo'            => strtoupper($codigo),
+                ':nome'              => $nome,
+                ':nif'               => $nif,
+                ':telefone'          => $telefone,
+                ':email'             => $email,
+                ':morada'            => $morada,
+                ':website'           => $website ?: null,
+                ':pessoa_contacto'   => $pessoa_contacto ?: null,
+                ':telefone_contacto' => $telefone_contacto ?: null,
+                ':tipo_fornecedor'   => $tipo_fornecedor,
+                ':observacoes'       => $observacoes ?: null,
+            ]);
 
             $ligacao = null;
+            header("Location: lista_fornecedores.php?sucesso=1");
+            exit;
         } catch (PDOException $err) {
             $erro_sistema = "Erro ao guardar o fornecedor: " . $err->getMessage();
         }

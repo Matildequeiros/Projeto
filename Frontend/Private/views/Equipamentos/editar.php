@@ -276,6 +276,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter_sep4'])) {
         }
         if (empty(trim($forn_pessoas[$i] ?? ''))) {
             $erros[] = "A pessoa de contacto do fornecedor é obrigatória.";
+        } else {
+            $erros = array_merge($erros, validar_nome_pessoa(trim($forn_pessoas[$i]), 'A pessoa de contacto'));
         }
         if (empty(trim($forn_telefones[$i] ?? ''))) {
             $erros[] = "O telefone de contacto do fornecedor é obrigatório.";

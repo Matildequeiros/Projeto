@@ -37,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter'])) {
     $erros = array_merge($erros, validar_email($email));
     $erros = array_merge($erros, validar_texto_obrigatorio($morada, 'A morada'));
     $erros = array_merge($erros, validar_texto_obrigatorio($pessoa_contacto, 'A pessoa de contacto'));
+    $erros = array_merge($erros, validar_nome_pessoa($pessoa_contacto, 'A pessoa de contacto'));
     $erros = array_merge($erros, validar_texto_obrigatorio($telefone_contacto, 'O telefone de contacto'));
     if (!empty($telefone_contacto)) {
         $erros = array_merge($erros, validar_telefone($telefone_contacto, 'O telefone de contacto'));

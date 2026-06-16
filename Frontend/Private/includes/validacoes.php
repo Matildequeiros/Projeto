@@ -150,3 +150,11 @@ function validar_email(string $email, string $campo = 'O email'): array {
     }
     return $erros;
 }
+
+function validar_nome_pessoa(string $valor, string $campo): array {
+    $erros = [];
+    if (!empty(trim($valor)) && !preg_match('/^[\p{L}\s\-\.]+$/u', $valor)) {
+        $erros[] = "{$campo} não pode conter números ou caracteres especiais.";
+    }
+    return $erros;
+}

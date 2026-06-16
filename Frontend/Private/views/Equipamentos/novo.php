@@ -239,6 +239,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep4'])) {
             $telefone = trim($_POST['telefone_contacto'][$i] ?? '');
 
             $erros = array_merge($erros, validar_texto_obrigatorio($pessoa, 'A pessoa de contacto'));
+            $erros = array_merge($erros, validar_nome_pessoa($pessoa, 'A pessoa de contacto'));
             $erros = array_merge($erros, validar_texto_obrigatorio($telefone, 'O telefone de contacto'));
             if (!empty($telefone)) {
                 $erros = array_merge($erros, validar_telefone($telefone, 'O telefone de contacto'));
