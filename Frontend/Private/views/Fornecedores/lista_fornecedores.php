@@ -1,164 +1,227 @@
 <?php
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
+
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $resultados = $ligacao->query("SELECT * FROM fornecedores ORDER BY codigo")->fetchAll(PDO::FETCH_OBJ);
+    $erro = '';
+} catch (PDOException $err) {
+    $erro = "Aconteceu um erro na ligação.";
+    $resultados = [];
+}
+$ligacao = null;
 ?>
 
 <?php include '../../includes/header.php'; ?>
-<?php include '../../includes/nav.php'; ?> 
+<?php include '../../includes/nav.php'; ?>
 
+<div class="container-fluid">
+    <div class="row">
 
-    <div class="container-fluid">
-        <div class="row">
+        <?php include '../../includes/sidebar.php'; ?>
 
-            <?php include '../../includes/sidebar.php'; ?>
+        <main class="col-md-9 col-lg-10 p-4">
 
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0" style="color: #1a826d;">
+                    <i class="fa-solid fa-truck-medical me-2"></i>
+                    <strong>Listagem de Fornecedores</strong>
+                </h2>
+                <a href="novo_fornecedores.php" class="btn" style="background-color: #1a826d; color: white;">
+                    <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
+                </a>
+            </div>
 
-            <!-- CONTEÚDO PRINCIPAL -->
-            <main class="col-md-9 col-lg-10 p-4">
+            <hr>
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="mb-0" style="color: #1a826d;">
-                        <i class="fa-solid fa-truck-medical me-2"></i>
-                        <strong>Listagem de Fornecedores</strong>
-                    </h2>
-
-                    <a href="novo_fornecedores.php" class="btn" style="background-color: #1a826d; color: white;">
-                        <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
-                    </a>
+            <div class="filtros-box">
+                <div class="mb-3">
+                    <input type="text" id="pesquisaFornecedor" class="form-control search-input"
+                        placeholder="Código, nome, contacto, telefone …">
                 </div>
-
-                <hr>
-
-                <!-- FILTROS FORNECEDORES -->
-                <div class="filtros-box">
-
-                    <!-- Pesquisa geral -->
-                    <div class="mb-3">
-                        <input type="text" id="pesquisaFornecedor" class="form-control search-input"
-                            placeholder="Código, nome, Contacto, Telefone, …">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Tipo de Fornecedor</label>
+                        <select id="filtroTipoFornecedor" class="form-select">
+                            <option value="">Todos</option>
+                            <option>Fabricante</option>
+                            <option>Distribuidor / Comercial</option>
+                            <option>Assistência Técnica</option>
+                            <option>Consumíveis / Acessórios</option>
+                        </select>
                     </div>
-
-                    <div class="row g-3">
-
-                        <!-- Tipo de fornecedor -->
-                        <div class="col-md-3">
-                            <label class="form-label">Tipo de Fornecedor</label>
-                            <select id="filtroTipoFornecedor" class="form-select">
-                                <option value="">Todos</option>
-                                <option>Fabricante</option>
-                                <option>Distribuidor</option>
-                                <option>Assistência técnica</option>
-                                <option>Consumíveis</option>
-                            </select>
-                        </div>
-
-                    </div>
-
-                    <!-- Botões -->
-                    <div class="mt-3 d-flex justify-content-end gap-2">
-                        <button class="btn btn-secondary" onclick="limparFiltrosFornecedor()">Limpar</button>
-                        <button class="btn btn-filtrar" onclick="aplicarFiltrosFornecedor()">Aplicar filtros</button>
-                    </div>
-
                 </div>
+                <div class="mt-3 d-flex justify-content-end gap-2">
+                    <button class="btn btn-secondary" onclick="limparFiltrosFornecedor()">Limpar</button>
+                    <button class="btn btn-filtrar" onclick="aplicarFiltrosFornecedor()">Aplicar filtros</button>
+                </div>
+            </div>
 
-
+            <?php if (!empty($erro)) : ?>
+                <p class="text-center text-danger"><?= $erro ?></p>
+            <?php elseif (count($resultados) == 0) : ?>
                 <p class="text-muted">Não existem fornecedores registados.</p>
+            <?php else : ?>
 
                 <div class="table-responsive rounded-4 shadow-sm border p-0">
-
-                    <table class="table table-bordered table-striped align-middle" style="min-width: 1100px;">
+                    <table id="tabela-fornecedores" class="table table-bordered table-striped align-middle w-100">
                         <thead>
                             <tr style="background-color: #1a826d; color: white;">
-                                <th>Código Interno</th>
+                                <th>Código</th>
                                 <th>Nome</th>
                                 <th>Tipo</th>
                                 <th>Telefone Geral</th>
-                                <th>Telefone da Pessoa de Contacto</th>
-                                <th>Estado</th>
+                                <th>Pessoa de Contacto</th>
+                                <th>Telefone Contacto</th>
                                 <th class="text-center">Ações</th>
                             </tr>
                         </thead>
-
                         <tbody>
-                            <tr>
-                                <td>[codigo interno]</td>
-                                <td>[nome]</td>
-                                <td>[tipo]</td>
-                                <td>[telefone geral]</td>
-                                <td>[telefone da pessoa de contacto]</td>
-                                <td>[estado]</td>
-
-                                <td class="text-center">
-                                    <a href="detalhes_fornecedores.php" class="acao-box">
-                                        <i class="fa-solid fa-eye"></i> Consultar 
-                                    </a>
-
-                                    <a href="editar_fornecedores.php" class="acao-box">
-                                        <i class="fa-solid fa-pen"></i> Editar
-                                    </a>
-
-                                    <a class="acao-box" style="cursor: pointer;" onclick="abrirModalApagarFornecedor(
-       'F001',
-    'MedSupply Portugal',
-    'Distribuidor / Comercial'
-   )">
-                                        <i class="fa-solid fa-trash"></i> Eliminar
-                                    </a>
-
-                                </td>
-                            </tr>
-
+                            <?php foreach ($resultados as $fornecedor) : ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($fornecedor->codigo) ?></td>
+                                    <td><?= htmlspecialchars($fornecedor->nome) ?></td>
+                                    <td>
+                                        <?php
+                                        $badgeTipo = match ($fornecedor->tipo_fornecedor) {
+                                            'Fabricante'              => 'badge-ativo',
+                                            'Distribuidor / Comercial' => 'badge-calibracao',
+                                            'Assistência Técnica'     => 'badge-quarentena',
+                                            'Consumíveis / Acessórios' => 'badge-manutencao',
+                                            default                   => 'bg-secondary'
+                                        };
+                                        ?>
+                                        <span class="badge <?= $badgeTipo ?>"><?= htmlspecialchars($fornecedor->tipo_fornecedor) ?></span>
+                                    </td>
+                                    <td><?= htmlspecialchars($fornecedor->telefone) ?></td>
+                                    <td><?= htmlspecialchars($fornecedor->pessoa_contacto) ?></td>
+                                    <td><?= htmlspecialchars($fornecedor->telefone_contacto) ?></td>
+                                    <td class="text-center" style="white-space: nowrap;">
+                                        <a href="detalhes_fornecedores.php?id=<?= $fornecedor->id ?>" class="acao-box" title="Consultar">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        <a href="editar_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Editar">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                            onclick="abrirModalApagarFornecedor('<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>', '<?= htmlspecialchars($fornecedor->tipo_fornecedor, ENT_QUOTES) ?>')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
 
-            </main>
+            <?php endif; ?>
 
-        </div>
+            <div class="d-flex align-items-center mt-3 mb-4">
+                <span style="background-color: #d9efec; color: #1a826d; padding: 8px 18px; border-radius: 20px; font-weight: 700; font-size: 1rem;">
+                    <i class="fa-solid fa-truck-medical me-2"></i> Total de fornecedores: <?= count($resultados) ?>
+                </span>
+            </div>
+
+        </main>
     </div>
+</div>
 
-    
-
-    <!-- MODAL REMOVER FORNECEDOR (ESTILO IGUAL AO APAGAR.HTML) -->
-    <div class="modal fade" id="modalApagarFornecedor" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
-            <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
-
-                <h2 class="mb-4" style="color: #1a826d; font-weight: 700;">
-                    <i class="fa-solid fa-triangle-exclamation me-2"></i> Remover Fornecedor
-                </h2>
-
-                <p class="mb-3" style="font-size: 17px;">
-                    Tem a certeza que pretende remover o seguinte fornecedor?
-                    <br>
-                    <strong>Esta ação é irreversível.</strong>
-                </p>
-
-                <hr>
-
-                <!-- DADOS DO FORNECEDOR -->
-                <div id="dadosFornecedor" style="font-size: 16px;">
-                    <!-- Preenchido dinamicamente pelo JS -->
-                </div>
-
-                <hr>
-
-                <div class="d-flex justify-content-between mt-4">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-
-                    <a href="lista_fornecedores.php" id="btnConfirmarApagarFornecedor" class="btn"
-                        style="background-color: #1a826d; color: white;">
-                        <i class="fa-solid fa-trash me-2"></i> Remover Fornecedor
-                    </a>
-
-                </div>
-
+<!-- MODAL REMOVER -->
+<div class="modal fade" id="modalApagarFornecedor" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+        <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+            <h2 class="mb-4" style="color: #1a826d; font-weight: 700;">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> Remover Fornecedor
+            </h2>
+            <p class="mb-3" style="font-size: 17px;">
+                Tem a certeza que pretende remover o seguinte fornecedor?
+                <br><strong>Esta ação é irreversível.</strong>
+            </p>
+            <hr>
+            <div id="dadosFornecedor" style="font-size: 16px;"></div>
+            <hr>
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="lista_fornecedores.php" id="btnConfirmarApagarFornecedor" class="btn"
+                    style="background-color: #1a826d; color: white;">
+                    <i class="fa-solid fa-trash me-2"></i> Remover Fornecedor
+                </a>
             </div>
         </div>
     </div>
+</div>
 
-    
+<script>
+    var tabela;
+
+    $(document).ready(function() {
+        tabela = $('#tabela-fornecedores').DataTable({
+            pageLength: 10,
+            pagingType: "full_numbers",
+            searching: true,
+            lengthChange: false,
+            info: false,
+            dom: 'tp',
+            language: {
+                zeroRecords: "Nenhum fornecedor encontrado.",
+                paginate: {
+                    first: "Primeira",
+                    last: "Última",
+                    next: "Seguinte",
+                    previous: "Anterior"
+                }
+            }
+        });
+    });
+
+    function aplicarFiltrosFornecedor() {
+        const pesquisa = document.getElementById('pesquisaFornecedor')?.value || '';
+        const tipo = document.getElementById('filtroTipoFornecedor')?.value || '';
+
+        $.fn.dataTable.ext.search.pop();
+
+        $.fn.dataTable.ext.search.push(function(settings, data) {
+            const codigo = data[0].toLowerCase();
+            const nome = data[1].toLowerCase();
+            const tipoLinha = data[2].toLowerCase();
+            const telefone = data[3].toLowerCase();
+            const pessoa = data[4].toLowerCase();
+
+            const matchPesquisa = pesquisa === '' ||
+                codigo.includes(pesquisa.toLowerCase()) ||
+                nome.includes(pesquisa.toLowerCase()) ||
+                telefone.includes(pesquisa.toLowerCase()) ||
+                pessoa.includes(pesquisa.toLowerCase());
+
+            const matchTipo = tipo === '' || tipoLinha.includes(tipo.toLowerCase());
+
+            return matchPesquisa && matchTipo;
+        });
+
+        tabela.draw();
+    }
+
+    function limparFiltrosFornecedor() {
+        document.getElementById('pesquisaFornecedor').value = '';
+        document.getElementById('filtroTipoFornecedor').value = '';
+        $.fn.dataTable.ext.search.pop();
+        tabela.draw();
+    }
+
+    function abrirModalApagarFornecedor(codigo, nome, tipo) {
+        document.getElementById('dadosFornecedor').innerHTML = `
+            <p><strong>Código:</strong> ${codigo}</p>
+            <p><strong>Nome:</strong> ${nome}</p>
+            <p><strong>Tipo:</strong> ${tipo}</p>
+        `;
+        new bootstrap.Modal(document.getElementById('modalApagarFornecedor')).show();
+    }
+</script>
 
 <?php include '../../includes/footer.php'; ?>
-

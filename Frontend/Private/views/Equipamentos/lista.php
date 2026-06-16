@@ -109,7 +109,7 @@ $ligacao = null;
 
                     <div class="table-responsive rounded-4 shadow-sm border p-0" style="overflow-x: auto;">
 
-                        <table id="tabela-equipamentos" class="table table-bordered table-striped align-middle" style="min-width: 1300px;">
+                        <table id="tabela-equipamentos" class="table table-bordered table-striped align-middle w-100">
                             <thead>
                                 <tr style="background-color: #1a826d; color: white;">
                                     <th>Código</th>
@@ -153,16 +153,16 @@ $ligacao = null;
                                             <span class="badge <?= $badgeCriticidade ?>"><?= $equipamento->criticidade ?></span>
                                         </td>
                                         <td><?= $equipamento->edificio . ' / ' . $equipamento->piso . ' / ' . $equipamento->sala ?></td>
-                                        <td style="text-align: center;">
-                                            <a href="detalhes.php?id=<?= $equipamento->id ?>" class="acao-box">
-                                                <i class="fa-solid fa-eye"></i> Consultar
+                                        <td style="text-align: center; white-space: nowrap;">
+                                            <a href="detalhes.php?id=<?= $equipamento->id ?>" class="acao-box" title="Consultar">
+                                                <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box">
-                                                <i class="fa-solid fa-pen"></i> Editar
+                                            <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box" title="Editar">
+                                                <i class="fa-solid fa-pen"></i>
                                             </a>
-                                            <a class="acao-box" style="cursor: pointer;"
+                                            <a class="acao-box" style="cursor: pointer;" title="Eliminar"
                                                 onclick="abrirModalApagar('lista.php', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
-                                                <i class="fa-solid fa-trash"></i> Eliminar
+                                                <i class="fa-solid fa-trash"></i>
                                             </a>
                                         </td>
                                     </tr>
