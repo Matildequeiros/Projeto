@@ -26,6 +26,26 @@ try {
     $localizacoes = [];
 }
 
+// Gerar próximo código
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $stmt = $ligacao->query("SELECT codigo FROM equipamentos ORDER BY codigo DESC LIMIT 1");
+    $ultimo = $stmt->fetchColumn();
+    if ($ultimo) {
+        $num = intval(substr($ultimo, 2)) + 1;
+        $proximo_codigo = 'EQ' . str_pad($num, 3, '0', STR_PAD_LEFT);
+    } else {
+        $proximo_codigo = 'EQ001';
+    }
+    $ligacao = null;
+} catch (PDOException $e) {
+    $proximo_codigo = 'EQ001';
+}
+
 // Verificar se o formulário foi submetido
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep1'])) {
 
@@ -57,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep1'])) {
     $criticidade  = trim($criticidade);
     $observacoes  = trim($observacoes);
 
-    $erros = array_merge($erros, validar_codigo($codigo));
+   
     $erros = array_merge($erros, validar_texto_obrigatorio($designacao, 'A designação'));
     $erros = array_merge($erros, validar_select($categoria, 'A categoria'));
     $erros = array_merge($erros, validar_texto_obrigatorio($marca, 'A marca'));
@@ -76,28 +96,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep1'])) {
     $fabricante = ucwords(strtolower($fabricante));
     $codigo     = strtoupper($codigo);
 
-
-    // 4. Se não houver erros, guardar na sessão e avançar
-    if (empty($erros)) {
-
-        // Verificar se o código já existe na BD
-        try {
-            $ligacao = new PDO(
-                "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
-                MYSQL_USERNAME,
-                MYSQL_PASSWORD
-            );
-            $stmt = $ligacao->prepare("SELECT id FROM equipamentos WHERE codigo = :codigo");
-            $stmt->bindParam(':codigo', $codigo, PDO::PARAM_STR);
-            $stmt->execute();
-            if ($stmt->fetch()) {
-                $erros[] = "O código {$codigo} já existe na base de dados.";
-            }
-            $ligacao = null;
-        } catch (PDOException $e) {
-            $erros[] = "Erro ao verificar o código.";
-        }
-    }
 
     if (empty($erros)) {
         $_SESSION['novo_equipamento']['sep1'] = [
@@ -734,9 +732,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
                             <!-- Código + Designação -->
                             <div class="row">
                                 <div class="col-md-4 mb-3">
-                                    <label class="form-label">Código Interno De Inventário *</label>
-                                    <input type="text" class="form-control" name="codigo" placeholder="Ex: EQ-2025-001"
-                                        value="<?= htmlspecialchars($_POST['codigo'] ?? $_SESSION['novo_equipamento']['sep1']['codigo'] ?? '') ?>">
+                                    <label class="form-label">Código Interno De Inventário</label>
+                                    <input type="text" class="form-control" value="<?= htmlspecialchars($proximo_codigo) ?>" disabled>
+                                    <input type="hidden" name="codigo" value="<?= htmlspecialchars($proximo_codigo) ?>">
                                 </div>
 
                                 <div class="col-md-8 mb-3">
