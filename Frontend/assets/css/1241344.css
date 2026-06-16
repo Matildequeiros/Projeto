@@ -1072,3 +1072,10 @@ body {
     border: 1px solid #eee !important;
     background: white !important;
 }
+
+#tabela-fornecedores thead th,
+#tabela-equipamentos thead th,
+#tabela-localizacoes thead th {
+    text-align: center !important;
+     vertical-align: middle !important;
+}

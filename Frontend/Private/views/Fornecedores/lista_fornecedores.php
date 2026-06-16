@@ -71,12 +71,12 @@ $ligacao = null;
 
                 <div class="table-responsive rounded-4 shadow-sm border p-0">
                     <table id="tabela-fornecedores" class="table table-bordered table-striped align-middle w-100">
-                        <thead>
+                        <thead class="text-center">
                             <tr style="background-color: #1a826d; color: white;">
                                 <th>Código</th>
                                 <th>Nome</th>
                                 <th>Tipo</th>
-                                <th>Telefone Geral</th>
+                                <th>Telefone</th>
                                 <th>Pessoa de Contacto</th>
                                 <th>Telefone Contacto</th>
                                 <th class="text-center">Ações</th>

@@ -98,10 +98,10 @@ function validar_custo(string $custo): array {
     return $erros;
 }
 
-function validar_telefone(string $telefone): array {
+function validar_telefone(string $telefone, string $campo = 'O telefone de contacto'): array {
     $erros = [];
     if (!empty($telefone) && !preg_match('/^[0-9]{9}$/', $telefone)) {
-        $erros[] = "O telefone de contacto deve ter 9 dígitos.";
+        $erros[] = "{$campo} deve ter 9 dígitos.";
     }
     return $erros;
 }
@@ -127,6 +127,16 @@ function validar_data_obrigatoria_futura(string $data, string $campo): array {
     $erros = [];
     if (empty($data)) {
         $erros[] = "{$campo} é obrigatória.";
+    }
+    return $erros;
+}
+
+function validar_nif(string $nif): array {
+    $erros = [];
+    if (empty(trim($nif))) {
+        $erros[] = "O NIF é obrigatório.";
+    } elseif (!preg_match('/^[0-9]{9}$/', $nif)) {
+        $erros[] = "O NIF deve ter 9 dígitos.";
     }
     return $erros;
 }
