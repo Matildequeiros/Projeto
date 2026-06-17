@@ -154,7 +154,7 @@ $ligacao = null;
                                         </td>
                                         <td><?= $equipamento->edificio . ' / ' . $equipamento->piso . ' / ' . $equipamento->sala ?></td>
                                         <td style="text-align: center; white-space: nowrap;">
-                                            <a href="detalhes.php?id=<?= $equipamento->id ?>" class="acao-box" title="Consultar">
+                                            <a href="detalhes.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box" title="Consultar">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
                                             <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box" title="Editar">
