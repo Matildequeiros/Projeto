@@ -18,7 +18,11 @@ try {
     );
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $stmt = $ligacao->prepare("SELECT * FROM equipamentos WHERE id = :id");
+    $stmt = $ligacao->prepare("SELECT e.*, l.codigo AS loc_codigo, l.edificio, l.piso, l.sala, s.nome AS servico
+    FROM equipamentos e
+    LEFT JOIN localizacoes l ON e.localizacao_id = l.id
+    LEFT JOIN servicos s ON l.servico_id = s.id
+    WHERE e.id = :id");
     $stmt->bindParam(':id', $idEquipamento, PDO::PARAM_INT);
     $stmt->execute();
     $equipamento = $stmt->fetch(PDO::FETCH_OBJ);
@@ -50,6 +54,11 @@ try {
     $stmt->bindParam(':id', $idEquipamento, PDO::PARAM_INT);
     $stmt->execute();
     $fornecedores = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    $stmt = $ligacao->prepare("SELECT * FROM garantias WHERE equipamento_id = :id LIMIT 1");
+    $stmt->bindParam(':id', $idEquipamento, PDO::PARAM_INT);
+    $stmt->execute();
+    $garantia = $stmt->fetch(PDO::FETCH_OBJ);
 } catch (PDOException $e) {
     echo "<p class='text-danger'>Erro: " . $e->getMessage() . "</p>";
     exit;
@@ -541,10 +550,7 @@ try {
                         </div>
                     <?php endif; ?>
 
-
-
                 </div>
-
 
 
                 <!-- SEPARADOR 5 — LOCALIZAÇÃO ASSOCIADA -->
@@ -555,17 +561,16 @@ try {
 
                         <div class="info-row">
                             <span class="info-label">Código:</span>
-                            <span class="info-value">LOC001</span>
+                            <span class="info-value"><?= htmlspecialchars($equipamento->loc_codigo ?? '—') ?></span>
                         </div>
 
                         <div class="info-row"><span class="info-label">Edifício:</span><span
-                                class="info-value">Edifício A</span></div>
-                        <div class="info-row"><span class="info-label">Piso:</span><span class="info-value">2</span>
+                                class="info-value"><?= htmlspecialchars($equipamento->edificio ?? '—') ?></span></div>
+                        <div class="info-row"><span class="info-label">Piso:</span><span class="info-value"><?= htmlspecialchars($equipamento->piso ?? '—') ?></span>
                         </div>
                         <div class="info-row"><span class="info-label">Serviço:</span><span
-                                class="info-value">Urgência</span></div>
-                        <div class="info-row"><span class="info-label">Sala:</span><span class="info-value">Sala
-                                12</span></div>
+                                class="info-value"><?= htmlspecialchars($equipamento->servico ?? '—') ?></span></div>
+                        <div class="info-row"><span class="info-label">Sala:</span><span class="info-value"><?= htmlspecialchars($equipamento->sala ?? '—') ?></span></div>
                     </div>
                 </div>
 
@@ -575,81 +580,100 @@ try {
 
                         <h5 class="section-title">Garantia</h5>
 
-                        <div class="info-row">
-                            <span class="info-label">Data de Início:</span>
-                            <span class="info-value">2022-05-10</span>
-                        </div>
+                        <?php if (!$garantia): ?>
+                            <p class="text-muted">Não existe garantia registada.</p>
+                        <?php else: ?>
 
-                        <div class="info-row">
-                            <span class="info-label">Data de Fim:</span>
-                            <span class="info-value">2024-05-10</span>
-                        </div>
-
-                        <div class="info-row">
-                            <span class="info-label">Entidade Responsável</span>
-                            <span class="info-value">Fabricante</span>
-                        </div>
-
-                        <div class="info-row">
-                            <span class="info-label">Observações:</span>
-                            <span class="info-value">Sem observações.</span>
-                        </div>
-
-                        <!-- ACCORDION — CERTIFICADO DE GARANTIA -->
-                        <div class="accordion mt-4" id="accordionCertificadoGarantia">
-
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingCertificadoGarantia">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseCertificadoGarantia" aria-expanded="true"
-                                        aria-controls="collapseCertificadoGarantia">
-                                        Certificado de Garantia
-                                    </button>
-                                </h2>
-
-                                <div id="collapseCertificadoGarantia" class="accordion-collapse collapse show"
-                                    aria-labelledby="headingCertificadoGarantia"
-                                    data-bs-parent="#accordionCertificadoGarantia">
-
-                                    <div class="accordion-body">
-
-                                        <div class="border rounded p-3 mb-3">
-
-                                            <div class="info-row">
-                                                <span class="info-label">Tipo de Documento:</span>
-                                                <span class="info-value">Certificado de Garantia</span>
-                                            </div>
-
-                                            <div class="info-row">
-                                                <span class="info-label">Nome do Documento:</span>
-                                                <span class="info-value">Certificado de Garantia 2024</span>
-                                            </div>
-
-                                            <div class="info-row">
-                                                <span class="info-label">Data do Documento:</span>
-                                                <span class="info-value">2024-01-01</span>
-                                            </div>
-
-                                            <div class="info-row">
-                                                <span class="info-label">Data de Validade:</span>
-                                                <span class="info-value">2025-01-01</span>
-                                            </div>
-
-                                            <div class="info-row">
-                                                <span class="info-label">Ficheiro (PDF):</span>
-                                                <span class="info-value">
-                                                    <a href="#" target="_blank"
-                                                        style="color:#1a826d; font-weight:600;">Ver Documento</a>
-                                                </span>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-                                </div>
+                            <div class="info-row">
+                                <span class="info-label">Data de Início:</span>
+                                <span class="info-value"><?= !empty($garantia->data_inicio) ? date('d/m/Y', strtotime($garantia->data_inicio)) : '—' ?></span>
                             </div>
 
-                        </div>
+                            <div class="info-row">
+                                <span class="info-label">Data de Fim:</span>
+                                <span class="info-value"><?= !empty($garantia->data_fim) ? date('d/m/Y', strtotime($garantia->data_fim)) : '—' ?></span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">Entidade Responsável</span>
+                                <span class="info-value"><?= htmlspecialchars($garantia->entidade_responsavel) ?></span>
+                            </div>
+
+                            <div class="info-row">
+                                <span class="info-label">Observações:</span>
+                                <span class="info-value"><?= htmlspecialchars($garantia->observacoes ?: 'Sem observações.') ?></span>
+                            </div>
+
+                            <?php
+                            $docGarantia = null;
+                            foreach ($documentos as $doc) {
+                                if ($doc->contexto === 'garantia') {
+                                    $docGarantia = $doc;
+                                    break;
+                                }
+                            }
+                            ?>
+
+
+                            <?php if ($docGarantia): ?>
+                                <!-- ACCORDION — CERTIFICADO DE GARANTIA -->
+                                <div class="accordion mt-4" id="accordionCertificadoGarantia">
+
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingCertificadoGarantia">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseCertificadoGarantia" aria-expanded="true"
+                                                aria-controls="collapseCertificadoGarantia">
+                                                Certificado de Garantia
+                                            </button>
+                                        </h2>
+
+                                        <div id="collapseCertificadoGarantia" class="accordion-collapse collapse show"
+                                            aria-labelledby="headingCertificadoGarantia"
+                                            data-bs-parent="#accordionCertificadoGarantia">
+
+                                            <div class="accordion-body">
+
+                                                <div class="border rounded p-3 mb-3">
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Nome do Documento:</span>
+                                                        <span class="info-value"><?= htmlspecialchars($docGarantia->nome_documento) ?></span>
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Data do Documento:</span>
+                                                        <span class="info-value"><?= !empty($docGarantia->data_documento) ? date('d/m/Y', strtotime($docGarantia->data_documento)) : '—' ?></span>
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Data de Validade:</span>
+                                                        <span class="info-value"><?= !empty($docGarantia->data_validade) ? date('d/m/Y', strtotime($docGarantia->data_validade)) : '—' ?></span>
+                                                    </div>
+
+                                                    <?php if (!empty($docGarantia->ficheiro)): ?>
+                                                        <div class="info-row">
+                                                            <span class="info-label">Ficheiro (PDF):</span>
+                                                            <span class="info-value">
+                                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                                    onclick="verPDF('<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($docGarantia->ficheiro) ?>')">
+                                                                    <i class="fa-solid fa-eye me-1"></i> Ver PDF
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    <?php endif; ?>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            <?php endif; ?>
+
+                        <?php endif; // fecha o if (!$garantia) 
+                        ?>
 
 
                     </div>
