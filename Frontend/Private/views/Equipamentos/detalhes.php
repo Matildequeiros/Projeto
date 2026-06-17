@@ -59,6 +59,11 @@ try {
     $stmt->bindParam(':id', $idEquipamento, PDO::PARAM_INT);
     $stmt->execute();
     $garantia = $stmt->fetch(PDO::FETCH_OBJ);
+
+    $stmt = $ligacao->prepare("SELECT * FROM contratos WHERE equipamento_id = :id LIMIT 1");
+    $stmt->bindParam(':id', $idEquipamento, PDO::PARAM_INT);
+    $stmt->execute();
+    $contrato = $stmt->fetch(PDO::FETCH_OBJ);
 } catch (PDOException $e) {
     echo "<p class='text-danger'>Erro: " . $e->getMessage() . "</p>";
     exit;
@@ -672,7 +677,7 @@ try {
                                 </div>
                             <?php endif; ?>
 
-                        <?php endif; // fecha o if (!$garantia) 
+                        <?php endif;
                         ?>
 
 
@@ -687,131 +692,141 @@ try {
 
                     <div class="info-box">
 
-                        <!-- BLOCO SE EXISTE CONTRATO = SIM -->
-                        <div id="contratoSim">
-                            <div class="info-row">
-                                <span class="info-label">Existe Contrato?</span>
-                                <span class="info-value">Sim</span>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="info-row">
-                                        <span class="info-label">Tipo de Contrato:</span>
-                                        <span class="info-value">Manutenção Preventiva</span>
-                                    </div>
+                        <?php if ($contrato): ?>
+                            <!-- BLOCO SE EXISTE CONTRATO = SIM -->
+                            <div id="contratoSim">
+                                <div class="info-row">
+                                    <span class="info-label">Existe Contrato?</span>
+                                    <span class="info-value">Sim</span>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="info-row">
-                                        <span class="info-label">Periodicidade:</span>
-                                        <span class="info-value">Anual</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="info-row">
-                                        <span class="info-label">Data de Início:</span>
-                                        <span class="info-value">2023-01-01</span>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="info-row">
-                                        <span class="info-label">Data de Fim:</span>
-                                        <span class="info-value">2024-01-01</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="info-row">
-                                        <span class="info-label">Entidade Responsável:</span>
-                                        <span class="info-value">Empresa de Assistência Técnica</span>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="info-row">
-                                        <span class="info-label">Observações:</span>
-                                        <span class="info-value">Sem observações.</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ACCORDION — DOCUMENTO DO CONTRATO DE MANUTENÇÃO -->
-                        <div class="accordion mt-4" id="accordionDocContrato">
-
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="headingDocContrato">
-                                    <button class="accordion-button collapsed" type="button"
-                                        data-bs-toggle="collapse" data-bs-target="#collapseDocContrato"
-                                        aria-expanded="false" aria-controls="collapseDocContrato">
-                                        Documento do Contrato de Manutenção
-                                    </button>
-                                </h2>
-
-                                <div id="collapseDocContrato" class="accordion-collapse collapse"
-                                    aria-labelledby="headingDocContrato" data-bs-parent="#accordionDocContrato">
-
-                                    <div class="accordion-body">
-
-                                        <div class="border rounded p-3 mb-3">
-
-                                            <div class="info-row">
-                                                <span class="info-label">Tipo de Documento:</span>
-                                                <span class="info-value">Contrato de Manutenção</span>
-                                            </div>
-
-                                            <div class="info-row">
-                                                <span class="info-label">Nome do Documento:</span>
-                                                <span class="info-value">Contrato de Manutenção 2024-2025</span>
-                                            </div>
-
-                                            <div class="info-row">
-                                                <span class="info-label">Data do Documento:</span>
-                                                <span class="info-value">2024-01-01</span>
-                                            </div>
-
-                                            <div class="info-row">
-                                                <span class="info-label">Data de Validade:</span>
-                                                <span class="info-value">2025-01-01</span>
-                                            </div>
-
-                                            <div class="info-row">
-                                                <span class="info-label">Ficheiro (PDF):</span>
-                                                <span class="info-value">
-                                                    <a href="#" target="_blank"
-                                                        style="color:#1a826d; font-weight:600;">Ver Documento</a>
-                                                </span>
-                                            </div>
-
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-row">
+                                            <span class="info-label">Tipo de Contrato:</span>
+                                            <span class="info-value"><?= htmlspecialchars($contrato->tipo_contrato) ?></span>
                                         </div>
+                                    </div>
 
+                                    <div class="col-md-6">
+                                        <div class="info-row">
+                                            <span class="info-label">Periodicidade:</span>
+                                            <span class="info-value"><?= htmlspecialchars($contrato->periodicidade) ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-row">
+                                            <span class="info-label">Data de Início:</span>
+                                            <span class="info-value"><?= !empty($contrato->data_inicio) ? date('d/m/Y', strtotime($contrato->data_inicio)) : '—' ?></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="info-row">
+                                            <span class="info-label">Data de Fim:</span>
+                                            <span class="info-value"><?= !empty($contrato->data_fim) ? date('d/m/Y', strtotime($contrato->data_fim)) : '—' ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-row">
+                                            <span class="info-label">Entidade Responsável:</span>
+                                            <span class="info-value"><?= htmlspecialchars($contrato->entidade_responsavel) ?></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="info-row">
+                                            <span class="info-label">Observações:</span>
+                                            <span class="info-value"><?= htmlspecialchars($contrato->observacoes ?: 'Sem observações.') ?></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                        </div>
+                            <?php
+                            $docContratoManutencao = null;
+                            foreach ($documentos as $doc) {
+                                if ($doc->contexto === 'contrato') {
+                                    $docContratoManutencao = $doc;
+                                    break;
+                                }
+                            }
+                            ?>
 
+                            <?php if ($docContratoManutencao): ?>
+                                <!-- ACCORDION — DOCUMENTO DO CONTRATO DE MANUTENÇÃO -->
+                                <div class="accordion mt-4" id="accordionDocContrato">
 
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="headingDocContrato">
+                                            <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapseDocContrato"
+                                                aria-expanded="false" aria-controls="collapseDocContrato">
+                                                Documento do Contrato de Manutenção
+                                            </button>
+                                        </h2>
 
-                        <!-- BLOCO SE EXISTE CONTRATO = NÃO -->
-                        <div id="contratoNao" style="display:none;">
-                            <div class="info-row">
-                                <span class="info-label">Existe Contrato?</span>
-                                <span class="info-value">Não</span>
+                                        <div id="collapseDocContrato" class="accordion-collapse collapse"
+                                            aria-labelledby="headingDocContrato" data-bs-parent="#accordionDocContrato">
+
+                                            <div class="accordion-body">
+
+                                                <div class="border rounded p-3 mb-3">
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Nome do Documento:</span>
+                                                        <span class="info-value"><?= htmlspecialchars($docContratoManutencao->nome_documento) ?></span>
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Data do Documento:</span>
+                                                        <span class="info-value"><?= !empty($docContratoManutencao->data_documento) ? date('d/m/Y', strtotime($docContratoManutencao->data_documento)) : '—' ?></span>
+                                                    </div>
+
+                                                    <div class="info-row">
+                                                        <span class="info-label">Data de Validade:</span>
+                                                        <span class="info-value"><?= !empty($docContratoManutencao->data_validade) ? date('d/m/Y', strtotime($docContratoManutencao->data_validade)) : '—' ?></span>
+                                                    </div>
+
+                                                    <?php if (!empty($docContratoManutencao->ficheiro)): ?>
+                                                        <div class="info-row">
+                                                            <span class="info-label">Ficheiro (PDF):</span>
+                                                            <span class="info-value">
+                                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                                    onclick="verPDF('<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($docContratoManutencao->ficheiro) ?>')">
+                                                                    <i class="fa-solid fa-eye me-1"></i> Ver PDF
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    <?php endif; ?>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            <?php endif; ?>
+
+                        <?php else: ?>
+
+                            <!-- BLOCO SE EXISTE CONTRATO = NÃO -->
+                            <div id="contratoNao">
+                                <div class="info-row">
+                                    <span class="info-label">Existe Contrato?</span>
+                                    <span class="info-value">Não</span>
+                                </div>
                             </div>
 
-                            <div class="info-row">
-                                <span class="info-label">Observações:</span>
-                                <span class="info-value">Sem observações.</span>
-                            </div>
-                        </div>
+                        <?php endif; // fecha o if ($contrato) 
+                        ?>
 
                     </div>
 
@@ -829,7 +844,6 @@ try {
                         <table class="table mt-3">
                             <thead>
                                 <tr>
-                                    <th>Tipo</th>
                                     <th>Nome</th>
                                     <th>Data</th>
                                     <th>Origem</th>
@@ -838,43 +852,37 @@ try {
                             </thead>
 
                             <tbody>
-                                <!-- EXEMPLO 1 -->
-                                <tr>
-                                    <td>Manual</td>
-                                    <td>Manual do Utilizador</td>
-                                    <td>2022-05-10</td>
-                                    <td>Adicionado Manualmente</td>
-                                    <td>
-                                        <a href="#" target="_blank" style="color:#1a826d; font-weight:600;">Ver
-                                            PDF</a>
-                                    </td>
-                                </tr>
-
-                                <!-- EXEMPLO 2 -->
-                                <tr>
-                                    <td>Fatura</td>
-                                    <td>FT‑2025‑00321</td>
-                                    <td>2025-03-12</td>
-                                    <td>Aquisição</td>
-                                    <td>
-                                        <a href="#" target="_blank" style="color:#1a826d; font-weight:600;">Ver
-                                            PDF</a>
-                                    </td>
-                                </tr>
-
-                                <!-- EXEMPLO 3 -->
-                                <tr>
-                                    <td>Certificado</td>
-                                    <td>Certificado de Conformidade</td>
-                                    <td>2023-01-01</td>
-                                    <td>Adicionado Manualmente</td>
-                                    <td>
-                                        <a href="#" target="_blank" style="color:#1a826d; font-weight:600;">Ver
-                                            PDF</a>
-                                    </td>
-                                </tr>
-
-
+                                <?php if (empty($documentos)): ?>
+                                    <tr>
+                                        <td colspan="5" class="text-muted text-center">Não existem documentos associados.</td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($documentos as $doc): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($doc->nome_documento) ?></td>
+                                            <td><?= !empty($doc->data_documento) ? date('d/m/Y', strtotime($doc->data_documento)) : '—' ?></td>
+                                            <td>
+                                                <?= match ($doc->contexto) {
+                                                    'aquisicao' => 'Aquisição',
+                                                    'garantia' => 'Garantia',
+                                                    'contrato' => 'Contrato de Manutenção',
+                                                    'geral' => 'Adicionado Manualmente',
+                                                    default => htmlspecialchars($doc->contexto)
+                                                } ?>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($doc->ficheiro)): ?>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                        onclick="verPDF('<?= BASE_URL ?>/assets/uploads/<?= htmlspecialchars($doc->ficheiro) ?>')">
+                                                        <i class="fa-solid fa-eye me-1"></i> Ver PDF
+                                                    </button>
+                                                <?php else: ?>
+                                                    —
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
 
@@ -890,7 +898,7 @@ try {
             <!-- BOTÕES -->
             <div class="d-flex justify-content-between mt-4">
                 <a href="lista.php" class="btn btn-secondary">Voltar</a>
-                <a href="editar.php" class="btn" style="background-color: #1a826d; color: white;">
+                <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="btn" style="background-color: #1a826d; color: white;">
                     Editar Equipamento
                 </a>
             </div>
