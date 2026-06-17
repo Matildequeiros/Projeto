@@ -286,6 +286,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter_sep4'])) {
         }
     }
 
+    $pelo_menos_um = false;
+    foreach ($forn_fornecedor_ids as $forn_id) {
+        if (!empty($forn_id)) {
+            $pelo_menos_um = true;
+            break;
+        }
+    }
+    if (!$pelo_menos_um) {
+        $erros[] = "Tem de associar pelo menos um fornecedor.";
+    }
+
     if (!empty($erros)) {
         $_SESSION['sep_ativo'] = 'fornecedor';
     }

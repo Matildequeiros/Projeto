@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep1'])) {
     $criticidade  = trim($criticidade);
     $observacoes  = trim($observacoes);
 
-   
+
     $erros = array_merge($erros, validar_texto_obrigatorio($designacao, 'A designação'));
     $erros = array_merge($erros, validar_select($categoria, 'A categoria'));
     $erros = array_merge($erros, validar_texto_obrigatorio($marca, 'A marca'));
