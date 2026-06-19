@@ -112,7 +112,7 @@ $ligacao = null;
                                     <td><?= htmlspecialchars($loc->servico) ?></td>
                                     <td><?= htmlspecialchars($loc->sala) ?></td>
                                     <td class="text-center" style="white-space: nowrap;">
-                                        <a href="detalhes_localizacoes.php?id=<?= $loc->id ?>" class="acao-box" title="Consultar">
+                                        <a href="detalhes_localizacoes.php?id_localizacao=<?= aes_encrypt($loc->id) ?>" class="acao-box" title="Consultar">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
                                         <a href="editar_localizacoes.php?id_localizacao=<?= aes_encrypt($loc->id) ?>" class="acao-box" title="Editar">

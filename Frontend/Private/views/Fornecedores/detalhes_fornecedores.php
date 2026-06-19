@@ -1,6 +1,36 @@
 <?php
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
+
+$idFornecedorEncrypted = $_GET['id_fornecedor'] ?? null;
+$idFornecedor = aes_decrypt($idFornecedorEncrypted);
+
+if (!$idFornecedor || !is_numeric($idFornecedor)) {
+    header('Location: lista_fornecedores.php');
+    exit;
+}
+
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmt = $ligacao->prepare("SELECT * FROM fornecedores WHERE id = :id");
+    $stmt->bindParam(':id', $idFornecedor, PDO::PARAM_INT);
+    $stmt->execute();
+    $fornecedor = $stmt->fetch(PDO::FETCH_OBJ);
+
+    if (!$fornecedor) {
+        header('Location: lista_fornecedores.php');
+        exit;
+    }
+} catch (PDOException $e) {
+    echo "<p class='text-danger'>Erro: " . $e->getMessage() . "</p>";
+    exit;
+}
 ?>
 
 <?php include '../../includes/header.php'; ?>
@@ -22,22 +52,22 @@ redirect_if_not_logged();
                 </h2>
 
                 <!-- CAMPOS COMPLETOS -->
-                <div class="info-row"><span class="info-label">Código Interno:</span> <span class="info-value">F001</span></div>
-                <div class="info-row"><span class="info-label">Nome da Empresa:</span> <span class="info-value">MedTech Solutions</span></div>
-                <div class="info-row"><span class="info-label">NIF:</span> <span class="info-value">509123456</span></div>
-                <div class="info-row"><span class="info-label">Telefone Geral:</span> <span class="info-value">253 000 000</span></div>
-                <div class="info-row"><span class="info-label">Email Geral:</span> <span class="info-value">contacto@medtech.com</span></div>
-                <div class="info-row"><span class="info-label">Morada:</span> <span class="info-value">Rua da Saúde, nº 25, Porto</span></div>
-                <div class="info-row"><span class="info-label">Website:</span> <span class="info-value">www.medtech.com</span></div>
-                <div class="info-row"><span class="info-label">Pessoa de Contacto:</span> <span class="info-value">Marta Costa</span></div>
-                <div class="info-row"><span class="info-label">Telefone da Pessoa de Contacto:</span> <span class="info-value">934567890</span></div>
-                <div class="info-row"><span class="info-label">Tipo:</span> <span class="info-value">Distribuidor / Comercial</span></div>
-                <div class="info-row"><span class="info-label">Observações:</span> <span class="info-value">Fornecedor habitual de monitores e sensores.</span></div>
+                <div class="info-row"><span class="info-label">Código Interno:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->codigo) ?></span></div>
+                <div class="info-row"><span class="info-label">Nome da Empresa:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->nome) ?></span></div>
+                <div class="info-row"><span class="info-label">NIF:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->nif) ?></span></div>
+                <div class="info-row"><span class="info-label">Telefone Geral:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->telefone) ?></span></div>
+                <div class="info-row"><span class="info-label">Email Geral:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->email) ?></span></div>
+                <div class="info-row"><span class="info-label">Morada:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->morada) ?></span></div>
+                <div class="info-row"><span class="info-label">Website:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->website ?: '—') ?></span></div>
+                <div class="info-row"><span class="info-label">Pessoa de Contacto:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->pessoa_contacto) ?></span></div>
+                <div class="info-row"><span class="info-label">Telefone da Pessoa de Contacto:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->telefone_contacto) ?></span></div>
+                <div class="info-row"><span class="info-label">Tipo:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->tipo_fornecedor) ?></span></div>
+                <div class="info-row"><span class="info-label">Observações:</span> <span class="info-value"><?= htmlspecialchars($fornecedor->observacoes ?: 'Sem observações registadas.') ?></span></div>
 
                 <!-- BOTÕES -->
                 <div class="d-flex justify-content-between mt-4">
                     <a href="lista_fornecedores.php" class="btn btn-secondary">Voltar</a>
-                    <a href="editar_fornecedores.php" class="btn" style="background-color: #1a826d; color: white;">
+                    <a href="editar_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="btn" style="background-color: #1a826d; color: white;">
                         Editar Fornecedor
                     </a>
                 </div>

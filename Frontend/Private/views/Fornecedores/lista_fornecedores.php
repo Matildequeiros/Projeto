@@ -103,7 +103,7 @@ $ligacao = null;
                                     <td><?= htmlspecialchars($fornecedor->pessoa_contacto) ?></td>
                                     <td><?= htmlspecialchars($fornecedor->telefone_contacto) ?></td>
                                     <td class="text-center" style="white-space: nowrap;">
-                                        <a href="detalhes_fornecedores.php?id=<?= $fornecedor->id ?>" class="acao-box" title="Consultar">
+                                        <a href="detalhes_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Consultar">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
                                         <a href="editar_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Editar">
