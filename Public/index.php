@@ -1,7 +1,27 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
-?>
 
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmt = $ligacao->query("SELECT * FROM gestao_area_publica");
+    $linhas = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    $conteudo = [];
+    foreach ($linhas as $linha) {
+        $conteudo[$linha->secao] = $linha;
+    }
+} catch (PDOException $e) {
+    $conteudo = [];
+}
+
+$ligacao = null;
+?>
 
 <!DOCTYPE html>
 <html lang="pt">
@@ -76,17 +96,14 @@ require_once __DIR__ . '/../config/config.php';
         </div>
     </nav>
 
-
-
     <!-- SECÇÃO HERO -->
     <section id="inicio" class="inicio-hero container py-5">
 
         <div class="row align-items-center">
 
             <div class="col-12 col-md-6 sobre-nos-texto">
-                <h1>Soluções Digitais para Gestão Hospitalar</h1>
-                <p>Desenvolvemos software para inventário hospitalar, gestão documental e manutenção de equipamentos
-                    médicos.</p>
+                <h1><?= htmlspecialchars($conteudo['hero']->titulo ?? '') ?></h1>
+                <p><?= htmlspecialchars($conteudo['hero']->texto ?? '') ?></p>
                 <a href="#contacto" class="button">Fale Connosco</a>
             </div>
 
@@ -103,8 +120,7 @@ require_once __DIR__ . '/../config/config.php';
         <h2 class="text-center mb-4">Sobre Nós</h2>
 
         <p class="text-center mb-5">
-            A HospitalGest desenvolve soluções digitais para apoiar a gestão do inventário hospitalar,
-            substituindo processos dispersos por uma plataforma centralizada, intuitiva e eficiente.
+            <?= htmlspecialchars($conteudo['sobre_nos_intro']->texto ?? '') ?>
         </p>
 
         <div class="row g-4">
@@ -112,104 +128,95 @@ require_once __DIR__ . '/../config/config.php';
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="box h-100">
                     <h3>O Problema</h3>
-                    <p>Hospitais usam Excel, documentos soltos e registos manuais.</p>
+                    <p><?= htmlspecialchars($conteudo['sobre_nos_problema']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="box h-100">
                     <h3>A Nossa Solução</h3>
-                    <p>Aplicação web para organizar equipamentos, fornecedores e documentação.</p>
+                    <p><?= htmlspecialchars($conteudo['sobre_nos_solucao']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="box h-100">
                     <h3>O Que Oferecemos</h3>
-                    <ul>
-                        <li>Inventário estruturado</li>
-                        <li>Rastreabilidade completa</li>
-                        <li>Gestão documental</li>
-                        <li>Fornecedores e contratos</li>
-                        <li>Pesquisa e filtros avançados</li>
-                    </ul>
+                    <p><?= htmlspecialchars($conteudo['sobre_nos_oferecemos']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="box h-100">
                     <h3>Objetivo</h3>
-                    <p>Criar uma plataforma que ajude os hospitais a organizar melhor os seus equipamentos,
-                        documentação e fornecedores.</p>
+                    <p><?= htmlspecialchars($conteudo['sobre_nos_objetivo']->texto ?? '') ?></p>
                 </div>
             </div>
 
         </div>
+
     </section>
 
     <!-- SERVIÇOS -->
     <section id="servicos" class="secao-servicos container py-5">
         <h2 class="text-center mb-4">Serviços</h2>
 
-        <p class="servicos-intro text-center mb-5">
-            A HospitalGest oferece soluções digitais para apoiar a gestão do inventário hospitalar, garantindo
-            organização e eficiência.
-        </p>
-
         <div class="row g-4">
 
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="servico-box h-100">
                     <h3>Gestão de Equipamentos</h3>
-                    <p>Registo, edição e consulta de equipamentos médicos com informação detalhada.</p>
+                    <p><?= htmlspecialchars($conteudo['servico_equipamentos']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="servico-box h-100">
                     <h3>Localizações</h3>
-                    <p>Organização dos equipamentos por edifício, piso, serviço e sala.</p>
+                    <p><?= htmlspecialchars($conteudo['servico_localizacoes']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="servico-box h-100">
                     <h3>Fornecedores</h3>
-                    <p>Associação de fabricantes, distribuidores e empresas de assistência técnica.</p>
+                    <p><?= htmlspecialchars($conteudo['servico_fornecedores']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="servico-box h-100">
                     <h3>Documentação</h3>
-                    <p>Gestão de manuais, certificados, contratos e relatórios técnicos.</p>
+                    <p><?= htmlspecialchars($conteudo['servico_documentacao']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="servico-box h-100">
                     <h3>Garantias e Contratos</h3>
-                    <p>Consulta rápida de datas, validade e entidades responsáveis.</p>
+                    <p><?= htmlspecialchars($conteudo['servico_garantias']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="servico-box h-100">
                     <h3>Dashboard</h3>
-                    <p>Pesquisa avançada e visualização de indicadores que apoiam a tomada de decisão.</p>
+                    <p><?= htmlspecialchars($conteudo['servico_dashboard']->texto ?? '') ?></p>
                 </div>
             </div>
 
         </div>
+
     </section>
 
     <!-- CONTACTO -->
     <section id="contacto" class="secao-contacto container py-5">
         <h2 class="text-center mb-4">Contacto</h2>
 
+
         <div class="contacto-topo text-center mb-5">
-            <h3>Como Podemos Ajudar?</h3>
-            <p>A nossa equipa está disponível para esclarecer dúvidas e fornecer toda a informação necessária.</p>
+            <h3><?= htmlspecialchars($conteudo['contactos']->titulo ?? '') ?></h3>
+            <p><?= htmlspecialchars($conteudo['contactos']->texto ?? '') ?></p>
             <a class="contacto-botao" onclick="abrirFormulario()">Fale Connosco</a>
         </div>
 
@@ -218,25 +225,25 @@ require_once __DIR__ . '/../config/config.php';
             <div class="col-12 col-md-4">
                 <div class="contacto-box h-100">
                     <h3>Contactos</h3>
-                    <p><i class="fa-solid fa-phone"></i> 254 344 253</p>
-                    <p><i class="fa-solid fa-mobile-screen-button"></i> 912 745 234</p>
-                    <p><i class="fa-solid fa-envelope"></i> geral@hospitalgest.pt</p>
+                    <p><i class="fa-solid fa-phone"></i> <?= htmlspecialchars($conteudo['rodape_telefone']->titulo ?? '') ?></p>
+                    <p><i class="fa-solid fa-mobile-screen-button"></i> <?= htmlspecialchars($conteudo['rodape_telefone']->texto ?? '') ?></p>
+                    <p><i class="fa-solid fa-envelope"></i> <?= htmlspecialchars($conteudo['rodape_email']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-4">
                 <div class="contacto-box h-100">
                     <h3>Morada</h3>
-                    <p><i class="fa-solid fa-location-dot"></i> Rua da Boa Saúde nº10</p>
-                    <p>4523-089 Viana do Castelo</p>
+                    <p><i class="fa-solid fa-location-dot"></i> <?= htmlspecialchars($conteudo['rodape_morada']->titulo ?? '') ?></p>
+                    <p><?= htmlspecialchars($conteudo['rodape_morada']->texto ?? '') ?></p>
                 </div>
             </div>
 
             <div class="col-12 col-md-4">
                 <div class="contacto-box h-100">
                     <h3>Horário</h3>
-                    <p><i class="fa-solid fa-clock"></i> Todos os dias</p>
-                    <p>07:00h - 22:00h</p>
+                    <p><i class="fa-solid fa-clock"></i> <?= htmlspecialchars($conteudo['rodape_horario']->titulo ?? '') ?></p>
+                    <p><?= htmlspecialchars($conteudo['rodape_horario']->texto ?? '') ?></p>
                 </div>
             </div>
 
@@ -283,18 +290,18 @@ require_once __DIR__ . '/../config/config.php';
             <div class="row mt-4">
 
                 <div class="col-12 col-md-4 footer-column">
-                    <p><i class="fa-solid fa-location-dot"></i> Rua da Boa Saúde nº10</p>
-                    <p>4523-089 Viana do Castelo</p>
+                    <p><i class="fa-solid fa-location-dot"></i> <?= htmlspecialchars($conteudo['rodape_morada']->titulo ?? '') ?></p>
+                    <p><?= htmlspecialchars($conteudo['rodape_morada']->texto ?? '') ?></p>
                 </div>
 
                 <div class="col-12 col-md-4 footer-column">
-                    <p><i class="fa-solid fa-phone"></i> 254 344 253</p>
-                    <p><i class="fa-solid fa-mobile-screen-button"></i> 912 745 234</p>
+                    <p><i class="fa-solid fa-phone"></i> <?= htmlspecialchars($conteudo['rodape_telefone']->titulo ?? '') ?></p>
+                    <p><i class="fa-solid fa-mobile-screen-button"></i> <?= htmlspecialchars($conteudo['rodape_telefone']->texto ?? '') ?></p>
                 </div>
 
                 <div class="col-12 col-md-4 footer-column">
-                    <p><i class="fa-solid fa-envelope"></i> geral@hospitalgest.pt</p>
-                    <p><i class="fa-solid fa-clock"></i> 07:00h - 22:00h</p>
+                    <p><i class="fa-solid fa-envelope"></i> <?= htmlspecialchars($conteudo['rodape_email']->texto ?? '') ?></p>
+                    <p><i class="fa-solid fa-clock"></i> <?= htmlspecialchars($conteudo['rodape_horario']->texto ?? '') ?></p>
                 </div>
 
             </div>

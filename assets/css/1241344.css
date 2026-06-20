@@ -520,7 +520,16 @@ body {
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    text-align: left;
+    text-align: center;
+}
+
+#sobre-nos .box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#sobre-nos .box li {
+    margin-bottom: 8px;
 }
 
 #sobre-nos .box h3 {
