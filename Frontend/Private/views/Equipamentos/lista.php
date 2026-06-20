@@ -157,13 +157,21 @@ $ligacao = null;
                                             <a href="detalhes.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box" title="Consultar">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box" title="Editar">
-                                                <i class="fa-solid fa-pen"></i>
-                                            </a>
-                                            <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                                onclick="abrirModalApagar('lista.php', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </a>
+                                            <?php if ($equipamento->equipamento_ativo == 1): ?>
+                                                <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box" title="Editar">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </a>
+                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                    onclick="abrirModalApagar('<?= aes_encrypt($equipamento->id) ?>', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="badge bg-dark me-1">Removido</span>
+                                                <a class="acao-box" style="cursor: pointer;" title="Reativar"
+                                                    onclick="abrirModalReativar('<?= aes_encrypt($equipamento->id) ?>', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
+                                                    <i class="fa-solid fa-rotate-left"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -226,6 +234,40 @@ $ligacao = null;
     </div>
 </div>
 
+<!-- MODAL REATIVAR EQUIPAMENTO -->
+<div class="modal fade" id="modalReativar" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+        <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+
+            <h2 class="mb-3" style="color: #1a826d; font-weight: 700;">
+                <i class="fa-solid fa-rotate-left me-2"></i> Reativar Equipamento
+            </h2>
+
+            <p class="mb-3" style="font-size: 17px;">
+                Tem a certeza que pretende reativar o seguinte equipamento?
+            </p>
+
+            <hr>
+
+            <div id="dadosReativar" style="font-size: 16px;">
+                <!-- Preenchido pelo JS -->
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+                <a href="lista.php" id="btnConfirmarReativar" class="btn"
+                    style="background-color: #1a826d; color: white;">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Reativar Equipamento
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <script>
     var tabela;

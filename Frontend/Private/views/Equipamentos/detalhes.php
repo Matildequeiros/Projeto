@@ -83,9 +83,23 @@ try {
 
         <main class="col-md-9 col-lg-10 p-4">
 
-            <h2 class="mb-4" style="color: #1a826d;">
-                <i class="fa-solid fa-eye me-2"></i> Consultar Equipamento
-            </h2>
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <h2 class="mb-0" style="color: #1a826d;">
+                    <i class="fa-solid fa-eye me-2"></i> Consultar Equipamento
+                </h2>
+
+                <div class="d-flex align-items-center gap-2 px-3 py-2" style="background-color: #d9efec; border-radius: 999px;">
+                    <i class="fa-solid fa-stethoscope" style="color: #1a826d; font-size: 1rem;"></i>
+                    <span style="font-size: 0.95rem; font-weight: 700; color: #0d4d40;">
+                        <?= htmlspecialchars($equipamento->codigo) ?> — <?= htmlspecialchars($equipamento->designacao) ?>
+                    </span>
+                    <?php if ($equipamento->equipamento_ativo == 0): ?>
+                        <span class="badge bg-dark" style="border-radius: 999px;">Removido do Sistema</span>
+                    <?php else: ?>
+                        <span class="badge bg-success" style="border-radius: 999px;">No Sistema</span>
+                    <?php endif; ?>
+                </div>
+            </div>
 
             <!-- SEPARADORES -->
             <ul class="nav nav-tabs mb-4 flex-nowrap" id="equipTabs" role="tablist">
@@ -898,9 +912,11 @@ try {
             <!-- BOTÕES -->
             <div class="d-flex justify-content-between mt-4">
                 <a href="lista.php" class="btn btn-secondary">Voltar</a>
-                <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="btn" style="background-color: #1a826d; color: white;">
-                    Editar Equipamento
-                </a>
+                <?php if ($equipamento->equipamento_ativo == 1): ?>
+                    <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="btn" style="background-color: #1a826d; color: white;">
+                        Editar Equipamento
+                    </a>
+                <?php endif; ?>
             </div>
 
         </main>

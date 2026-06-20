@@ -195,7 +195,7 @@ document.querySelectorAll(".remover-componente").forEach(btn => {
 });
 
 // MODAL APAGAR NA LSITA 
-function abrirModalApagar(link, codigo, designacao) {
+function abrirModalApagar(idEncriptado, codigo, designacao) {
 
     // Preenche os dados dentro do modal
     document.getElementById("dadosApagar").innerHTML = `
@@ -203,14 +203,30 @@ function abrirModalApagar(link, codigo, designacao) {
         <p><strong>Designação:</strong> ${designacao}</p>
     `;
 
-    // Define o link do botão "Remover"
-    document.getElementById("btnConfirmarApagar").href = link;
+    // Define o link do botão "Remover" para a página que desativa o equipamento
+    document.getElementById("btnConfirmarApagar").href = "confirmar_apagar.php?id_equipamento=" + idEncriptado;
 
     // Abre o modal
     const modal = new bootstrap.Modal(document.getElementById("modalApagar"));
     modal.show();
 }
 
+// MODAL REATIVAR NA LISTA
+function abrirModalReativar(idEncriptado, codigo, designacao) {
+
+    // Preenche os dados dentro do modal
+    document.getElementById("dadosReativar").innerHTML = `
+        <p><strong>Código Interno:</strong> ${codigo}</p>
+        <p><strong>Designação:</strong> ${designacao}</p>
+    `;
+
+    // Define o link do botão "Reativar" para a página que reativa o equipamento
+    document.getElementById("btnConfirmarReativar").href = "reativar.php?id_equipamento=" + idEncriptado;
+
+    // Abre o modal
+    const modal = new bootstrap.Modal(document.getElementById("modalReativar"));
+    modal.show();
+}
 
 
 // MODAL APAGAR LISTA FORNECEDORES 
