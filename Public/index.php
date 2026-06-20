@@ -16,6 +16,9 @@ try {
     foreach ($linhas as $linha) {
         $conteudo[$linha->secao] = $linha;
     }
+
+    $mensagem_enviada = isset($_GET['sucesso_mensagem']);
+    $erro_mensagem = isset($_GET['erro_mensagem']);
 } catch (PDOException $e) {
     $conteudo = [];
 }
@@ -257,18 +260,24 @@ $ligacao = null;
 
             <h2>Como Podemos Ajudar?</h2>
 
-            <form class="form-box">
+            <?php if (!empty($mensagem_enviada)): ?>
+                <div class="alert alert-success text-center mb-3">
+                    Mensagem enviada com sucesso! Entraremos em contacto brevemente.
+                </div>
+            <?php endif; ?>
+
+            <form class="form-box" method="post" action="processa_mensagem.php">
                 <label for="nome">Nome:</label>
-                <input type="text" id="nome" required>
+                <input type="text" id="nome" name="nome" required>
 
                 <label for="email">Email:</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" name="email" required>
 
                 <label for="assunto">Assunto:</label>
-                <input type="text" id="assunto" required>
+                <input type="text" id="assunto" name="assunto" required>
 
                 <label for="mensagem">Mensagem:</label>
-                <textarea id="mensagem" required></textarea>
+                <textarea id="mensagem" name="mensagem" required></textarea>
 
                 <button type="submit" class="btn-enviar">Enviar</button>
             </form>
@@ -313,14 +322,18 @@ $ligacao = null;
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        function abrirFormulario() {
-            document.getElementById("popup-form").classList.remove("escondido");
-        }
+    function abrirFormulario() {
+        document.getElementById("popup-form").classList.remove("escondido");
+    }
 
-        function fecharFormulario() {
-            document.getElementById("popup-form").classList.add("escondido");
-        }
-    </script>
+    function fecharFormulario() {
+        document.getElementById("popup-form").classList.add("escondido");
+    }
+
+    <?php if (!empty($mensagem_enviada)): ?>
+    abrirFormulario();
+    <?php endif; ?>
+</script>
 
 </body>
 
