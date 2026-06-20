@@ -230,7 +230,7 @@ function abrirModalReativar(idEncriptado, codigo, designacao) {
 
 
 // MODAL APAGAR LISTA FORNECEDORES 
-function abrirModalApagarFornecedor(codigo, nome, tipo) {
+function abrirModalApagarFornecedor(idEncriptado, codigo, nome, tipo) {
 
     document.getElementById("dadosFornecedor").innerHTML = `
         <p><strong>Código:</strong> ${codigo}</p>
@@ -238,10 +238,24 @@ function abrirModalApagarFornecedor(codigo, nome, tipo) {
         <p><strong>Tipo:</strong> ${tipo}</p>
     `;
 
+    document.getElementById("btnConfirmarApagarFornecedor").href = "confirmar_apagar_fornecedores.php?id_fornecedor=" + idEncriptado;
+
     const modal = new bootstrap.Modal(document.getElementById("modalApagarFornecedor"));
     modal.show();
 }
 
+function abrirModalReativarFornecedor(idEncriptado, codigo, nome) {
+
+    document.getElementById("dadosReativarFornecedor").innerHTML = `
+        <p><strong>Código:</strong> ${codigo}</p>
+        <p><strong>Nome:</strong> ${nome}</p>
+    `;
+
+    document.getElementById("btnConfirmarReativarFornecedor").href = "reativar_fornecedores.php?id_fornecedor=" + idEncriptado;
+
+    const modal = new bootstrap.Modal(document.getElementById("modalReativarFornecedor"));
+    modal.show();
+}
 
 // MODAL APAGAR LISTA LOCALIZAÇÕES
 function abrirModalApagarLocalizacao(codigo, edificio, piso, servico, sala) {

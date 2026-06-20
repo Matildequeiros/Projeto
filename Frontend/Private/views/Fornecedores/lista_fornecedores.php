@@ -106,13 +106,21 @@ $ligacao = null;
                                         <a href="detalhes_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Consultar">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
-                                        <a href="editar_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Editar">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
-                                        <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                            onclick="abrirModalApagarFornecedor('<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>', '<?= htmlspecialchars($fornecedor->tipo_fornecedor, ENT_QUOTES) ?>')">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </a>
+                                        <?php if ($fornecedor->fornecedor_ativo == 1): ?>
+                                            <a href="editar_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Editar">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                            <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                onclick="abrirModalApagarFornecedor('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>', '<?= htmlspecialchars($fornecedor->tipo_fornecedor, ENT_QUOTES) ?>')">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="badge bg-dark me-1">Removido</span>
+                                            <a class="acao-box" style="cursor: pointer;" title="Reativar"
+                                                onclick="abrirModalReativarFornecedor('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>')">
+                                                <i class="fa-solid fa-rotate-left"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -141,7 +149,6 @@ $ligacao = null;
             </h2>
             <p class="mb-3" style="font-size: 17px;">
                 Tem a certeza que pretende remover o seguinte fornecedor?
-                <br><strong>Esta ação é irreversível.</strong>
             </p>
             <hr>
             <div id="dadosFornecedor" style="font-size: 16px;"></div>
@@ -151,6 +158,30 @@ $ligacao = null;
                 <a href="lista_fornecedores.php" id="btnConfirmarApagarFornecedor" class="btn"
                     style="background-color: #1a826d; color: white;">
                     <i class="fa-solid fa-trash me-2"></i> Remover Fornecedor
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL REATIVAR -->
+<div class="modal fade" id="modalReativarFornecedor" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+        <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+            <h2 class="mb-4" style="color: #1a826d; font-weight: 700;">
+                <i class="fa-solid fa-rotate-left me-2"></i> Reativar Fornecedor
+            </h2>
+            <p class="mb-3" style="font-size: 17px;">
+                Tem a certeza que pretende reativar o seguinte fornecedor?
+            </p>
+            <hr>
+            <div id="dadosReativarFornecedor" style="font-size: 16px;"></div>
+            <hr>
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="lista_fornecedores.php" id="btnConfirmarReativarFornecedor" class="btn"
+                    style="background-color: #1a826d; color: white;">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Reativar Fornecedor
                 </a>
             </div>
         </div>

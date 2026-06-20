@@ -747,9 +747,18 @@ unset($_SESSION['sep_ativo']);
 
             <div class="card-form">
 
-                <h2 class="mb-4" style="color: #1a826d;">
-                    <i class="fa-solid fa-pen-to-square me-2"></i> Editar Equipamento
-                </h2>
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h2 class="mb-0" style="color: #1a826d;">
+                        <i class="fa-solid fa-pen-to-square me-2"></i> Editar Equipamento
+                    </h2>
+
+                    <div class="d-flex align-items-center gap-2 px-3 py-2" style="background-color: #d9efec; border-radius: 999px;">
+                        <i class="fa-solid fa-stethoscope" style="color: #1a826d; font-size: 1rem;"></i>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #0d4d40;">
+                            <?= htmlspecialchars($equipamento->codigo) ?> — <?= htmlspecialchars($equipamento->designacao) ?>
+                        </span>
+                    </div>
+                </div>
 
                 <?php if (!empty($erros)) : ?>
                     <div class="alert alert-danger text-center" role="alert">
