@@ -4,9 +4,9 @@ session_start();
 $validation_errors = [];
 
 if (!empty($_SESSION['validation_errors'])) {
-   
+
     $validation_errors = $_SESSION['validation_errors'];
-    
+
     unset($_SESSION['validation_errors']);
 }
 
@@ -30,8 +30,7 @@ if (!empty($_SESSION['server_error'])) {
                 <div class="d-flex align-items-center justify-content-center my-4">
                     <img src="/PROJETO/Frontend/assets/img/Logo.png" class="img-fluid me-3">
                     <h2 class="mb-0 logo-text">
-                        <span class="verde"><?php echo explode("Gest", APP_NAME)[0]; ?></span>
-                        <span class="azul">Gest</span>
+                        <span class="verde"><?php echo explode("Gest", APP_NAME)[0]; ?></span><span class="azul">Gest</span>
                     </h2>
 
                 </div>
@@ -76,7 +75,7 @@ if (!empty($_SESSION['server_error'])) {
                                     <div><?= htmlspecialchars($server_error) ?></div>
                                 </div>
                             <?php endif; ?>
-                            
+
                         </form>
 
                     </div>

@@ -30,16 +30,37 @@ if (!empty($validation_errors)) {
     return;
 }
 
-$result['status'] = 1;
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-if (!$result['status']) {
-    $_SESSION['server_error'] = 'Login inválido';
+    $parametros = [
+        ':u' => $username,
+        ':p' => $password
+    ];
+
+    $comando = $ligacao->prepare("SELECT * FROM utilizadores WHERE email = :u AND password = :p");
+    $comando->execute($parametros);
+    $resultados = $comando->fetchAll(PDO::FETCH_OBJ);
+
+    if (count($resultados) === 0) {
+        $_SESSION['server_error'] = 'Login inválido';
+        header('Location: ../public/login.php');
+        return;
+    }
+
+    $utilizador = $resultados[0];
+
+    $_SESSION['utilizador'] = $utilizador->nome;
+
+    header('Location: index.php');
+    exit;
+} catch (PDOException $e) {
+    $_SESSION['server_error'] = 'Erro ao ligar à base de dados.';
     header('Location: ../public/login.php');
     return;
 }
-
-$_SESSION['utilizador'] = $username;
-
-
-header('Location: index.php');
-exit;
