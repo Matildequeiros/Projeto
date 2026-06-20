@@ -166,7 +166,7 @@ $ligacao = null;
                                                     <i class="fa-solid fa-trash"></i>
                                                 </a>
                                             <?php else: ?>
-                                                <span class="badge bg-dark me-1">Removido</span>
+                                                <span class="badge me-1" style="background-color: #D3D1C7; color: #2C2C2A;">Removido</span>
                                                 <a class="acao-box" style="cursor: pointer;" title="Reativar"
                                                     onclick="abrirModalReativar('<?= aes_encrypt($equipamento->id) ?>', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
                                                     <i class="fa-solid fa-rotate-left"></i>

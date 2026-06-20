@@ -9,7 +9,17 @@ try {
         MYSQL_PASSWORD
     );
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $resultados = $ligacao->query("SELECT * FROM fornecedores ORDER BY codigo")->fetchAll(PDO::FETCH_OBJ);
+    $resultados = $ligacao->query("
+    SELECT f.*, 
+        (SELECT COUNT(*) FROM equipamento_fornecedor ef WHERE ef.fornecedor_id = f.id) AS total_equipamentos
+    FROM fornecedores f
+    ORDER BY f.codigo
+")->fetchAll(PDO::FETCH_OBJ);
+
+    $fornecedores_ativos = $ligacao->query("
+    SELECT id, codigo, nome FROM fornecedores WHERE fornecedor_ativo = 1 ORDER BY codigo
+")->fetchAll(PDO::FETCH_OBJ);
+
     $erro = '';
 } catch (PDOException $err) {
     $erro = "Aconteceu um erro na ligação.";
@@ -110,12 +120,19 @@ $ligacao = null;
                                             <a href="editar_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Editar">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
-                                            <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                                onclick="abrirModalApagarFornecedor('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>', '<?= htmlspecialchars($fornecedor->tipo_fornecedor, ENT_QUOTES) ?>')">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </a>
+                                            <?php if ($fornecedor->total_equipamentos > 0): ?>
+                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                    onclick="abrirModalApagarFornecedorComSubstituicao('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', <?= $fornecedor->total_equipamentos ?>)">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            <?php else: ?>
+                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                    onclick="abrirModalApagarFornecedor('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>', '<?= htmlspecialchars($fornecedor->tipo_fornecedor, ENT_QUOTES) ?>')">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         <?php else: ?>
-                                            <span class="badge bg-dark me-1">Removido</span>
+                                            <span class="badge me-1" style="background-color: #D3D1C7; color: #2C2C2A;">Removido</span>
                                             <a class="acao-box" style="cursor: pointer;" title="Reativar"
                                                 onclick="abrirModalReativarFornecedor('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>')">
                                                 <i class="fa-solid fa-rotate-left"></i>
@@ -188,6 +205,42 @@ $ligacao = null;
     </div>
 </div>
 
+<!-- MODAL REMOVER FORNECEDOR COM SUBSTITUIÇÃO -->
+<div class="modal fade" id="modalApagarFornecedorComSubstituicao" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+        <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+            <h2 class="mb-4" style="color: #1a826d; font-weight: 700;">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> Remover Fornecedor
+            </h2>
+
+            <p class="mb-3" style="font-size: 17px;" id="textoAvisoSubstituicaoFornecedor">
+                <!-- Preenchido pelo JS -->
+            </p>
+
+            <div class="mb-3">
+                <label class="form-label">Substituir por *</label>
+                <select class="form-select" id="selectFornecedorSubstituto">
+                    <option value="">Selecione...</option>
+                    <?php foreach ($fornecedores_ativos as $fa): ?>
+                        <option value="<?= aes_encrypt($fa->id) ?>">
+                            <?= htmlspecialchars($fa->codigo) ?> – <?= htmlspecialchars($fa->nome) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn" style="background-color: #1a826d; color: white;" id="btnConfirmarSubstituicaoFornecedor">
+                    <i class="fa-solid fa-trash me-2"></i> Remover e Substituir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     var tabela;
 
@@ -245,14 +298,6 @@ $ligacao = null;
         tabela.draw();
     }
 
-    function abrirModalApagarFornecedor(codigo, nome, tipo) {
-        document.getElementById('dadosFornecedor').innerHTML = `
-            <p><strong>Código:</strong> ${codigo}</p>
-            <p><strong>Nome:</strong> ${nome}</p>
-            <p><strong>Tipo:</strong> ${tipo}</p>
-        `;
-        new bootstrap.Modal(document.getElementById('modalApagarFornecedor')).show();
-    }
 </script>
 
 <?php include '../../includes/footer.php'; ?>

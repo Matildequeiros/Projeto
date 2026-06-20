@@ -11,11 +11,16 @@ try {
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $resultados = $ligacao->query("
-        SELECT l.*, s.nome AS servico 
-        FROM localizacoes l 
-        LEFT JOIN servicos s ON l.servico_id = s.id 
-        ORDER BY l.codigo
-    ")->fetchAll(PDO::FETCH_OBJ);
+    SELECT l.*, s.nome AS servico,
+        (SELECT COUNT(*) FROM equipamentos e WHERE e.localizacao_id = l.id) AS total_equipamentos
+    FROM localizacoes l 
+    LEFT JOIN servicos s ON l.servico_id = s.id 
+    ORDER BY l.codigo
+")->fetchAll(PDO::FETCH_OBJ);
+
+    $localizacoes_ativas = $ligacao->query("
+    SELECT id, codigo, edificio, piso, sala FROM localizacoes WHERE localizacao_ativa = 1 ORDER BY codigo
+")->fetchAll(PDO::FETCH_OBJ);
 
     $erro = '';
 } catch (PDOException $err) {
@@ -119,12 +124,19 @@ $ligacao = null;
                                             <a href="editar_localizacoes.php?id_localizacao=<?= aes_encrypt($loc->id) ?>" class="acao-box" title="Editar">
                                                 <i class="fa-solid fa-pen"></i>
                                             </a>
-                                            <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                                onclick="abrirModalApagarLocalizacao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </a>
+                                            <?php if ($loc->total_equipamentos > 0): ?>
+                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                    onclick="abrirModalApagarComSubstituicao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', <?= $loc->total_equipamentos ?>)">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            <?php else: ?>
+                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                    onclick="abrirModalApagarLocalizacao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         <?php else: ?>
-                                            <span class="badge bg-dark me-1">Removido</span>
+                                            <span class="badge me-1" style="background-color: #D3D1C7; color: #2C2C2A;">Removido</span>
                                             <a class="acao-box" style="cursor: pointer;" title="Reativar"
                                                 onclick="abrirModalReativarLocalizacao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
                                                 <i class="fa-solid fa-rotate-left"></i>
@@ -192,6 +204,42 @@ $ligacao = null;
                     style="background-color: #1a826d; color: white;">
                     <i class="fa-solid fa-rotate-left me-2"></i> Reativar Localização
                 </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL REMOVER LOCALIZAÇÃO COM SUBSTITUIÇÃO -->
+<div class="modal fade" id="modalApagarComSubstituicao" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+        <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+            <h2 class="mb-4" style="color: #1a826d; font-weight: 700;">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i> Remover Localização
+            </h2>
+
+            <p class="mb-3" style="font-size: 17px;" id="textoAvisoSubstituicao">
+                <!-- Preenchido pelo JS -->
+            </p>
+
+            <div class="mb-3">
+                <label class="form-label">Mover equipamentos para *</label>
+                <select class="form-select" id="selectLocalizacaoSubstituta">
+                    <option value="">Selecione...</option>
+                    <?php foreach ($localizacoes_ativas as $la): ?>
+                        <option value="<?= aes_encrypt($la->id) ?>">
+                            <?= htmlspecialchars($la->codigo) ?> – <?= htmlspecialchars($la->edificio) ?> / <?= htmlspecialchars($la->piso) ?> / <?= htmlspecialchars($la->sala) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn" style="background-color: #1a826d; color: white;" id="btnConfirmarSubstituicao">
+                    <i class="fa-solid fa-trash me-2"></i> Remover e Mover Equipamentos
+                </button>
             </div>
         </div>
     </div>

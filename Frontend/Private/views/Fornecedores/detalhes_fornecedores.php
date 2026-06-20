@@ -58,7 +58,7 @@ try {
                             <?= htmlspecialchars($fornecedor->codigo) ?> — <?= htmlspecialchars($fornecedor->nome) ?>
                         </span>
                         <?php if ($fornecedor->fornecedor_ativo == 0): ?>
-                            <span class="badge bg-dark" style="border-radius: 999px;">Removido do Sistema</span>
+                            <span class="badge" style="background-color: #D3D1C7; color: #2C2C2A; border-radius: 999px;">Removido do Sistema</span>
                         <?php else: ?>
                             <span class="badge bg-success" style="border-radius: 999px;">No Sistema</span>
                         <?php endif; ?>

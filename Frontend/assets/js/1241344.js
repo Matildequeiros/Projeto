@@ -60,29 +60,32 @@ function validarEAvancar(separadorAtual, separadorSeguinte) {
 
 
 // ADICIONAR DOCUMENTO
-document.getElementById("adicionarDocumento").addEventListener("click", function () {
-    const container = document.getElementById("documentosContainer");
-    const blocoOriginal = container.querySelector(".documento-bloco");
+const btnAdicionarDocumento = document.getElementById("adicionarDocumento");
+if (btnAdicionarDocumento) {
+    btnAdicionarDocumento.addEventListener("click", function () {
+        const container = document.getElementById("documentosContainer");
+        const blocoOriginal = container.querySelector(".documento-bloco");
 
-    // Clonar bloco
-    const novoBloco = blocoOriginal.cloneNode(true);
+        // Clonar bloco
+        const novoBloco = blocoOriginal.cloneNode(true);
 
-    // Limpar inputs
-    novoBloco.querySelectorAll("input, textarea").forEach(input => input.value = "");
-    novoBloco.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+        // Limpar inputs
+        novoBloco.querySelectorAll("input, textarea").forEach(input => input.value = "");
+        novoBloco.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
 
-    // Ativar botão remover
-    novoBloco.querySelector(".remover-documento").addEventListener("click", function () {
-        removerBlocoDocumento(novoBloco);
+        // Ativar botão remover
+        novoBloco.querySelector(".remover-documento").addEventListener("click", function () {
+            removerBlocoDocumento(novoBloco);
+        });
+
+        container.appendChild(novoBloco);
+
+        // Ativar Flatpickr nos novos campos de data
+        novoBloco.querySelectorAll('.doc-data, .doc-validade').forEach(function (input) {
+            flatpickr(input, { dateFormat: "Y-m-d" });
+        });
     });
-
-    container.appendChild(novoBloco);
-
-    // Ativar Flatpickr nos novos campos de data
-    novoBloco.querySelectorAll('.doc-data, .doc-validade').forEach(function (input) {
-        flatpickr(input, { dateFormat: "Y-m-d" });
-    });
-});
+}
 
 // REMOVER DOCUMENTO
 function removerBlocoDocumento(bloco) {
@@ -102,23 +105,26 @@ document.querySelectorAll(".remover-documento").forEach(btn => {
 });
 
 // ADICIONAR FORNECEDOR
-document.getElementById("adicionarFornecedor").addEventListener("click", function () {
-    const container = document.getElementById("fornecedores-container");
-    const blocoOriginal = container.querySelector(".fornecedor-bloco");
+const btnAdicionarFornecedor = document.getElementById("adicionarFornecedor");
+if (btnAdicionarFornecedor) {
+    btnAdicionarFornecedor.addEventListener("click", function () {
+        const container = document.getElementById("fornecedores-container");
+        const blocoOriginal = container.querySelector(".fornecedor-bloco");
 
-    // Clonar bloco
-    const novoBloco = blocoOriginal.cloneNode(true);
+        // Clonar bloco
+        const novoBloco = blocoOriginal.cloneNode(true);
 
-    // Limpar inputs
-    novoBloco.querySelectorAll("input, textarea").forEach(input => input.value = "");
+        // Limpar inputs
+        novoBloco.querySelectorAll("input, textarea").forEach(input => input.value = "");
 
-    // Ativar botão remover no novo bloco
-    novoBloco.querySelector(".remover-fornecedor").addEventListener("click", function () {
-        removerBlocoFornecedor(novoBloco);
+        // Ativar botão remover no novo bloco
+        novoBloco.querySelector(".remover-fornecedor").addEventListener("click", function () {
+            removerBlocoFornecedor(novoBloco);
+        });
+
+        container.appendChild(novoBloco);
     });
-
-    container.appendChild(novoBloco);
-});
+}
 
 // REMOVER FORNECEDOR
 function removerBlocoFornecedor(bloco) {
@@ -139,43 +145,49 @@ document.querySelectorAll(".remover-fornecedor").forEach(btn => {
 
 
 // Bloquear a fatura de aquisição ao selecionar um tipo de entrada específico
-document.getElementById('tipoEntrada').addEventListener('change', function () {
-    const tipo = this.value;
-    const blocoFatura = document.getElementById('blocoFatura');
+const selectTipoEntrada = document.getElementById('tipoEntrada');
+if (selectTipoEntrada) {
+    selectTipoEntrada.addEventListener('change', function () {
+        const tipo = this.value;
+        const blocoFatura = document.getElementById('blocoFatura');
 
-    // Seleciona todos os inputs e selects dentro do bloco da fatura
-    const campos = blocoFatura.querySelectorAll('input, select');
+        // Seleciona todos os inputs e selects dentro do bloco da fatura
+        const campos = blocoFatura.querySelectorAll('input, select');
 
-    if (tipo === 'compra') {
-        // Ativar campos
-        campos.forEach(c => c.disabled = false);
-        blocoFatura.style.opacity = "1";
-    } else {
-        // Desativar campos
-        campos.forEach(c => c.disabled = true);
-        blocoFatura.style.opacity = "0.5";
-    }
-});
+        if (tipo === 'compra') {
+            // Ativar campos
+            campos.forEach(c => c.disabled = false);
+            blocoFatura.style.opacity = "1";
+        } else {
+            // Desativar campos
+            campos.forEach(c => c.disabled = true);
+            blocoFatura.style.opacity = "0.5";
+        }
+    });
+}
 
 // ADICIONAR COMPONENTE
-document.getElementById("adicionarComponente").addEventListener("click", function () {
-    const container = document.getElementById("componentesContainer");
-    const blocoOriginal = container.querySelector(".componente-bloco");
+const btnAdicionarComponente = document.getElementById("adicionarComponente");
+if (btnAdicionarComponente) {
+    btnAdicionarComponente.addEventListener("click", function () {
+        const container = document.getElementById("componentesContainer");
+        const blocoOriginal = container.querySelector(".componente-bloco");
 
-    // Clonar bloco
-    const novoBloco = blocoOriginal.cloneNode(true);
+        // Clonar bloco
+        const novoBloco = blocoOriginal.cloneNode(true);
 
-    // Limpar inputs
-    novoBloco.querySelectorAll("input, textarea").forEach(input => input.value = "");
-    novoBloco.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
+        // Limpar inputs
+        novoBloco.querySelectorAll("input, textarea").forEach(input => input.value = "");
+        novoBloco.querySelectorAll("select").forEach(sel => sel.selectedIndex = 0);
 
-    // Ativar botão remover
-    novoBloco.querySelector(".remover-componente").addEventListener("click", function () {
-        removerBlocoComponente(novoBloco);
+        // Ativar botão remover
+        novoBloco.querySelector(".remover-componente").addEventListener("click", function () {
+            removerBlocoComponente(novoBloco);
+        });
+
+        container.appendChild(novoBloco);
     });
-
-    container.appendChild(novoBloco);
-});
+}
 
 // REMOVER COMPONENTE
 function removerBlocoComponente(bloco) {
@@ -288,6 +300,66 @@ function abrirModalReativarLocalizacao(idEncriptado, codigo, edificio, piso, ser
 
     const modal = new bootstrap.Modal(document.getElementById("modalReativarLocalizacao"));
     modal.show();
+}
+
+let idLocalizacaoParaRemover = null;
+
+function abrirModalApagarComSubstituicao(idEncriptado, codigo, totalEquipamentos) {
+
+    idLocalizacaoParaRemover = idEncriptado;
+
+    document.getElementById("textoAvisoSubstituicao").innerHTML =
+        `A localização <strong>${codigo}</strong> tem <strong>${totalEquipamentos}</strong> equipamento(s) associado(s). ` +
+        `Escolha uma localização para onde mover esses equipamentos antes de remover.`;
+
+    document.getElementById("selectLocalizacaoSubstituta").value = "";
+
+    const modal = new bootstrap.Modal(document.getElementById("modalApagarComSubstituicao"));
+    modal.show();
+}
+
+const btnConfirmarSubstituicao = document.getElementById("btnConfirmarSubstituicao");
+if (btnConfirmarSubstituicao) {
+    btnConfirmarSubstituicao.addEventListener("click", function () {
+        const idSubstituta = document.getElementById("selectLocalizacaoSubstituta").value;
+
+        if (!idSubstituta) {
+            alert("Por favor, selecione uma localização para mover os equipamentos.");
+            return;
+        }
+
+        window.location.href = "remover_localizacao_com_substituicao.php?id_localizacao=" + idLocalizacaoParaRemover + "&id_substituta=" + idSubstituta;
+    });
+}
+
+let idFornecedorParaRemover = null;
+
+function abrirModalApagarFornecedorComSubstituicao(idEncriptado, codigo, totalEquipamentos) {
+
+    idFornecedorParaRemover = idEncriptado;
+
+    document.getElementById("textoAvisoSubstituicaoFornecedor").innerHTML =
+        `O fornecedor <strong>${codigo}</strong> está associado a <strong>${totalEquipamentos}</strong> equipamento(s). ` +
+        `Escolha um fornecedor substituto antes de remover.`;
+
+    document.getElementById("selectFornecedorSubstituto").value = "";
+
+    const modal = new bootstrap.Modal(document.getElementById("modalApagarFornecedorComSubstituicao"));
+    modal.show();
+}
+
+const btnConfirmarSubstituicaoFornecedor = document.getElementById("btnConfirmarSubstituicaoFornecedor");
+if (btnConfirmarSubstituicaoFornecedor) {
+    btnConfirmarSubstituicaoFornecedor.addEventListener("click", function () {
+        const idSubstituto = document.getElementById("selectFornecedorSubstituto").value;
+
+        if (!idSubstituto) {
+            alert("Por favor, selecione um fornecedor substituto.");
+            return;
+        }
+
+        window.location.href = "remover_fornecedor_com_substituicao.php?id_fornecedor=" + idFornecedorParaRemover + "&id_substituto=" + idSubstituto;
+    });
 }
 
 function verPDF(url) {
