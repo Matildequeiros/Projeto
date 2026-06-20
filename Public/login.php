@@ -28,7 +28,7 @@ if (!empty($_SESSION['server_error'])) {
         <div class="col-lg-5 col-md-6 col-sm-8 col-10">
             <div class="card p-4">
                 <div class="d-flex align-items-center justify-content-center my-4">
-                    <img src="/PROJETO/Frontend/assets/img/Logo.png" class="img-fluid me-3">
+                    <img src="<?= BASE_URL ?>/assets/img/Logo.png" class="img-fluid me-3">
                     <h2 class="mb-0 logo-text">
                         <span class="verde"><?php echo explode("Gest", APP_NAME)[0]; ?></span><span class="azul">Gest</span>
                     </h2>

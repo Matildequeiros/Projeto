@@ -65,7 +65,7 @@ require_once __DIR__ . '/../config/config.php';
 
                 <!-- ÁREA PESSOAL -->
                 <div class="text-center mt-3 mt-lg-0">
-                    <a href="../Login/login.html" class="btn"
+                    <a href="login.php" class="btn"
                         style="background-color: #86B0AA; color: white; border-radius: 8px; padding: 10px 22px; font-weight: 600;">
                         Área Pessoal
                     </a>

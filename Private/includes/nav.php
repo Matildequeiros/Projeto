@@ -17,8 +17,8 @@ $nome = $_SESSION['utilizador'];
 
         <!-- LOGO + TÍTULO -->
         <div class="col-6 d-flex align-items-center p-3">
-            <a href="/PROJETO/Frontend/Private/index.php">
-                <img src="/PROJETO/Frontend/assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
+            <a href="<?= BASE_URL ?>/Private/index.php">
+                <img src="<?= BASE_URL ?>/assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
             </a>
             <h3 class="mb-0 logo-text">
                 <span class="verde"><?php echo explode("Gest", APP_NAME)[0]; ?></span><span class="azul">Gest</span>
@@ -45,7 +45,7 @@ $nome = $_SESSION['utilizador'];
                         <hr class="dropdown-divider">
                     </li>
 
-                    <li><a class="dropdown-item" href="/PROJETO/Frontend/Public/logout.php">
+                    <li><a class="dropdown-item" href="<?= BASE_URL ?>/Public/logout.php">
                             <i class="fa-solid fa-right-from-bracket me-2"></i> Sair
                         </a>
                     </li>

@@ -1,6 +1,6 @@
 <?php
 // URL base do projeto no browser
-define('BASE_URL', '/PROJETO/Frontend');
+define('BASE_URL', '/sibdas/1241344/hospitalgest');
 
 // Configurações globais da aplicação
 define('APP_NAME', 'HospitalGest');
