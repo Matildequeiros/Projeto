@@ -50,9 +50,23 @@ try {
 
             <div class="info-box">
 
-                <h2 class="mb-4" style="color: #1a826d;">
-                    <i class="fa-solid fa-eye me-2"></i> Consultar Localização
-                </h2>
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                    <h2 class="mb-0" style="color: #1a826d;">
+                        <i class="fa-solid fa-eye me-2"></i> Consultar Localização
+                    </h2>
+
+                    <div class="d-flex align-items-center gap-2 px-3 py-2" style="background-color: #d9efec; border-radius: 999px;">
+                        <i class="fa-solid fa-location-dot" style="color: #1a826d; font-size: 1rem;"></i>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #0d4d40;">
+                            <?= htmlspecialchars($localizacao->codigo) ?> — <?= htmlspecialchars($localizacao->edificio) ?>
+                        </span>
+                        <?php if ($localizacao->localizacao_ativa == 0): ?>
+                            <span class="badge bg-dark" style="border-radius: 999px;">Removido do Sistema</span>
+                        <?php else: ?>
+                            <span class="badge bg-success" style="border-radius: 999px;">No Sistema</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
 
                 <!-- CAMPOS DA LOCALIZAÇÃO -->
                 <div class="info-row">
@@ -89,9 +103,11 @@ try {
                 <div class="d-flex justify-content-between mt-4">
                     <a href="lista_localizacoes.php" class="btn btn-secondary">Voltar</a>
 
-                    <a href="editar_localizacoes.php?id_localizacao=<?= aes_encrypt($localizacao->id) ?>" class="btn" style="background-color: #1a826d; color: white;">
-                        Editar Localização
-                    </a>
+                    <?php if ($localizacao->localizacao_ativa == 1): ?>
+                        <a href="editar_localizacoes.php?id_localizacao=<?= aes_encrypt($localizacao->id) ?>" class="btn" style="background-color: #1a826d; color: white;">
+                            Editar Localização
+                        </a>
+                    <?php endif; ?>
                 </div>
 
             </div>

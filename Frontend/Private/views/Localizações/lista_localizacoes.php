@@ -115,13 +115,21 @@ $ligacao = null;
                                         <a href="detalhes_localizacoes.php?id_localizacao=<?= aes_encrypt($loc->id) ?>" class="acao-box" title="Consultar">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
-                                        <a href="editar_localizacoes.php?id_localizacao=<?= aes_encrypt($loc->id) ?>" class="acao-box" title="Editar">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
-                                        <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                            onclick="abrirModalApagarLocalizacao('<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </a>
+                                        <?php if ($loc->localizacao_ativa == 1): ?>
+                                            <a href="editar_localizacoes.php?id_localizacao=<?= aes_encrypt($loc->id) ?>" class="acao-box" title="Editar">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </a>
+                                            <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                onclick="abrirModalApagarLocalizacao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="badge bg-dark me-1">Removido</span>
+                                            <a class="acao-box" style="cursor: pointer;" title="Reativar"
+                                                onclick="abrirModalReativarLocalizacao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
+                                                <i class="fa-solid fa-rotate-left"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -150,7 +158,6 @@ $ligacao = null;
             </h2>
             <p class="mb-3" style="font-size: 17px;">
                 Tem a certeza que pretende remover a seguinte localização?
-                <br><strong>Esta ação é irreversível.</strong>
             </p>
             <hr>
             <div id="dadosLocalizacao" style="font-size: 16px;"></div>
@@ -160,6 +167,30 @@ $ligacao = null;
                 <a href="lista_localizacoes.php" id="btnConfirmarApagarLocalizacao" class="btn"
                     style="background-color: #1a826d; color: white;">
                     <i class="fa-solid fa-trash me-2"></i> Remover Localização
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL REATIVAR LOCALIZAÇÃO -->
+<div class="modal fade" id="modalReativarLocalizacao" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 750px;">
+        <div class="modal-content" style="border-radius: 12px; padding: 25px 35px;">
+            <h2 class="mb-4" style="color: #1a826d; font-weight: 700;">
+                <i class="fa-solid fa-rotate-left me-2"></i> Reativar Localização
+            </h2>
+            <p class="mb-3" style="font-size: 17px;">
+                Tem a certeza que pretende reativar a seguinte localização?
+            </p>
+            <hr>
+            <div id="dadosReativarLocalizacao" style="font-size: 16px;"></div>
+            <hr>
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a href="lista_localizacoes.php" id="btnConfirmarReativarLocalizacao" class="btn"
+                    style="background-color: #1a826d; color: white;">
+                    <i class="fa-solid fa-rotate-left me-2"></i> Reativar Localização
                 </a>
             </div>
         </div>
@@ -191,17 +222,17 @@ $ligacao = null;
 
     function aplicarFiltrosLocalizacao() {
         const pesquisa = document.getElementById('pesquisaLocalizacao')?.value || '';
-        const servico  = document.getElementById('filtroServico')?.value || '';
+        const servico = document.getElementById('filtroServico')?.value || '';
         const edificio = document.getElementById('filtroEdificio')?.value || '';
 
         $.fn.dataTable.ext.search.pop();
 
         $.fn.dataTable.ext.search.push(function(settings, data) {
-            const codigo       = data[0].toLowerCase();
+            const codigo = data[0].toLowerCase();
             const edificioLinha = data[1].toLowerCase();
-            const piso         = data[2].toLowerCase();
+            const piso = data[2].toLowerCase();
             const servicoLinha = data[3].toLowerCase();
-            const sala         = data[4].toLowerCase();
+            const sala = data[4].toLowerCase();
 
             const matchPesquisa = pesquisa === '' ||
                 codigo.includes(pesquisa.toLowerCase()) ||
@@ -210,7 +241,7 @@ $ligacao = null;
                 servicoLinha.includes(pesquisa.toLowerCase()) ||
                 sala.includes(pesquisa.toLowerCase());
 
-            const matchServico  = servico === '' || servicoLinha.includes(servico.toLowerCase());
+            const matchServico = servico === '' || servicoLinha.includes(servico.toLowerCase());
             const matchEdificio = edificio === '' || edificioLinha.includes(edificio.toLowerCase());
 
             return matchPesquisa && matchServico && matchEdificio;

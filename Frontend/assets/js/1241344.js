@@ -258,7 +258,7 @@ function abrirModalReativarFornecedor(idEncriptado, codigo, nome) {
 }
 
 // MODAL APAGAR LISTA LOCALIZAÇÕES
-function abrirModalApagarLocalizacao(codigo, edificio, piso, servico, sala) {
+function abrirModalApagarLocalizacao(idEncriptado, codigo, edificio, piso, servico, sala) {
 
     document.getElementById("dadosLocalizacao").innerHTML = `
         <p><strong>Código:</strong> ${codigo}</p>
@@ -268,7 +268,25 @@ function abrirModalApagarLocalizacao(codigo, edificio, piso, servico, sala) {
         <p><strong>Sala / Gabinete:</strong> ${sala}</p>
     `;
 
+    document.getElementById("btnConfirmarApagarLocalizacao").href = "confirmar_apagar_localizacoes.php?id_localizacao=" + idEncriptado;
+
     const modal = new bootstrap.Modal(document.getElementById("modalApagarLocalizacao"));
+    modal.show();
+}
+
+function abrirModalReativarLocalizacao(idEncriptado, codigo, edificio, piso, servico, sala) {
+
+    document.getElementById("dadosReativarLocalizacao").innerHTML = `
+        <p><strong>Código:</strong> ${codigo}</p>
+        <p><strong>Edifício:</strong> ${edificio}</p>
+        <p><strong>Piso:</strong> ${piso}</p>
+        <p><strong>Serviço / Departamento:</strong> ${servico}</p>
+        <p><strong>Sala / Gabinete:</strong> ${sala}</p>
+    `;
+
+    document.getElementById("btnConfirmarReativarLocalizacao").href = "reativar_localizacoes.php?id_localizacao=" + idEncriptado;
+
+    const modal = new bootstrap.Modal(document.getElementById("modalReativarLocalizacao"));
     modal.show();
 }
 
