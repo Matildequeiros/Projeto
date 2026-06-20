@@ -7,6 +7,90 @@ if (!isset($_SESSION['utilizador'])) {
     return;
 }
 
+try {
+    $ligacao = new PDO(
+        "mysql:host=" . MYSQL_HOST . ";port=" . MYSQL_PORT . ";dbname=" . MYSQL_DATABASE . ";charset=utf8mb4",
+        MYSQL_USERNAME,
+        MYSQL_PASSWORD
+    );
+    $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $totalEquipamentos = $ligacao->query("SELECT COUNT(*) FROM equipamentos WHERE equipamento_ativo = 1")->fetchColumn();
+    $ativos = $ligacao->query("SELECT COUNT(*) FROM equipamentos WHERE equipamento_ativo = 1 AND estado = 'Ativo'")->fetchColumn();
+    $emManutencao = $ligacao->query("SELECT COUNT(*) FROM equipamentos WHERE equipamento_ativo = 1 AND estado = 'Em manutenção'")->fetchColumn();
+    $inativos = $ligacao->query("SELECT COUNT(*) FROM equipamentos WHERE equipamento_ativo = 1 AND estado = 'Inativo'")->fetchColumn();
+    $garantiaExpirada = $ligacao->query("
+    SELECT COUNT(*) FROM equipamentos e
+    JOIN garantias g ON g.equipamento_id = e.id
+    WHERE e.equipamento_ativo = 1 AND g.data_fim < CURDATE()
+")->fetchColumn();
+
+    $semDocumentacao = $ligacao->query("
+    SELECT COUNT(*) FROM equipamentos e
+    LEFT JOIN documentacao d ON d.equipamento_id = e.id
+    WHERE e.equipamento_ativo = 1 AND d.id IS NULL
+")->fetchColumn();
+
+    $garantiasAExpirar = $ligacao->query("
+    SELECT COUNT(*) FROM equipamentos e
+    JOIN garantias g ON g.equipamento_id = e.id
+    WHERE e.equipamento_ativo = 1 
+    AND g.data_fim >= CURDATE() 
+    AND g.data_fim <= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+")->fetchColumn();
+
+    $criticidadeElevada = $ligacao->query("
+    SELECT COUNT(*) FROM equipamentos 
+    WHERE equipamento_ativo = 1 AND criticidade = 'Suporte de vida'
+")->fetchColumn();
+
+    $stmt = $ligacao->query("
+    SELECT s.nome AS servico, COUNT(e.id) AS total
+    FROM equipamentos e
+    JOIN localizacoes l ON e.localizacao_id = l.id
+    JOIN servicos s ON l.servico_id = s.id
+    WHERE e.equipamento_ativo = 1
+    GROUP BY s.nome
+    ORDER BY total DESC
+");
+    $dadosServicos = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    $labelsServicos = [];
+    $valoresServicos = [];
+    foreach ($dadosServicos as $linha) {
+        $labelsServicos[] = explode(' ', $linha->servico);
+        $valoresServicos[] = (int) $linha->total;
+    }
+
+    $stmt = $ligacao->query("
+    SELECT categoria, COUNT(*) AS total
+    FROM equipamentos
+    WHERE equipamento_ativo = 1
+    GROUP BY categoria
+    ORDER BY total DESC
+");
+    $dadosCategorias = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+    $labelsCategorias = [];
+    $valoresCategorias = [];
+    foreach ($dadosCategorias as $linha) {
+        $labelsCategorias[] = $linha->categoria;
+        $valoresCategorias[] = (int) $linha->total;
+    }
+} catch (PDOException $e) {
+    $totalEquipamentos = 0;
+    $ativos = 0;
+    $emManutencao = 0;
+    $inativos = 0;
+    $garantiaExpirada = 0;
+    $semDocumentacao = 0;
+    $garantiasAExpirar = 0;
+    $criticidadeElevada = 0;
+    $labelsServicos = [];
+    $valoresServicos = [];
+    $labelsCategorias = [];
+    $valoresCategorias = [];
+}
 ?>
 
 
@@ -65,7 +149,13 @@ if (!isset($_SESSION['utilizador'])) {
             </div>
 
             <!-- INDICADORES OBRIGATÓRIOS -->
-            <h3 class="fw-bold mb-4" style="color:#47a894;">Indicadores de Síntese</h3>
+            <div class="mb-4">
+                <h3 class="fw-bold mb-1" style="color:#47a894;">Indicadores de Síntese</h3>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-stethoscope" style="color: #86b0aa; font-size: 1.1rem;"></i>
+                    <span class="text-muted" style="font-size: 0.95rem;">Equipamentos</span>
+                </div>
+            </div>
 
             <div class="row g-4 mb-5">
 
@@ -74,7 +164,7 @@ if (!isset($_SESSION['utilizador'])) {
                         style="border-color:#86b0aa!important;">
 
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <h3 class="fw-bold" style="color:#1a826d;">150</h3>
+                            <h3 class="fw-bold" style="color:#1a826d;"><?= $totalEquipamentos ?></h3>
                             <i class="fa-solid fa-layer-group indicador-icon"></i>
                         </div>
 
@@ -88,7 +178,7 @@ if (!isset($_SESSION['utilizador'])) {
                         style="border-color:#86b0aa!important;">
 
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <h3 class="fw-bold">120</h3>
+                            <h3 class="fw-bold"><?= $ativos ?></h3>
                             <i class="fa-solid fa-circle-check indicador-icon"></i>
                         </div>
                         <p class="text-muted small">Ativos</p>
@@ -101,7 +191,7 @@ if (!isset($_SESSION['utilizador'])) {
                         style="border-color:#86b0aa!important;">
 
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <h3 class="fw-bold">18</h3>
+                            <h3 class="fw-bold"><?= $emManutencao ?></h3>
                             <i class="fa-solid fa-screwdriver-wrench indicador-icon"></i>
                         </div>
                         <p class="text-muted small">Em Manutenção</p>
@@ -114,7 +204,7 @@ if (!isset($_SESSION['utilizador'])) {
                         style="border-color:#86b0aa!important;">
 
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <h3 class="fw-bold">12</h3>
+                            <h3 class="fw-bold"><?= $inativos ?></h3>
                             <i class="fa-solid fa-circle-xmark indicador-icon"></i>
                         </div>
                         <p class="text-muted small">Inativos</p>
@@ -127,7 +217,7 @@ if (!isset($_SESSION['utilizador'])) {
                         style="border-color:#86b0aa!important;">
 
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <h3 class="fw-bold">7</h3>
+                            <h3 class="fw-bold"><?= $garantiaExpirada ?></h3>
                             <i class="fa-solid fa-hourglass-end indicador-icon"></i>
                         </div>
                         <p class="text-muted small">Garantia Expirada</p>
@@ -140,7 +230,7 @@ if (!isset($_SESSION['utilizador'])) {
                         style="border-color:#86b0aa!important;">
 
                         <div class="d-flex justify-content-center align-items-center gap-2">
-                            <h3 class="fw-bold">9</h3>
+                            <h3 class="fw-bold"><?= $semDocumentacao ?></h3>
                             <i class="fa-solid fa-file-circle-exclamation indicador-icon"></i>
                         </div>
                         <p class="text-muted small">Sem Documentação</p>
@@ -175,8 +265,8 @@ if (!isset($_SESSION['utilizador'])) {
                             <!-- Número + texto -->
                             <div class="d-flex align-items-center gap-3">
                                 <div class="d-flex align-items-center justify-content-center" style="background:#f6a76e ; color:white; width:45px; height:45px; 
-                        border-radius:6px; font-weight:bold; font-size:1.2rem;">
-                                    30
+        border-radius:6px; font-weight:bold; font-size:1.2rem;">
+                                    <?= $garantiasAExpirar ?>
                                 </div>
 
                                 <div>
@@ -201,7 +291,7 @@ if (!isset($_SESSION['utilizador'])) {
                             <div class="d-flex align-items-center gap-3">
                                 <div class="d-flex align-items-center justify-content-center" style="background:#f28b82; color:white; width:45px; height:45px; 
                         border-radius:6px; font-weight:bold; font-size:1.2rem;">
-                                    12
+                                    <?= $criticidadeElevada ?>
                                 </div>
 
                                 <div>
@@ -249,22 +339,45 @@ if (!isset($_SESSION['utilizador'])) {
     new Chart(document.getElementById('graficoServicos'), {
         type: 'bar',
         data: {
-            labels: ['UCI', 'Urgência', 'Medicina', 'Bloco Operatório', 'Pediatria'],
+            labels: <?= json_encode($labelsServicos) ?>,
             datasets: [{
                 label: 'Equipamentos',
-                data: [40, 25, 30, 20, 15],
+                data: <?= json_encode($valoresServicos) ?>,
                 backgroundColor: '#86b0aa'
             }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 0,
+                        minRotation: 0,
+                        font: {
+                            size: 9
+                        }
+                    }
+                },
+                y: {
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
         }
     });
-
     new Chart(document.getElementById('graficoCategorias'), {
         type: 'pie',
         data: {
-            labels: ['Monitorização', 'Terapia', 'Diagnóstico', 'Suporte de Vida', 'Laboratório'],
+            labels: <?= json_encode($labelsCategorias) ?>,
             datasets: [{
-                data: [35, 20, 25, 10, 10],
-                backgroundColor: ['#acd6d0', '#86b0aa', '#1a826d', '#0f5a48', '#5fa59b']
+                data: <?= json_encode($valoresCategorias) ?>,
+                backgroundColor: ['#acd6d0', '#86b0aa', '#1a826d', '#0f5a48', '#5fa59b', '#c3e0db', '#3d8a76']
             }]
         }
     });
