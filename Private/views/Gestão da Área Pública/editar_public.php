@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
+bloquear_se_nao_autorizado(pode_gerir_area_publica());
 
 // Processar o formulário quando submetido
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

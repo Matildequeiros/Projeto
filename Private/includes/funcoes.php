@@ -34,6 +34,40 @@ function logout_and_redirect($redirect_to = '/Public/login.php')
     header("Location: " . BASE_URL . $redirect_to);
     exit;
 }
+
+// Devolve o perfil do utilizador autenticado (ou '' se não houver sessão)
+function perfil_atual()
+{
+    start_session();
+    return $_SESSION['perfil'] ?? '';
+}
+
+function is_administrador()
+{
+    return perfil_atual() === 'administrador';
+}
+
+// Só o administrador pode gerir a área pública e ver as mensagens
+function pode_gerir_area_publica()
+{
+    return is_administrador();
+}
+
+// Administrador e técnico podem criar/editar/eliminar registos.
+// O profissional de saúde só pode consultar (ver detalhes).
+function pode_editar_dados()
+{
+    return in_array(perfil_atual(), ['administrador', 'tecnico'], true);
+}
+
+// Bloqueia o acesso à página atual se o perfil não estiver autorizado
+function bloquear_se_nao_autorizado($autorizado)
+{
+    if (!$autorizado) {
+        header("Location: " . BASE_URL . "/Private/index.php?erro=sem_permissao");
+        exit;
+    }
+}
 // Encriptação e desencriptação de valores com OpenSSL
 function aes_encrypt($value)
 {

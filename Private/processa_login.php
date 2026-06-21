@@ -39,15 +39,16 @@ try {
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $parametros = [
-        ':u' => $username,
-        ':p' => $password
+        ':u' => $username
     ];
 
-    $comando = $ligacao->prepare("SELECT * FROM utilizadores WHERE email = :u AND password = :p");
+    // Procuramos o utilizador só pelo email
+    $comando = $ligacao->prepare("SELECT * FROM utilizadores WHERE email = :u");
     $comando->execute($parametros);
     $resultados = $comando->fetchAll(PDO::FETCH_OBJ);
 
-    if (count($resultados) === 0) {
+    // Verificamos a password com password_verify()
+    if (count($resultados) === 0 || !password_verify($password, $resultados[0]->password)) {
         $_SESSION['server_error'] = 'Login inválido';
         header('Location: ../public/login.php');
         return;
@@ -56,6 +57,7 @@ try {
     $utilizador = $resultados[0];
 
     $_SESSION['utilizador'] = $utilizador->nome;
+    $_SESSION['perfil'] = $utilizador->perfil;
 
     header('Location: index.php');
     exit;

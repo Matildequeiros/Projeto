@@ -912,7 +912,7 @@ try {
             <!-- BOTÕES -->
             <div class="d-flex justify-content-between mt-4">
                 <a href="lista.php" class="btn btn-secondary">Voltar</a>
-                <?php if ($equipamento->equipamento_ativo == 1): ?>
+                <?php if ($equipamento->equipamento_ativo == 1 && pode_editar_dados()): ?>
                     <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="btn" style="background-color: #1a826d; color: white;">
                         Editar Equipamento
                     </a>

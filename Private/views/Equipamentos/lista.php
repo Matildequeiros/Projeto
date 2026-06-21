@@ -46,9 +46,11 @@ $ligacao = null;
                     <strong>Listagem de Equipamentos</strong>
                 </h2>
 
-                <a href="novo.php" class="btn" style="background-color: #1a826d; color: white;">
-                    <i class="fa-solid fa-plus me-2"></i> Novo Equipamento
-                </a>
+                <?php if (pode_editar_dados()): ?>
+                    <a href="novo.php" class="btn" style="background-color: #1a826d; color: white;">
+                        <i class="fa-solid fa-plus me-2"></i> Novo Equipamento
+                    </a>
+                <?php endif; ?>
             </div>
 
             <hr>
@@ -157,20 +159,24 @@ $ligacao = null;
                                             <a href="detalhes.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box" title="Consultar">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
-                                            <?php if ($equipamento->equipamento_ativo == 1): ?>
-                                                <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box" title="Editar">
-                                                    <i class="fa-solid fa-pen"></i>
-                                                </a>
-                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                                    onclick="abrirModalApagar('<?= aes_encrypt($equipamento->id) ?>', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </a>
-                                            <?php else: ?>
+                                            <?php if (pode_editar_dados()): ?>
+                                                <?php if ($equipamento->equipamento_ativo == 1): ?>
+                                                    <a href="editar.php?id_equipamento=<?= aes_encrypt($equipamento->id) ?>" class="acao-box" title="Editar">
+                                                        <i class="fa-solid fa-pen"></i>
+                                                    </a>
+                                                    <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                        onclick="abrirModalApagar('<?= aes_encrypt($equipamento->id) ?>', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                <?php else: ?>
+                                                    <span class="badge me-1" style="background-color: #D3D1C7; color: #2C2C2A;">Removido</span>
+                                                    <a class="acao-box" style="cursor: pointer;" title="Reativar"
+                                                        onclick="abrirModalReativar('<?= aes_encrypt($equipamento->id) ?>', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
+                                                        <i class="fa-solid fa-rotate-left"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                            <?php elseif ($equipamento->equipamento_ativo != 1): ?>
                                                 <span class="badge me-1" style="background-color: #D3D1C7; color: #2C2C2A;">Removido</span>
-                                                <a class="acao-box" style="cursor: pointer;" title="Reativar"
-                                                    onclick="abrirModalReativar('<?= aes_encrypt($equipamento->id) ?>', '<?= $equipamento->codigo ?>', '<?= $equipamento->designacao ?>')">
-                                                    <i class="fa-solid fa-rotate-left"></i>
-                                                </a>
                                             <?php endif; ?>
                                         </td>
                                     </tr>

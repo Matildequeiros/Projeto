@@ -103,7 +103,7 @@ try {
                 <div class="d-flex justify-content-between mt-4">
                     <a href="lista_localizacoes.php" class="btn btn-secondary">Voltar</a>
 
-                    <?php if ($localizacao->localizacao_ativa == 1): ?>
+                    <?php if ($localizacao->localizacao_ativa == 1 && pode_editar_dados()): ?>
                         <a href="editar_localizacoes.php?id_localizacao=<?= aes_encrypt($localizacao->id) ?>" class="btn" style="background-color: #1a826d; color: white;">
                             Editar Localização
                         </a>

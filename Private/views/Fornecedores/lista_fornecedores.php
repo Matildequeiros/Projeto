@@ -43,9 +43,11 @@ $ligacao = null;
                     <i class="fa-solid fa-truck-medical me-2"></i>
                     <strong>Listagem de Fornecedores</strong>
                 </h2>
-                <a href="novo_fornecedores.php" class="btn" style="background-color: #1a826d; color: white;">
-                    <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
-                </a>
+                <?php if (pode_editar_dados()): ?>
+                    <a href="novo_fornecedores.php" class="btn" style="background-color: #1a826d; color: white;">
+                        <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
+                    </a>
+                <?php endif; ?>
             </div>
 
             <hr>
@@ -116,27 +118,31 @@ $ligacao = null;
                                         <a href="detalhes_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Consultar">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
-                                        <?php if ($fornecedor->fornecedor_ativo == 1): ?>
-                                            <a href="editar_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Editar">
-                                                <i class="fa-solid fa-pen"></i>
-                                            </a>
-                                            <?php if ($fornecedor->total_equipamentos > 0): ?>
-                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                                    onclick="abrirModalApagarFornecedorComSubstituicao('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', <?= $fornecedor->total_equipamentos ?>)">
-                                                    <i class="fa-solid fa-trash"></i>
+                                        <?php if (pode_editar_dados()): ?>
+                                            <?php if ($fornecedor->fornecedor_ativo == 1): ?>
+                                                <a href="editar_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="acao-box" title="Editar">
+                                                    <i class="fa-solid fa-pen"></i>
                                                 </a>
+                                                <?php if ($fornecedor->total_equipamentos > 0): ?>
+                                                    <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                        onclick="abrirModalApagarFornecedorComSubstituicao('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', <?= $fornecedor->total_equipamentos ?>)">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                <?php else: ?>
+                                                    <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                        onclick="abrirModalApagarFornecedor('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>', '<?= htmlspecialchars($fornecedor->tipo_fornecedor, ENT_QUOTES) ?>')">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                <?php endif; ?>
                                             <?php else: ?>
-                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                                    onclick="abrirModalApagarFornecedor('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>', '<?= htmlspecialchars($fornecedor->tipo_fornecedor, ENT_QUOTES) ?>')">
-                                                    <i class="fa-solid fa-trash"></i>
+                                                <span class="badge me-1" style="background-color: #D3D1C7; color: #2C2C2A;">Removido</span>
+                                                <a class="acao-box" style="cursor: pointer;" title="Reativar"
+                                                    onclick="abrirModalReativarFornecedor('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>')">
+                                                    <i class="fa-solid fa-rotate-left"></i>
                                                 </a>
                                             <?php endif; ?>
-                                        <?php else: ?>
+                                        <?php elseif ($fornecedor->fornecedor_ativo != 1): ?>
                                             <span class="badge me-1" style="background-color: #D3D1C7; color: #2C2C2A;">Removido</span>
-                                            <a class="acao-box" style="cursor: pointer;" title="Reativar"
-                                                onclick="abrirModalReativarFornecedor('<?= aes_encrypt($fornecedor->id) ?>', '<?= $fornecedor->codigo ?>', '<?= htmlspecialchars($fornecedor->nome, ENT_QUOTES) ?>')">
-                                                <i class="fa-solid fa-rotate-left"></i>
-                                            </a>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -297,7 +303,6 @@ $ligacao = null;
         $.fn.dataTable.ext.search.pop();
         tabela.draw();
     }
-
 </script>
 
 <?php include '../../includes/footer.php'; ?>

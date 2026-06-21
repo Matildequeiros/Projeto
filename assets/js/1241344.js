@@ -366,3 +366,11 @@ function verPDF(url) {
     window.open(url, '_blank');
 }
 
+//ÁREA PÚBLICA- POPUP
+function abrirFormulario() {
+    document.getElementById("popup-form").classList.remove("escondido");
+}
+
+function fecharFormulario() {
+    document.getElementById("popup-form").classList.add("escondido");
+}

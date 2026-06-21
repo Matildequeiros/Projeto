@@ -104,10 +104,10 @@
 
 .footer-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
-    gap: 50px;
+    gap: 80px;
 }
 
 .footer-title h2 {

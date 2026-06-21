@@ -46,9 +46,11 @@ $ligacao = null;
                     <i class="fa-solid fa-location-dot me-2"></i>
                     <strong>Listagem de Localizações</strong>
                 </h2>
-                <a href="novo_localizacoes.php" class="btn" style="background-color: #1a826d; color: white;">
-                    <i class="fa-solid fa-plus me-2"></i> Nova Localização
-                </a>
+                <?php if (pode_editar_dados()): ?>
+                    <a href="novo_localizacoes.php" class="btn" style="background-color: #1a826d; color: white;">
+                        <i class="fa-solid fa-plus me-2"></i> Nova Localização
+                    </a>
+                <?php endif; ?>
             </div>
 
             <hr>
@@ -120,27 +122,31 @@ $ligacao = null;
                                         <a href="detalhes_localizacoes.php?id_localizacao=<?= aes_encrypt($loc->id) ?>" class="acao-box" title="Consultar">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
-                                        <?php if ($loc->localizacao_ativa == 1): ?>
-                                            <a href="editar_localizacoes.php?id_localizacao=<?= aes_encrypt($loc->id) ?>" class="acao-box" title="Editar">
-                                                <i class="fa-solid fa-pen"></i>
-                                            </a>
-                                            <?php if ($loc->total_equipamentos > 0): ?>
-                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                                    onclick="abrirModalApagarComSubstituicao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', <?= $loc->total_equipamentos ?>)">
-                                                    <i class="fa-solid fa-trash"></i>
+                                        <?php if (pode_editar_dados()): ?>
+                                            <?php if ($loc->localizacao_ativa == 1): ?>
+                                                <a href="editar_localizacoes.php?id_localizacao=<?= aes_encrypt($loc->id) ?>" class="acao-box" title="Editar">
+                                                    <i class="fa-solid fa-pen"></i>
                                                 </a>
+                                                <?php if ($loc->total_equipamentos > 0): ?>
+                                                    <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                        onclick="abrirModalApagarComSubstituicao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', <?= $loc->total_equipamentos ?>)">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                <?php else: ?>
+                                                    <a class="acao-box" style="cursor: pointer;" title="Eliminar"
+                                                        onclick="abrirModalApagarLocalizacao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </a>
+                                                <?php endif; ?>
                                             <?php else: ?>
-                                                <a class="acao-box" style="cursor: pointer;" title="Eliminar"
-                                                    onclick="abrirModalApagarLocalizacao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
-                                                    <i class="fa-solid fa-trash"></i>
+                                                <span class="badge me-1" style="background-color: #D3D1C7; color: #2C2C2A;">Removido</span>
+                                                <a class="acao-box" style="cursor: pointer;" title="Reativar"
+                                                    onclick="abrirModalReativarLocalizacao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
+                                                    <i class="fa-solid fa-rotate-left"></i>
                                                 </a>
                                             <?php endif; ?>
-                                        <?php else: ?>
+                                        <?php elseif ($loc->localizacao_ativa != 1): ?>
                                             <span class="badge me-1" style="background-color: #D3D1C7; color: #2C2C2A;">Removido</span>
-                                            <a class="acao-box" style="cursor: pointer;" title="Reativar"
-                                                onclick="abrirModalReativarLocalizacao('<?= aes_encrypt($loc->id) ?>', '<?= $loc->codigo ?>', '<?= htmlspecialchars($loc->edificio, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->piso, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->servico, ENT_QUOTES) ?>', '<?= htmlspecialchars($loc->sala, ENT_QUOTES) ?>')">
-                                                <i class="fa-solid fa-rotate-left"></i>
-                                            </a>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

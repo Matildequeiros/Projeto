@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../includes/funcoes.php';
 redirect_if_not_logged();
+bloquear_se_nao_autorizado(pode_editar_dados());
 
 $idEncrypted = $_GET['id_localizacao'] ?? null;
 $idSubstitutaEncrypted = $_GET['id_substituta'] ?? null;

@@ -9,6 +9,8 @@ if (!isset($_SESSION['utilizador'])) {
 }
 
 $nome = $_SESSION['utilizador'];
+$perfil = $_SESSION['perfil'] ?? '';
+$pode_ver_mensagens = ($perfil === 'administrador');
 
 // Buscar mensagens do público
 try {
@@ -19,10 +21,15 @@ try {
     );
     $ligacao_nav->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $totalNaoLidas = $ligacao_nav->query("SELECT COUNT(*) FROM mensagens_publico WHERE lida = 0")->fetchColumn();
+    if ($pode_ver_mensagens) {
+        $totalNaoLidas = $ligacao_nav->query("SELECT COUNT(*) FROM mensagens_publico WHERE lida = 0")->fetchColumn();
 
-    $stmt = $ligacao_nav->query("SELECT * FROM mensagens_publico ORDER BY data_envio DESC LIMIT 20");
-    $mensagens_publico = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $stmt = $ligacao_nav->query("SELECT * FROM mensagens_publico ORDER BY data_envio DESC LIMIT 20");
+        $mensagens_publico = $stmt->fetchAll(PDO::FETCH_OBJ);
+    } else {
+        $totalNaoLidas = 0;
+        $mensagens_publico = [];
+    }
 } catch (PDOException $e) {
     $totalNaoLidas = 0;
     $mensagens_publico = [];
@@ -51,15 +58,17 @@ $ligacao_nav = null;
         <div class="col-6 text-end p-3 d-flex align-items-center justify-content-end gap-3">
 
             <!-- ÍCONE MENSAGENS -->
-            <button type="button" class="btn position-relative" data-bs-toggle="modal" data-bs-target="#modalMensagens"
-                style="background-color: #86B0AA; color: white; border: none;">
-                <i class="fa-regular fa-envelope"></i>
-                <?php if ($totalNaoLidas > 0): ?>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        <?= $totalNaoLidas ?>
-                    </span>
-                <?php endif; ?>
-            </button>
+            <?php if ($pode_ver_mensagens): ?>
+                <button type="button" class="btn position-relative" data-bs-toggle="modal" data-bs-target="#modalMensagens"
+                    style="background-color: #86B0AA; color: white; border: none;">
+                    <i class="fa-regular fa-envelope"></i>
+                    <?php if ($totalNaoLidas > 0): ?>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <?= $totalNaoLidas ?>
+                        </span>
+                    <?php endif; ?>
+                </button>
+            <?php endif; ?>
 
             <div class="dropdown">
                 <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"

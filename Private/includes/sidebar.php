@@ -26,10 +26,12 @@
             <i class="fas fa-location-dot me-2"></i> Localizações
         </a>
 
-        <a href="<?= BASE_URL ?>/Private/views/Gestão da Área Pública/editar_public.php"
-            class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white; transition: 0.2s;">
-            <i class="fas fa-globe me-2"></i> Gestão da Área Pública
-        </a>
+        <?php if (pode_gerir_area_publica()): ?>
+            <a href="<?= BASE_URL ?>/Private/views/Gestão da Área Pública/editar_public.php"
+                class="nav-link px-2 py-2 mb-2 d-block rounded" style="color: white; transition: 0.2s;">
+                <i class="fas fa-globe me-2"></i> Gestão da Área Pública
+            </a>
+        <?php endif; ?>
 
     </nav>
 </aside>

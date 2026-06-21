@@ -81,7 +81,7 @@ try {
                 <!-- BOTÕES -->
                 <div class="d-flex justify-content-between mt-4">
                     <a href="lista_fornecedores.php" class="btn btn-secondary">Voltar</a>
-                    <?php if ($fornecedor->fornecedor_ativo == 1): ?>
+                    <?php if ($fornecedor->fornecedor_ativo == 1 && pode_editar_dados()): ?>
                         <a href="editar_fornecedores.php?id_fornecedor=<?= aes_encrypt($fornecedor->id) ?>" class="btn" style="background-color: #1a826d; color: white;">
                             Editar Fornecedor
                         </a>

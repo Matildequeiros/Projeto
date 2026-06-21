@@ -296,21 +296,23 @@ $ligacao = null;
                 </div>
             </div>
 
-            <div class="row mt-4">
+            <div class="footer-info">
 
-                <div class="col-12 col-md-4 footer-column">
+                <div class="d-flex flex-wrap mb-3" style="gap: 110px;">
+                    <div class="footer-column">
+                        <p><i class="fa-solid fa-phone"></i> <?= htmlspecialchars($conteudo['rodape_telefone']->titulo ?? '') ?></p>
+                        <p><i class="fa-solid fa-mobile-screen-button"></i> <?= htmlspecialchars($conteudo['rodape_telefone']->texto ?? '') ?></p>
+                    </div>
+
+                    <div class="footer-column">
+                        <p><i class="fa-solid fa-envelope"></i> <?= htmlspecialchars($conteudo['rodape_email']->texto ?? '') ?></p>
+                        <p><i class="fa-solid fa-clock"></i> <?= htmlspecialchars($conteudo['rodape_horario']->titulo ?? '') ?> · <?= htmlspecialchars($conteudo['rodape_horario']->texto ?? '') ?></p>
+                    </div>
+                </div>
+
+                <div class="footer-column">
                     <p><i class="fa-solid fa-location-dot"></i> <?= htmlspecialchars($conteudo['rodape_morada']->titulo ?? '') ?></p>
                     <p><?= htmlspecialchars($conteudo['rodape_morada']->texto ?? '') ?></p>
-                </div>
-
-                <div class="col-12 col-md-4 footer-column">
-                    <p><i class="fa-solid fa-phone"></i> <?= htmlspecialchars($conteudo['rodape_telefone']->titulo ?? '') ?></p>
-                    <p><i class="fa-solid fa-mobile-screen-button"></i> <?= htmlspecialchars($conteudo['rodape_telefone']->texto ?? '') ?></p>
-                </div>
-
-                <div class="col-12 col-md-4 footer-column">
-                    <p><i class="fa-solid fa-envelope"></i> <?= htmlspecialchars($conteudo['rodape_email']->texto ?? '') ?></p>
-                    <p><i class="fa-solid fa-clock"></i> <?= htmlspecialchars($conteudo['rodape_horario']->texto ?? '') ?></p>
                 </div>
 
             </div>
@@ -319,21 +321,17 @@ $ligacao = null;
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/bootstrap/bootstrap.bundle.min.js"></script>
 
-    <script>
-    function abrirFormulario() {
-        document.getElementById("popup-form").classList.remove("escondido");
-    }
-
-    function fecharFormulario() {
-        document.getElementById("popup-form").classList.add("escondido");
-    }
+    <script src="../assets/js/1241344.js"></script>
 
     <?php if (!empty($mensagem_enviada)): ?>
-    abrirFormulario();
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                abrirFormulario();
+            });
+        </script>
     <?php endif; ?>
-</script>
 
 </body>
 
