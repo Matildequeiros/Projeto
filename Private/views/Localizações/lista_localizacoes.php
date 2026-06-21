@@ -46,11 +46,19 @@ $ligacao = null;
                     <i class="fa-solid fa-location-dot me-2"></i>
                     <strong>Listagem de Localizações</strong>
                 </h2>
-                <?php if (pode_editar_dados()): ?>
-                    <a href="novo_localizacoes.php" class="btn" style="background-color: #1a826d; color: white;">
-                        <i class="fa-solid fa-plus me-2"></i> Nova Localização
+                <div class="d-flex gap-2">
+                    <a href="exportar_csv_localizacoes.php" class="btn" style="border: 2px solid #1a826d; color: #1a826d; background-color: white;">
+                        <i class="fa-solid fa-file-csv me-2"></i> Exportar CSV
                     </a>
-                <?php endif; ?>
+                    <a href="exportar_json_localizacoes.php" class="btn" style="border: 2px solid #1a826d; color: #1a826d; background-color: white;">
+                        <i class="fa-solid fa-file-code me-2"></i> Exportar JSON
+                    </a>
+                    <?php if (pode_editar_dados()): ?>
+                        <a href="novo_localizacoes.php" class="btn" style="background-color: #1a826d; color: white;">
+                            <i class="fa-solid fa-plus me-2"></i> Nova Localização
+                        </a>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <hr>

@@ -46,11 +46,19 @@ $ligacao = null;
                     <strong>Listagem de Equipamentos</strong>
                 </h2>
 
-                <?php if (pode_editar_dados()): ?>
-                    <a href="novo.php" class="btn" style="background-color: #1a826d; color: white;">
-                        <i class="fa-solid fa-plus me-2"></i> Novo Equipamento
+                <div class="d-flex gap-2">
+                    <a href="exportar_csv.php" class="btn" style="border: 2px solid #1a826d; color: #1a826d; background-color: white;">
+                        <i class="fa-solid fa-file-csv me-2"></i> Exportar CSV
                     </a>
-                <?php endif; ?>
+                    <a href="exportar_json.php" class="btn" style="border: 2px solid #1a826d; color: #1a826d; background-color: white;">
+                        <i class="fa-solid fa-file-code me-2"></i> Exportar JSON
+                    </a>
+                    <?php if (pode_editar_dados()): ?>
+                        <a href="novo.php" class="btn" style="background-color: #1a826d; color: white;">
+                            <i class="fa-solid fa-plus me-2"></i> Novo Equipamento
+                        </a>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <hr>

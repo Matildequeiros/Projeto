@@ -115,7 +115,8 @@ CREATE TABLE `utilizadores` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
   `nome` varchar(150) NOT NULL,
   `email` varchar(150) UNIQUE NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `perfil` enum('administrador','tecnico','profissional_saude') NOT NULL DEFAULT 'profissional_saude'
 );
 
 CREATE TABLE `componentes_consumiveis` (

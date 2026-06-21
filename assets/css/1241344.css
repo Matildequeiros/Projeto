@@ -1088,3 +1088,10 @@ body {
     text-align: center !important;
      vertical-align: middle !important;
 }
+
+/* Efeito de hover no menu lateral (sidebar) */
+aside nav a.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding-left: 12px;
+}

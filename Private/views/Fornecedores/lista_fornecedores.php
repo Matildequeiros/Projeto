@@ -43,11 +43,19 @@ $ligacao = null;
                     <i class="fa-solid fa-truck-medical me-2"></i>
                     <strong>Listagem de Fornecedores</strong>
                 </h2>
-                <?php if (pode_editar_dados()): ?>
-                    <a href="novo_fornecedores.php" class="btn" style="background-color: #1a826d; color: white;">
-                        <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
+                <div class="d-flex gap-2">
+                    <a href="exportar_csv_fornecedores.php" class="btn" style="border: 2px solid #1a826d; color: #1a826d; background-color: white;">
+                        <i class="fa-solid fa-file-csv me-2"></i> Exportar CSV
                     </a>
-                <?php endif; ?>
+                    <a href="exportar_json_fornecedores.php" class="btn" style="border: 2px solid #1a826d; color: #1a826d; background-color: white;">
+                        <i class="fa-solid fa-file-code me-2"></i> Exportar JSON
+                    </a>
+                    <?php if (pode_editar_dados()): ?>
+                        <a href="novo_fornecedores.php" class="btn" style="background-color: #1a826d; color: white;">
+                            <i class="fa-solid fa-plus me-2"></i> Novo Fornecedor
+                        </a>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <hr>
