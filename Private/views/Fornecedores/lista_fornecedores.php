@@ -44,11 +44,14 @@ $ligacao = null;
                     <strong>Listagem de Fornecedores</strong>
                 </h2>
                 <div class="d-flex gap-2">
-                    <a href="exportar_csv_fornecedores.php" class="btn" style="border: 2px solid #1a826d; color: #1a826d; background-color: white;">
-                        <i class="fa-solid fa-file-csv me-2"></i> Exportar CSV
+                    <a href="exportar_csv_fornecedores.php" class="btn btn-sm" style="border: 1.5px solid #1a826d; color: #1a826d; background-color: white;" title="Exportar CSV">
+                        <i class="fa-solid fa-file-csv"></i> CSV
                     </a>
-                    <a href="exportar_json_fornecedores.php" class="btn" style="border: 2px solid #1a826d; color: #1a826d; background-color: white;">
-                        <i class="fa-solid fa-file-code me-2"></i> Exportar JSON
+                    <a href="exportar_json_fornecedores.php" class="btn btn-sm" style="border: 1.5px solid #1a826d; color: #1a826d; background-color: white;" title="Exportar JSON">
+                        <i class="fa-solid fa-file-code"></i> JSON
+                    </a>
+                    <a href="exportar_pdf.php" target="_blank" class="btn btn-sm" style="border: 1.5px solid #1a826d; color: #1a826d; background-color: white;" title="Exportar PDF">
+                        <i class="fa-solid fa-file-pdf"></i> PDF
                     </a>
                     <?php if (pode_editar_dados()): ?>
                         <a href="novo_fornecedores.php" class="btn" style="background-color: #1a826d; color: white;">

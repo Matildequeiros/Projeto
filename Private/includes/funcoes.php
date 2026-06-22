@@ -92,10 +92,8 @@ function aes_decrypt($value)
     );
 }
 
-// ---------------------------------------------------------------
-// REGISTO DE EVENTOS (LOG)
-// ---------------------------------------------------------------
 
+// REGISTO DE EVENTOS (LOG)
 // Escreve uma linha no ficheiro de log, com data e hora
 function registar_evento($mensagem)
 {
