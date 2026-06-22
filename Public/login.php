@@ -20,13 +20,16 @@ if (!empty($_SESSION['server_error'])) {
 }
 ?>
 
-<?php include '../Private/includes/header.php'; ?>
+<?php include '../private/includes/header.php'; ?>
 
 
 <div class="container-fluid mt-5">
     <div class="row justify-content-center">
         <div class="col-lg-5 col-md-6 col-sm-8 col-10">
             <div class="card p-4">
+                <a href="index.php" class="d-inline-block mb-2" style="color: #1a826d; text-decoration: none;">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Voltar à página inicial
+                </a>
                 <div class="d-flex align-items-center justify-content-center my-4">
                     <img src="<?= BASE_URL ?>/assets/img/Logo.png" class="img-fluid me-3">
                     <h2 class="mb-0 logo-text">
@@ -36,7 +39,7 @@ if (!empty($_SESSION['server_error'])) {
                 </div>
                 <div class="row">
                     <div class="col">
-                        <form action="../Private/processa_login.php" method="post">
+                        <form action="../private/processa_login.php" method="post">
                             <div class="mb-3">
                                 <!-- Utilizador -->
                                 <label for="email" class="form-label">Utilizador</label>
@@ -87,4 +90,4 @@ if (!empty($_SESSION['server_error'])) {
     </div>
 </div>
 
-<?php include '../Private/includes/footer.php'; ?>
+<?php include '../private/includes/footer.php'; ?>

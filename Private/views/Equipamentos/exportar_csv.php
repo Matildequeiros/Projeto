@@ -36,7 +36,7 @@ fputcsv($output, [
     'Código', 'Designação', 'Marca', 'Modelo', 'Número de Série',
     'Categoria', 'Estado', 'Criticidade', 'Edifício', 'Piso', 'Sala', 'Serviço',
     'Data Aquisição', 'Custo (€)'
-]);
+], ';');
 
 // Uma linha por equipamento
 foreach ($resultados as $eq) {
@@ -55,7 +55,7 @@ foreach ($resultados as $eq) {
         $eq->servico,
         $eq->data_aquisicao,
         $eq->custo
-    ]);
+    ], ';');
 }
 
 fclose($output);

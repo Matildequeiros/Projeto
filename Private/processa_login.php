@@ -47,8 +47,10 @@ try {
     $comando->execute($parametros);
     $resultados = $comando->fetchAll(PDO::FETCH_OBJ);
 
-    // Verificamos a password com password_verify()
+    // Verificamos a password em PHP com password_verify(), comparando
+    // a password introduzida com o hash guardado na base de dados.
     if (count($resultados) === 0 || !password_verify($password, $resultados[0]->password)) {
+        registar_evento("Tentativa de login falhada: {$username}");
         $_SESSION['server_error'] = 'Login inválido';
         header('Location: ../public/login.php');
         return;
@@ -58,6 +60,9 @@ try {
 
     $_SESSION['utilizador'] = $utilizador->nome;
     $_SESSION['perfil'] = $utilizador->perfil;
+    $_SESSION['utilizador_id'] = $utilizador->id;
+
+    registar_evento("Login bem-sucedido: {$utilizador->nome} ({$username})");
 
     header('Location: index.php');
     exit;

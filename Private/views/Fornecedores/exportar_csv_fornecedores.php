@@ -28,13 +28,13 @@ fwrite($output, "\xEF\xBB\xBF");
 fputcsv($output, [
     'Código', 'Nome', 'NIF', 'Telefone', 'Email', 'Morada', 'Website',
     'Pessoa de Contacto', 'Telefone Contacto', 'Tipo de Fornecedor', 'Observações'
-]);
+], ';');
 
 foreach ($resultados as $f) {
     fputcsv($output, [
         $f->codigo, $f->nome, $f->nif, $f->telefone, $f->email, $f->morada, $f->website,
         $f->pessoa_contacto, $f->telefone_contacto, $f->tipo_fornecedor, $f->observacoes
-    ]);
+    ], ';');
 }
 
 fclose($output);

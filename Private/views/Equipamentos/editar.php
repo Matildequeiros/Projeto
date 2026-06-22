@@ -5,7 +5,7 @@ bloquear_se_nao_autorizado(pode_editar_dados());
 require_once __DIR__ . '/../../includes/validacoes.php';
 
 if (!in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST'])) {
-    header('Location: ' . BASE_URL . '/Private/views/Equipamentos/lista.php');
+    header('Location: ' . BASE_URL . '/private/views/equipamentos/lista.php');
     exit;
 }
 
@@ -13,7 +13,7 @@ $idEquipamentoEncrypted = $_GET['id_equipamento'] ?? null;
 $idEquipamento = aes_decrypt($idEquipamentoEncrypted);
 
 if (!$idEquipamento || !is_numeric($idEquipamento)) {
-    header('Location: ' . BASE_URL . '/Private/views/Equipamentos/lista.php');
+    header('Location: ' . BASE_URL . '/private/views/equipamentos/lista.php');
     exit;
 }
 
@@ -639,7 +639,7 @@ try {
     $equipamento = $stmt->fetch(PDO::FETCH_OBJ);
 
     if (!$equipamento) {
-        header('Location: ' . BASE_URL . '/Private/views/Equipamentos/lista.php');
+        header('Location: ' . BASE_URL . '/private/views/equipamentos/lista.php');
         exit;
     }
 
@@ -666,7 +666,7 @@ try {
     }
 
     // Carregar fornecedores para o select
-    $stmt = $ligacao->prepare("SELECT id, codigo, nome FROM fornecedores ORDER BY codigo");
+    $stmt = $ligacao->prepare("SELECT id, codigo, nome FROM fornecedores WHERE fornecedor_ativo = 1 ORDER BY codigo");
     $stmt->execute();
     $fornecedores_lista = $stmt->fetchAll(PDO::FETCH_OBJ);
 
@@ -677,7 +677,7 @@ try {
     $fornecedores_associados = $stmt->fetchAll(PDO::FETCH_OBJ);
 
     // Carregar localizações para o select
-    $stmt = $ligacao->prepare("SELECT id, codigo, edificio, piso, sala FROM localizacoes ORDER BY codigo");
+    $stmt = $ligacao->prepare("SELECT id, codigo, edificio, piso, sala FROM localizacoes WHERE localizacao_ativa = 1 ORDER BY codigo");
     $stmt->execute();
     $localizacoes_lista = $stmt->fetchAll(PDO::FETCH_OBJ);
 

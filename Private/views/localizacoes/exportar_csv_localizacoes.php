@@ -25,10 +25,10 @@ header('Content-Disposition: attachment; filename=localizacoes_' . date('Y-m-d')
 $output = fopen('php://output', 'w');
 fwrite($output, "\xEF\xBB\xBF");
 
-fputcsv($output, ['Código', 'Edifício', 'Piso', 'Sala', 'Serviço', 'Observações']);
+fputcsv($output, ['Código', 'Edifício', 'Piso', 'Sala', 'Serviço', 'Observações'], ';');
 
 foreach ($resultados as $l) {
-    fputcsv($output, [$l->codigo, $l->edificio, $l->piso, $l->sala, $l->servico, $l->observacoes]);
+    fputcsv($output, [$l->codigo, $l->edificio, $l->piso, $l->sala, $l->servico, $l->observacoes], ';');
 }
 
 fclose($output);

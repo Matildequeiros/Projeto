@@ -44,7 +44,7 @@ $ligacao_nav = null;
 
         <!-- LOGO + TÍTULO -->
         <div class="col-6 d-flex align-items-center p-3">
-            <a href="<?= BASE_URL ?>/Private/index.php">
+            <a href="<?= BASE_URL ?>/private/index.php">
                 <img src="<?= BASE_URL ?>/assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
             </a>
             <h3 class="mb-0 logo-text">
@@ -77,7 +77,7 @@ $ligacao_nav = null;
                 </button>
 
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#">
+                    <li><a class="dropdown-item" href="<?= BASE_URL ?>/private/alterar_password.php">
                             <i class="fa-solid fa-key me-2"></i> Alterar password
                         </a>
                     </li>
@@ -86,7 +86,7 @@ $ligacao_nav = null;
                         <hr class="dropdown-divider">
                     </li>
 
-                    <li><a class="dropdown-item" href="<?= BASE_URL ?>/Public/logout.php">
+                    <li><a class="dropdown-item" href="<?= BASE_URL ?>/public/logout.php">
                             <i class="fa-solid fa-right-from-bracket me-2"></i> Sair
                         </a>
                     </li>
@@ -140,7 +140,7 @@ $ligacao_nav = null;
                                         <p><strong>Mensagem:</strong><br><?= nl2br(htmlspecialchars($msg->mensagem)) ?></p>
 
                                         <?php if (!$msg->lida): ?>
-                                            <a href="<?= BASE_URL ?>/Private/marcar_mensagem_lida.php?id=<?= $msg->id ?>"
+                                            <a href="<?= BASE_URL ?>/private/marcar_mensagem_lida.php?id=<?= $msg->id ?>"
                                                 class="btn btn-sm" style="background-color: #1a826d; color: white;">
                                                 <i class="fa-solid fa-check me-1"></i> Marcar como lida
                                             </a>

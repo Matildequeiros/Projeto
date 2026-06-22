@@ -16,7 +16,7 @@ function check_session()
 }
 
 // Redireciona automaticamente se não houver sessão iniciada
-function redirect_if_not_logged($redirect_to = '/Public/login.php')
+function redirect_if_not_logged($redirect_to = '/public/login.php')
 {
     start_session();
     if (!check_session()) {
@@ -24,7 +24,7 @@ function redirect_if_not_logged($redirect_to = '/Public/login.php')
         exit;
     }
 }
-function logout_and_redirect($redirect_to = '/Public/login.php')
+function logout_and_redirect($redirect_to = '/public/login.php')
 {
     start_session();
     session_unset();
@@ -64,7 +64,7 @@ function pode_editar_dados()
 function bloquear_se_nao_autorizado($autorizado)
 {
     if (!$autorizado) {
-        header("Location: " . BASE_URL . "/Private/index.php?erro=sem_permissao");
+        header("Location: " . BASE_URL . "/private/index.php?erro=sem_permissao");
         exit;
     }
 }
@@ -90,4 +90,24 @@ function aes_decrypt($value)
         OPENSSL_RAW_DATA,
         OPENSSL_IV
     );
+}
+
+// ---------------------------------------------------------------
+// REGISTO DE EVENTOS (LOG)
+// ---------------------------------------------------------------
+
+// Escreve uma linha no ficheiro de log, com data e hora
+function registar_evento($mensagem)
+{
+    $pasta_logs = __DIR__ . '/../../logs';
+
+    // Cria a pasta logs/ automaticamente se ainda não existir
+    if (!is_dir($pasta_logs)) {
+        mkdir($pasta_logs, 0777, true);
+    }
+
+    $ficheiro_log = $pasta_logs . '/eventos.log';
+    $linha = '[' . date('Y-m-d H:i:s') . '] ' . $mensagem . PHP_EOL;
+
+    file_put_contents($ficheiro_log, $linha, FILE_APPEND);
 }

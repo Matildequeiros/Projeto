@@ -396,7 +396,7 @@
 
 .popup-content {
     background: white;
-    padding: 30px;
+    padding: 16px 30px;
     width: 80%;
     max-width: 600px;
     border-radius: 16px;
@@ -409,8 +409,8 @@
 .popup-content h2 {
     text-align: center;
     color: #1a826d;
-    font-size: 2rem;
-    margin-bottom: 25px;
+    font-size: 1.7rem;
+    margin-bottom: 12px;
     font-weight: 700;
 }
 
@@ -431,7 +431,7 @@
     color: #1a826d;
     font-weight: 600;
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .form-box input,
@@ -440,11 +440,11 @@
     padding: 12px;
     border: 1px solid #cce7e4;
     border-radius: 8px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
 }
 
 .form-box textarea {
-    height: 140px;
+    height: 70px;
     resize: none;
 }
 
@@ -1086,7 +1086,7 @@ body {
 #tabela-equipamentos thead th,
 #tabela-localizacoes thead th {
     text-align: center !important;
-     vertical-align: middle !important;
+    vertical-align: middle !important;
 }
 
 /* Efeito de hover no menu lateral (sidebar) */

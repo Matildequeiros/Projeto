@@ -15,10 +15,11 @@ try {
         MYSQL_USERNAME,
         MYSQL_PASSWORD
     );
-    $stmt = $ligacao->query("SELECT id, codigo, nome FROM fornecedores ORDER BY nome");
+    $stmt = $ligacao->query("SELECT id, codigo, nome FROM fornecedores WHERE fornecedor_ativo = 1 ORDER BY nome");
     $fornecedores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $ligacao->query("SELECT id, codigo, edificio, piso, sala FROM localizacoes ORDER BY codigo");
+    $stmt = $ligacao->prepare("SELECT id, codigo, edificio, piso, sala FROM localizacoes WHERE localizacao_ativa = 1 ORDER BY codigo");
+    $stmt->execute();
     $localizacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $ligacao = null;
@@ -297,7 +298,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep6'])) {
     $cert_garantia_data   = trim($_POST['cert_garantia_data']   ?? '');
 
     $erros = array_merge($erros, validar_data_obrigatoria($garantia_data_inicio, 'A data de início da garantia'));
-    $erros = array_merge($erros, validar_data_obrigatoria($garantia_data_fim, 'A data de fim da garantia'));
+    $erros = array_merge($erros, validar_data_obrigatoria_futura($garantia_data_fim, 'A data de fim da garantia'));
     $erros = array_merge($erros, validar_data_anterior($garantia_data_fim, $garantia_data_inicio, 'A data de fim da garantia', ' data de início'));
     $erros = array_merge($erros, validar_select($garantia_entidade, 'A entidade responsável'));
     $erros = array_merge($erros, validar_texto_obrigatorio($cert_garantia_nome, 'O nome do certificado de garantia'));
