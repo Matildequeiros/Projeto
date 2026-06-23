@@ -33,8 +33,8 @@ A aplicação inclui:
 
 2. Base de dados:
    - Criar a base de dados no servidor MySQL.
-   - Importar o ficheiro "Base de Dados/hospitalgest_ddl.sql" (estrutura).
-   - Importar o ficheiro "Base de Dados/hospitalgest_inserts.sql" (dados).
+   - Importar o ficheiro "base-de-dados/hospitalgest_ddl.sql" (estrutura).
+   - Importar o ficheiro "base-de-dados/hospitalgest_inserts.sql" (dados).
 
 3. Configuração:
    - Verificar/ajustar as credenciais de acesso à base de dados no ficheiro

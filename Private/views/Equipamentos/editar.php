@@ -228,22 +228,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter_sep3'])) {
             ]);
 
             // UPDATE contrato de aquisição
-            $stmt = $ligacao->prepare("UPDATE documentacao SET nome_documento=:nome, data_documento=:data, data_validade=:validade WHERE id=:id");
-            $stmt->execute([
+            $ficheiro_contrato_aq = guardar_documento_pdf('contrato_aquisicao_ficheiro', 'aquisicao');
+            $sql_contrato_aq = "UPDATE documentacao SET nome_documento=:nome, data_documento=:data, data_validade=:validade";
+            $params_contrato_aq = [
                 ':nome'    => $contrato_aquisicao_nome,
                 ':data'    => $contrato_aquisicao_data,
                 ':validade' => trim($_POST['contrato_aquisicao_validade'] ?? '') ?: null,
                 ':id'      => $contrato_aquisicao_id,
-            ]);
+            ];
+            if (!empty($ficheiro_contrato_aq)) {
+                $sql_contrato_aq .= ", ficheiro=:ficheiro";
+                $params_contrato_aq[':ficheiro'] = $ficheiro_contrato_aq;
+            }
+            $sql_contrato_aq .= " WHERE id=:id";
+            $stmt = $ligacao->prepare($sql_contrato_aq);
+            $stmt->execute($params_contrato_aq);
 
             // UPDATE fatura (só se compra)
             if ($tipo_entrada === 'compra' && !empty($fatura_aquisicao_id)) {
-                $stmt = $ligacao->prepare("UPDATE documentacao SET nome_documento=:nome, data_documento=:data WHERE id=:id");
-                $stmt->execute([
+                $ficheiro_fatura_aq = guardar_documento_pdf('fatura_aquisicao_ficheiro', 'aquisicao');
+                $sql_fatura_aq = "UPDATE documentacao SET nome_documento=:nome, data_documento=:data";
+                $params_fatura_aq = [
                     ':nome' => $fatura_aquisicao_nome,
                     ':data' => $fatura_aquisicao_data,
                     ':id'   => $fatura_aquisicao_id,
-                ]);
+                ];
+                if (!empty($ficheiro_fatura_aq)) {
+                    $sql_fatura_aq .= ", ficheiro=:ficheiro";
+                    $params_fatura_aq[':ficheiro'] = $ficheiro_fatura_aq;
+                }
+                $sql_fatura_aq .= " WHERE id=:id";
+                $stmt = $ligacao->prepare($sql_fatura_aq);
+                $stmt->execute($params_fatura_aq);
             }
 
             $ligacao = null;
@@ -450,8 +466,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter_sep6'])) {
             }
 
             if (!empty($cert_garantia_id)) {
-                $stmt = $ligacao->prepare("UPDATE documentacao SET nome_documento=:nome, data_documento=:data, data_validade=:val WHERE id=:id");
-                $stmt->execute([':nome' => $cert_garantia_nome, ':data' => $cert_garantia_data, ':val' => $cert_garantia_val ?: null, ':id' => $cert_garantia_id]);
+                $ficheiro_cert_gar = guardar_documento_pdf('cert_garantia_ficheiro', 'garantia');
+                $sql_cert_gar = "UPDATE documentacao SET nome_documento=:nome, data_documento=:data, data_validade=:val";
+                $params_cert_gar = [':nome' => $cert_garantia_nome, ':data' => $cert_garantia_data, ':val' => $cert_garantia_val ?: null, ':id' => $cert_garantia_id];
+                if (!empty($ficheiro_cert_gar)) {
+                    $sql_cert_gar .= ", ficheiro=:ficheiro";
+                    $params_cert_gar[':ficheiro'] = $ficheiro_cert_gar;
+                }
+                $sql_cert_gar .= " WHERE id=:id";
+                $stmt = $ligacao->prepare($sql_cert_gar);
+                $stmt->execute($params_cert_gar);
             }
 
             $ligacao = null;
@@ -518,12 +542,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter_sep7'])) {
                     $contrato_id = $ligacao->lastInsertId();
                 }
 
+                $ficheiro_doc_cont = guardar_documento_pdf('doc_contrato_ficheiro', 'contrato');
+
                 if (!empty($doc_contrato_id)) {
-                    $stmt = $ligacao->prepare("UPDATE documentacao SET nome_documento=:nome, data_documento=:data, data_validade=:val WHERE id=:id");
-                    $stmt->execute([':nome' => $doc_contrato_nome, ':data' => $doc_contrato_data, ':val' => $doc_contrato_val ?: null, ':id' => $doc_contrato_id]);
+                    $sql_doc_cont = "UPDATE documentacao SET nome_documento=:nome, data_documento=:data, data_validade=:val";
+                    $params_doc_cont = [':nome' => $doc_contrato_nome, ':data' => $doc_contrato_data, ':val' => $doc_contrato_val ?: null, ':id' => $doc_contrato_id];
+                    if (!empty($ficheiro_doc_cont)) {
+                        $sql_doc_cont .= ", ficheiro=:ficheiro";
+                        $params_doc_cont[':ficheiro'] = $ficheiro_doc_cont;
+                    }
+                    $sql_doc_cont .= " WHERE id=:id";
+                    $stmt = $ligacao->prepare($sql_doc_cont);
+                    $stmt->execute($params_doc_cont);
                 } else {
-                    $stmt = $ligacao->prepare("INSERT INTO documentacao (equipamento_id, contexto, tipo_documento_id, nome_documento, data_documento, data_validade, ficheiro) VALUES (:eid, 'contrato', 4, :nome, :data, :val, 'contrato/contrato_manutencao.pdf')");
-                    $stmt->execute([':eid' => $idEquipamento, ':nome' => $doc_contrato_nome, ':data' => $doc_contrato_data, ':val' => $doc_contrato_val ?: null]);
+                    $stmt = $ligacao->prepare("INSERT INTO documentacao (equipamento_id, contexto, tipo_documento_id, nome_documento, data_documento, data_validade, ficheiro) VALUES (:eid, 'contrato', 4, :nome, :data, :val, :ficheiro)");
+                    $stmt->execute([':eid' => $idEquipamento, ':nome' => $doc_contrato_nome, ':data' => $doc_contrato_data, ':val' => $doc_contrato_val ?: null, ':ficheiro' => $ficheiro_doc_cont]);
                 }
             } else {
                 // Se não tem contrato, apaga se existia
@@ -583,24 +616,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submeter_sep8'])) {
 
                 $id = trim($doc_ids[$i] ?? '');
 
+                $ficheiro_doc_geral = guardar_documento_pdf_multiplo('doc_ficheiro', $i, 'geral');
+
                 if (!empty($id)) {
-                    $stmt = $ligacao->prepare("UPDATE documentacao SET tipo_documento_id=:tipo, nome_documento=:nome, data_documento=:data, data_validade=:val WHERE id=:id");
-                    $stmt->execute([
+                    $sql_doc_geral = "UPDATE documentacao SET tipo_documento_id=:tipo, nome_documento=:nome, data_documento=:data, data_validade=:val";
+                    $params_doc_geral = [
                         ':tipo' => $doc_tipos[$i],
                         ':nome' => $nome,
                         ':data' => $doc_datas[$i] ?: null,
                         ':val'  => trim($doc_valids[$i] ?? '') ?: null,
                         ':id'   => $id,
-                    ]);
+                    ];
+                    if (!empty($ficheiro_doc_geral)) {
+                        $sql_doc_geral .= ", ficheiro=:ficheiro";
+                        $params_doc_geral[':ficheiro'] = $ficheiro_doc_geral;
+                    }
+                    $sql_doc_geral .= " WHERE id=:id";
+                    $stmt = $ligacao->prepare($sql_doc_geral);
+                    $stmt->execute($params_doc_geral);
                     $ids_mantidos[] = $id;
                 } else {
-                    $stmt = $ligacao->prepare("INSERT INTO documentacao (equipamento_id, contexto, tipo_documento_id, nome_documento, data_documento, data_validade, ficheiro) VALUES (:eid, 'geral', :tipo, :nome, :data, :val, '')");
+                    $stmt = $ligacao->prepare("INSERT INTO documentacao (equipamento_id, contexto, tipo_documento_id, nome_documento, data_documento, data_validade, ficheiro) VALUES (:eid, 'geral', :tipo, :nome, :data, :val, :ficheiro)");
                     $stmt->execute([
-                        ':eid'  => $idEquipamento,
-                        ':tipo' => $doc_tipos[$i],
-                        ':nome' => $nome,
-                        ':data' => $doc_datas[$i] ?: null,
-                        ':val'  => trim($doc_valids[$i] ?? '') ?: null,
+                        ':eid'     => $idEquipamento,
+                        ':tipo'    => $doc_tipos[$i],
+                        ':nome'    => $nome,
+                        ':data'    => $doc_datas[$i] ?: null,
+                        ':val'     => trim($doc_valids[$i] ?? '') ?: null,
+                        ':ficheiro' => $ficheiro_doc_geral,
                     ]);
                     $ids_mantidos[] = $ligacao->lastInsertId();
                 }
@@ -825,8 +868,7 @@ unset($_SESSION['sep_ativo']);
 
                 <!-- CONTEÚDO DOS SEPARADORES -->
                 <form id="formEquipamentoCompleto" method="post"
-                    action="editar.php?id_equipamento=<?= $idEquipamentoEncrypted ?>">
-
+                    action="editar.php?id_equipamento=<?= $idEquipamentoEncrypted ?>" enctype="multipart/form-data">
                     <div class="tab-content" id="equipTabsContent">
 
 
@@ -1100,7 +1142,7 @@ imediato a vida do doente.
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Custo de Aquisição (€) *</label>
+                                    <label class="form-label">Custo de Aquisição *(€) </label>
                                     <input type="number" class="form-control" name="custo" placeholder="Ex: 3500" min="0" step="0.01"
                                         value="<?= htmlspecialchars($equipamento->custo ?? '') ?>">
                                 </div>

@@ -40,10 +40,10 @@ $ligacao_nav = null;
 
 <!-- NAVBAR -->
 <header class="container-fluid" style="background-color: #acd6d0;">
-    <div class="row align-items-center">
+    <div class="row align-items-center flex-wrap">
 
         <!-- LOGO + TÍTULO -->
-        <div class="col-6 d-flex align-items-center p-3">
+        <div class="col-12 col-md-6 d-flex align-items-center p-3">
             <a href="<?= BASE_URL ?>/private/index.php">
                 <img src="<?= BASE_URL ?>/assets/img/Logo.png" alt="Logo HospitalGest" height="50" class="me-3">
             </a>
@@ -55,7 +55,7 @@ $ligacao_nav = null;
         </div>
 
         <!-- UTILIZADOR (dropdown) -->
-        <div class="col-6 text-end p-3 d-flex align-items-center justify-content-end gap-3">
+        <div class="col-12 col-md-6 text-end p-3 d-flex align-items-center justify-content-end gap-3 flex-wrap">
 
             <!-- ÍCONE MENSAGENS -->
             <?php if ($pode_ver_mensagens): ?>

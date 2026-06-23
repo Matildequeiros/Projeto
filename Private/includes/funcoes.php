@@ -109,3 +109,69 @@ function registar_evento($mensagem)
 
     file_put_contents($ficheiro_log, $linha, FILE_APPEND);
 }
+
+
+// UPLOAD DE DOCUMENTOS (PDF)
+function guardar_documento_pdf($nome_campo, $contexto)
+{
+    if (!isset($_FILES[$nome_campo]) || $_FILES[$nome_campo]['error'] === UPLOAD_ERR_NO_FILE) {
+        return '';
+    }
+
+    if ($_FILES[$nome_campo]['error'] !== UPLOAD_ERR_OK) {
+        return '';
+    }
+
+    $ficheiro_tmp = $_FILES[$nome_campo]['tmp_name'];
+
+    // Valida que o ficheiro é realmente um PDF (não confia apenas na extensão)
+    if (mime_content_type($ficheiro_tmp) !== 'application/pdf') {
+        return '';
+    }
+
+    $pasta_destino = __DIR__ . '/../../assets/uploads/' . $contexto;
+    if (!is_dir($pasta_destino)) {
+        mkdir($pasta_destino, 0777, true);
+    }
+
+    $nome_novo = $contexto . '_' . uniqid() . '.pdf';
+    $caminho_destino = $pasta_destino . '/' . $nome_novo;
+
+    if (move_uploaded_file($ficheiro_tmp, $caminho_destino)) {
+        return $contexto . '/' . $nome_novo;
+    }
+
+    return '';
+}
+
+// UPLOAD DE DOCUMENTOS (PDF) — versão para campos de ficheiro múltiplos, ex. name="doc_ficheiro[]"
+function guardar_documento_pdf_multiplo($nome_campo, $indice, $contexto)
+{
+    if (!isset($_FILES[$nome_campo]['tmp_name'][$indice]) || $_FILES[$nome_campo]['error'][$indice] === UPLOAD_ERR_NO_FILE) {
+        return '';
+    }
+
+    if ($_FILES[$nome_campo]['error'][$indice] !== UPLOAD_ERR_OK) {
+        return '';
+    }
+
+    $ficheiro_tmp = $_FILES[$nome_campo]['tmp_name'][$indice];
+
+    if (mime_content_type($ficheiro_tmp) !== 'application/pdf') {
+        return '';
+    }
+
+    $pasta_destino = __DIR__ . '/../../assets/uploads/' . $contexto;
+    if (!is_dir($pasta_destino)) {
+        mkdir($pasta_destino, 0777, true);
+    }
+
+    $nome_novo = $contexto . '_' . uniqid() . '.pdf';
+    $caminho_destino = $pasta_destino . '/' . $nome_novo;
+
+    if (move_uploaded_file($ficheiro_tmp, $caminho_destino)) {
+        return $contexto . '/' . $nome_novo;
+    }
+
+    return '';
+}

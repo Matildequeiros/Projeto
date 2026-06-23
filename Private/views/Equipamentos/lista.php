@@ -10,11 +10,27 @@ try {
     );
     $ligacao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $resultados = $ligacao->query("SELECT e.*, l.edificio, l.piso, l.sala, s.nome AS servico
-        FROM equipamentos e
-        LEFT JOIN localizacoes l ON e.localizacao_id = l.id
-        LEFT JOIN servicos s ON l.servico_id = s.id
-    ")->fetchAll(PDO::FETCH_OBJ);
+    $fornecedorSelecionado = $_GET['fornecedor'] ?? '';
+
+    $fornecedores = $ligacao->query("SELECT id, codigo, nome FROM fornecedores WHERE fornecedor_ativo = 1 ORDER BY nome")->fetchAll(PDO::FETCH_OBJ);
+
+    $sql = "SELECT e.*, l.edificio, l.piso, l.sala, s.nome AS servico
+    FROM equipamentos e
+    LEFT JOIN localizacoes l ON e.localizacao_id = l.id
+    LEFT JOIN servicos s ON l.servico_id = s.id";
+
+    if (!empty($fornecedorSelecionado)) {
+        $sql .= " WHERE e.id IN (
+        SELECT equipamento_id FROM equipamento_fornecedor WHERE fornecedor_id = :fornecedor_id
+    )";
+    }
+
+    $stmt = $ligacao->prepare($sql);
+    if (!empty($fornecedorSelecionado)) {
+        $stmt->bindParam(':fornecedor_id', $fornecedorSelecionado, PDO::PARAM_INT);
+    }
+    $stmt->execute();
+    $resultados = $stmt->fetchAll(PDO::FETCH_OBJ);
 
     $erro = '';
 } catch (PDOException $err) {
@@ -100,6 +116,21 @@ $ligacao = null;
                             <option>Alta</option>
                             <option>Suporte de vida</option>
                         </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Fornecedor</label>
+                        <form method="GET" class="d-flex gap-2">
+                            <select name="fornecedor" class="form-select">
+                                <option value="">Todos</option>
+                                <?php foreach ($fornecedores as $f): ?>
+                                    <option value="<?= $f->id ?>" <?= ($fornecedorSelecionado == $f->id) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($f->codigo . ' - ' . $f->nome) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="submit" class="btn btn-filtrar" style="white-space: nowrap;">Filtrar Fornecedor</button>
+                        </form>
                     </div>
 
                 </div>

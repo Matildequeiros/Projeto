@@ -211,6 +211,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
     }
 
     if (empty($erros)) {
+        $contrato_aquisicao_ficheiro = guardar_documento_pdf('contrato_aquisicao_ficheiro', 'aquisicao');
+        $fatura_aquisicao_ficheiro   = guardar_documento_pdf('fatura_aquisicao_ficheiro', 'aquisicao');
+
         $_SESSION['novo_equipamento']['sep3'] = [
             'data_aquisicao'              => $data_aquisicao,
             'custo'                       => $custo,
@@ -218,9 +221,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep3'])) {
             'contrato_aquisicao_nome'     => $contrato_aquisicao_nome,
             'contrato_aquisicao_data'     => $contrato_aquisicao_data,
             'contrato_aquisicao_validade' => trim($_POST['contrato_aquisicao_validade'] ?? ''),
+            'contrato_aquisicao_ficheiro' => $contrato_aquisicao_ficheiro,
             'fatura_aquisicao_nome'       => $fatura_aquisicao_nome,
             'fatura_aquisicao_data'       => $fatura_aquisicao_data,
             'fatura_aquisicao_pagamento'  => trim($_POST['fatura_aquisicao_pagamento']  ?? ''),
+            'fatura_aquisicao_ficheiro'   => $fatura_aquisicao_ficheiro,
         ];
 
         header("Location: novo.php?sep=fornecedor");
@@ -310,6 +315,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep6'])) {
     }
 
     if (empty($erros)) {
+        $cert_garantia_ficheiro = guardar_documento_pdf('cert_garantia_ficheiro', 'garantia');
+
         $_SESSION['novo_equipamento']['sep6'] = [
             'garantia_data_inicio'   => $garantia_data_inicio,
             'garantia_data_fim'      => $garantia_data_fim,
@@ -318,6 +325,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep6'])) {
             'cert_garantia_nome'     => $cert_garantia_nome,
             'cert_garantia_data'     => $cert_garantia_data,
             'cert_garantia_validade' => trim($_POST['cert_garantia_validade']  ?? ''),
+            'cert_garantia_ficheiro' => $cert_garantia_ficheiro,
         ];
 
         header("Location: novo.php?sep=contrato");
@@ -357,6 +365,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep7'])) {
     }
 
     if (empty($erros)) {
+        $doc_contrato_ficheiro = ($tem_contrato === 'sim') ? guardar_documento_pdf('doc_contrato_ficheiro', 'contrato') : '';
+
         $_SESSION['novo_equipamento']['sep7'] = [
             'tem_contrato'           => $tem_contrato,
             'contrato_tipo'          => trim($_POST['contrato_tipo']          ?? ''),
@@ -368,6 +378,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep7'])) {
             'doc_contrato_nome'      => trim($_POST['doc_contrato_nome']      ?? ''),
             'doc_contrato_data'      => trim($_POST['doc_contrato_data']      ?? ''),
             'doc_contrato_validade'  => trim($_POST['doc_contrato_validade']  ?? ''),
+            'doc_contrato_ficheiro'  => $doc_contrato_ficheiro,
         ];
 
         header("Location: novo.php?sep=documentos");
@@ -394,6 +405,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
                 'nome'     => $nome,
                 'data'     => $data,
                 'validade' => trim($_POST['doc_validade'][$i] ?? ''),
+                'ficheiro' => guardar_documento_pdf_multiplo('doc_ficheiro', $i, 'geral'),
             ];
         }
     }
@@ -494,14 +506,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
         equipamento_id, contexto, tipo_documento_id, nome_documento,
         data_documento, data_validade, ficheiro
     ) VALUES (
-        :equipamento_id, 'aquisicao', 1, :nome_documento,
-        :data_documento, :data_validade, ''
+        :equipamento_id, 'aquisicao', 6, :nome_documento,
+        :data_documento, :data_validade, :ficheiro
     )");
                 $stmt->execute([
                     ':equipamento_id' => $equipamento_id,
                     ':nome_documento' => $sep3['contrato_aquisicao_nome'],
                     ':data_documento' => $sep3['contrato_aquisicao_data'] ?: null,
                     ':data_validade'  => $sep3['contrato_aquisicao_validade'] ?: null,
+                    ':ficheiro'       => $sep3['contrato_aquisicao_ficheiro'] ?? '',
                 ]);
             }
 
@@ -510,14 +523,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
         equipamento_id, contexto, tipo_documento_id, nome_documento,
         data_documento, data_validade, ficheiro
     ) VALUES (
-        :equipamento_id, 'aquisicao', 1, :nome_documento,
-        :data_documento, :data_validade, ''
+        :equipamento_id, 'aquisicao', 5, :nome_documento,
+        :data_documento, :data_validade, :ficheiro
     )");
                 $stmt->execute([
                     ':equipamento_id' => $equipamento_id,
                     ':nome_documento' => $sep3['fatura_aquisicao_nome'],
                     ':data_documento' => $sep3['fatura_aquisicao_data'] ?: null,
                     ':data_validade'  => null,
+                    ':ficheiro'       => $sep3['fatura_aquisicao_ficheiro'] ?? '',
                 ]);
             }
 
@@ -543,13 +557,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
         data_documento, data_validade, ficheiro
     ) VALUES (
         :equipamento_id, 'garantia', 1, :nome_documento,
-        :data_documento, :data_validade, ''
+        :data_documento, :data_validade, :ficheiro
     )");
                 $stmt->execute([
                     ':equipamento_id' => $equipamento_id,
                     ':nome_documento' => $sep6['cert_garantia_nome'],
                     ':data_documento' => $sep6['cert_garantia_data'] ?: null,
                     ':data_validade'  => $sep6['cert_garantia_validade'] ?: null,
+                    ':ficheiro'       => $sep6['cert_garantia_ficheiro'] ?? '',
                 ]);
             }
 
@@ -581,13 +596,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
         data_documento, data_validade, ficheiro
     ) VALUES (
         :equipamento_id, 'contrato', 1, :nome_documento,
-        :data_documento, :data_validade, ''
+        :data_documento, :data_validade, :ficheiro
     )");
                 $stmt->execute([
                     ':equipamento_id' => $equipamento_id,
                     ':nome_documento' => $sep7['doc_contrato_nome'],
                     ':data_documento' => $sep7['doc_contrato_data'] ?: null,
                     ':data_validade'  => $sep7['doc_contrato_validade'] ?: null,
+                    ':ficheiro'       => $sep7['doc_contrato_ficheiro'] ?? '',
                 ]);
             }
 
@@ -599,13 +615,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
                 data_documento, data_validade, ficheiro
             ) VALUES (
                 :equipamento_id, 'geral', 1, :nome_documento,
-                :data_documento, :data_validade, ''
+                :data_documento, :data_validade, :ficheiro
             )");
                 $stmt->execute([
                     ':equipamento_id' => $equipamento_id,
                     ':nome_documento' => $doc['nome'],
                     ':data_documento' => $doc['data'] ?: null,
                     ':data_validade'  => $doc['validade'] ?: null,
+                    ':ficheiro'       => $doc['ficheiro'] ?? '',
                 ]);
             }
 
@@ -724,7 +741,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submeter_sep8'])) {
                 <?php endif; ?>
 
                 <!-- CONTEÚDO DOS SEPARADORES -->
-                <form id="formEquipamentoCompleto" method="post" action="#">
+                <form id="formEquipamentoCompleto" method="post" action="#" enctype="multipart/form-data">
 
                     <div class="tab-content" id="equipTabsContent">
 
